@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "musicapp-45c98": {
+      "hosting": {
+        "app": [
+          "musicapp-45c98"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "musicapp-45c98"
+  }
+}
