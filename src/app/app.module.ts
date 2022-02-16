@@ -9,9 +9,12 @@ import { AppRoutingModule } from './app-routing.module';
 import { environment } from '../environments/environment';
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
+import { SigninOrRegisterPageComponent } from './login/signin-or-register-page/signin-or-register-page.component';
+import { RegisterPageComponent } from './login/register-page/register-page.component';
+import { SigninPageComponent } from './login/signin-page/signin-page.component';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent,SigninOrRegisterPageComponent,RegisterPageComponent,SigninPageComponent],
   entryComponents: [],
   imports: [BrowserModule, 
     IonicModule.forRoot(), 

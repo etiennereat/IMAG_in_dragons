@@ -1,5 +1,8 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { RegisterPageComponent } from './login/register-page/register-page.component';
+import { SigninOrRegisterPageComponent } from './login/signin-or-register-page/signin-or-register-page.component';
+import { SigninPageComponent } from './login/signin-page/signin-page.component';
 
 const routes: Routes = [
   {
@@ -7,8 +10,20 @@ const routes: Routes = [
     loadChildren: () => import('./playlist/playlist.module').then(m => m.PlaylistPageModule)
   },
   {
+    path: 'login-or-register',
+    component: SigninOrRegisterPageComponent, 
+  },
+  {
+    path: 'login',
+    component: SigninPageComponent, 
+  },
+  {
+    path: 'registration',
+    component: RegisterPageComponent, 
+  },
+  {
     path: '',
-    redirectTo: 'playlist',
+    redirectTo: 'login-or-register',
     pathMatch: 'full'
   },
 ];
