@@ -7,18 +7,18 @@
     </ion-toolbar>
 </ion-header>
 <ion-content>
-    <form>
+    <form [formGroup]="signinForm" (ngSubmit)="connect()">
         <ion-item lines="full">
             <ion-label position="floating">Email</ion-label>
-            <ion-input type="text" required></ion-input>
+            <ion-input formControlName="email" type="text"></ion-input>
         </ion-item>
         <ion-item lines="full">
             <ion-label position="floating">Password</ion-label>
-            <ion-input type="password" required></ion-input>
+            <ion-input formControlName="password" type="password"></ion-input>
         </ion-item>
         <ion-row>
             <ion-col>
-                <ion-button type="submit" color="primary" expand="block">Sign In</ion-button>
+                <ion-button [disabled]="signinForm.invalid" expand="block" type="submit" color="primary">Sign In</ion-button>
                 <a [routerLink]="['/forgot-password']" class="small-text">Forgot Password?</a>
             </ion-col>
         </ion-row>

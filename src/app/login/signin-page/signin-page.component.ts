@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import firebase from 'firebase/compat/app';
 
@@ -10,7 +11,18 @@ import firebase from 'firebase/compat/app';
 })
 export class SigninPageComponent implements OnInit {
 
-  constructor(public auth: AngularFireAuth, private router: Router) { }
+  signinForm: FormGroup
+
+  constructor(private fb: FormBuilder,
+    public auth: AngularFireAuth, 
+    private router: Router
+    ) {
+      this.signinForm = this.fb.group(
+        { 
+          email: ['', [Validators.required, Validators.email]],
+          password: ['', [Validators.required, Validators.minLength(5)]]
+        });
+    }
 
   ngOnInit() {}
 
@@ -54,6 +66,12 @@ export class SigninPageComponent implements OnInit {
         var errorMessage = error.message;
         console.log(error)
       });
+  }
+
+  connect(){
+    //try to connect
+    console.log(this.signinForm.get('email').value)
+    console.log(this.signinForm.get('password').value)
   }
 
 }
