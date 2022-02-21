@@ -10,6 +10,10 @@ const routes: Routes = [
     loadChildren: () => import('./playlist/playlist.module').then(m => m.PlaylistPageModule)
   },
   {
+    path: 'home',
+    loadChildren: () => import('./home/home.module').then(m => m.HomeModule)
+  },
+  {
     path: 'login-or-register',
     component: SigninOrRegisterPageComponent, 
   },
