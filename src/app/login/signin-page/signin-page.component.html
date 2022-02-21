@@ -16,23 +16,26 @@
             <ion-label position="floating">Password</ion-label>
             <ion-input formControlName="password" type="password"></ion-input>
         </ion-item>
-        <ion-row>
+        <ion-row class="row">
             <ion-col>
-                <ion-button [disabled]="signinForm.invalid" expand="block" type="submit" color="primary">Sign In</ion-button>
+                <ion-button [routerLink]="['/playlist']" [disabled]="signinForm.invalid" expand="block" type="submit" color="primary">Sign In</ion-button>
                 <a [routerLink]="['/forgot-password']" class="small-text">Forgot Password?</a>
             </ion-col>
         </ion-row>
         <ion-row>
             <div class="connect-with">Connect with :</div>
             <ion-col class="extras">
-                <ion-button color="danger" (click)="connectwithgoogle()">Google
-                    <ion-icon name="logo-google"></ion-icon>
+                <ion-button color="danger" (click)="connectwithgoogle()">
+                    <ion-icon slot="start" name="logo-google"></ion-icon>
+                    Google
                 </ion-button>
-                <ion-button color="tertiary" (click)="connectwithtwitter()">Twitter
-                    <ion-icon name="logo-twitter"></ion-icon>
+                <ion-button color="primary" (click)="connectwithtwitter()">
+                    <ion-icon slot="start" name="logo-twitter"></ion-icon>
+                    Twitter
                 </ion-button>
-                <ion-button color="dark" (click)="connectwithgithub()">Github
-                    <ion-icon name="logo-github"></ion-icon>
+                <ion-button color="dark" (click)="connectwithgithub()">
+                    <ion-icon slot="start" name="logo-github"></ion-icon>
+                    Github
                 </ion-button>
             </ion-col>
         </ion-row>
