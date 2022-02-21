@@ -12,6 +12,7 @@ import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { SigninOrRegisterPageComponent } from './login/signin-or-register-page/signin-or-register-page.component';
 import { RegisterPageComponent } from './login/register-page/register-page.component';
 import { SigninPageComponent } from './login/signin-page/signin-page.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [AppComponent,SigninOrRegisterPageComponent,RegisterPageComponent,SigninPageComponent],
@@ -21,6 +22,8 @@ import { SigninPageComponent } from './login/signin-page/signin-page.component';
     AppRoutingModule, 
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
+    FormsModule,
+    ReactiveFormsModule,
   ],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
   bootstrap: [AppComponent],
