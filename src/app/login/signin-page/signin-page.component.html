@@ -7,7 +7,7 @@
     </ion-toolbar>
 </ion-header>
 <ion-content>
-    <form [formGroup]="signinForm" (ngSubmit)="connect()">
+    <form [formGroup]="signinForm" (ngSubmit)="connectWithUserAuthentification()">
         <ion-item lines="full">
             <ion-label position="floating">Email</ion-label>
             <ion-input formControlName="email" type="text"></ion-input>
@@ -18,7 +18,7 @@
         </ion-item>
         <ion-row class="row">
             <ion-col>
-                <ion-button [routerLink]="['/home']" [disabled]="signinForm.invalid" expand="block" type="submit" color="primary">Sign In</ion-button>
+                <ion-button [disabled]="signinForm.invalid" expand="block" type="submit" color="primary">Sign In</ion-button>
                 <a [routerLink]="['/forgot-password']" class="small-text">Forgot Password?</a>
             </ion-col>
         </ion-row>
