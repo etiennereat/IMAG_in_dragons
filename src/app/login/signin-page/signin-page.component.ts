@@ -25,13 +25,31 @@ export class SigninPageComponent implements OnInit {
     }
 
   ngOnInit() {}
+  
+  connectWithUserAuthentification(){
+  
+  const email = this.signinForm.get('email').value;
+  const password = this.signinForm.get('password').value;
+  this.auth.signInWithEmailAndPassword(email, password)
+  .then((userCredential) => {
+
+      // Signed in 
+      const user = userCredential.user;
+      this.succesConnect();
+    })
+    .catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.error("["+errorCode+"]"+" "+errorMessage);
+    });
+  }
 
   connectwithgoogle(){
     this.auth.signInWithPopup(new firebase.auth.GoogleAuthProvider())
       .then((userCredential) => {
         // Signed in
         var user = userCredential.user;
-        this.router.navigate(['/playlist'])
+        this.succesConnect();
       })
       .catch((error) => {
         var errorCode = error.code;
@@ -45,7 +63,7 @@ export class SigninPageComponent implements OnInit {
       .then((userCredential) => {
         // Signed in
         var user = userCredential.user;
-        this.router.navigate(['/playlist'])
+        this.succesConnect();
       })
       .catch((error) => {
         var errorCode = error.code;
@@ -59,7 +77,7 @@ export class SigninPageComponent implements OnInit {
       .then((userCredential) => {
         // Signed in
         var user = userCredential.user;
-        this.router.navigate(['/playlist'])
+        this.succesConnect();
       })
       .catch((error) => {
         var errorCode = error.code;
@@ -68,10 +86,12 @@ export class SigninPageComponent implements OnInit {
       });
   }
 
-  connect(){
-    //try to connect
-    console.log(this.signinForm.get('email').value)
-    console.log(this.signinForm.get('password').value)
+  private succesConnect(){
+    this.router.navigate(["/home"]);
   }
 
+  private failConnect(errorMessage){
+      //todo pop up error
+  }
 }
+
