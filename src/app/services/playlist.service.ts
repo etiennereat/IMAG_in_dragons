@@ -1,27 +1,39 @@
 import { Injectable } from '@angular/core';
+import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
+import { combineLatest, Observable } from 'rxjs';
 import { Playlist } from '../models/playlist';
-import { Todo } from '../models/todo';
+import { Musique } from '../models/Musique';
+import { flatMap, map, switchMap, tap } from 'rxjs/operators'
 
 @Injectable({
   providedIn: 'root'
 })
 export class PlaylistService {
-  playlists: Playlist[] = [
-    new Playlist('Item 1'),
-    new Playlist('Item 2'),
-    new Playlist('Item 3'),
-    new Playlist('Item 4'),
-  ];
+  playlists: Playlist[];
 
-  constructor() { }
-
-  getAll() {
-    return this.playlists;
+  constructor(private fs: AngularFirestore) {
+  }
+  
+  getAll() : Observable<Playlist[]>{
+    return this.fs.collection<Playlist>('playlist').valueChanges({idField:'id'});
   }
 
-  getOne(id: number) {
-    console.log(this.playlists, id)
-    return this.playlists.find(p => p.id === id);
+  getOne(id: string) : Observable<any>{
+    let playlistTmp = this.fs.doc<Playlist>('playlist/'+id).valueChanges({idField:'id'}).pipe(
+      switchMap((playlist: Playlist) => {
+        return this.fs
+          .collection<Musique>(`playlist/${id}/musiques`).valueChanges({idField:'id'}).pipe(
+            map( musiques  => {
+                return Object.assign(playlist, {musiques: musiques})
+              }
+            )
+          )
+        }
+      ),
+      tap(console.log)
+    );
+
+    return playlistTmp;
   }
 
   addPlaylist(playlist: Playlist) {
@@ -32,17 +44,17 @@ export class PlaylistService {
     this.playlists = this.playlists.filter(p => p.id !== playlist.id);
   }
 
-  addTodo(playlistId: number, todo: Todo) {
-    const playlistIndex = this.playlists.findIndex(p => p.id === playlistId);
+  addMusic(playlistId: string, music: Musique) {
+    /*const playlistIndex = this.playlists.findIndex(p => p.id === playlistId);
     if (this.playlists[playlistIndex]) {
-      this.playlists[playlistIndex].todos = this.playlists[playlistIndex].todos.concat(todo);
-    }
+      this.playlists[playlistIndex].musics = this.playlists[playlistIndex].musics.concat(music);
+    }*/
   }
 
-  removeTodo(playlistId: number, todo: Todo) {
-    const playlistIndex = this.playlists.findIndex(p => p.id === playlistId);
+  removeMusique(playlistId: string, music: Musique) {
+    /*const playlistIndex = this.playlists.findIndex(p => p.id === playlistId);
     if (this.playlists[playlistIndex]) {
-      this.playlists[playlistIndex].todos = this.playlists[playlistIndex].todos.filter(t => t.id !== todo.id);
-    }
+      this.playlists[playlistIndex].musics = this.playlists[playlistIndex].musics.filter(t => t.id !== todo.id);
+    }*/
   }
 }

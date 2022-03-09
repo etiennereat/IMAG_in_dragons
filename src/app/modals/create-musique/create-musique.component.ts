@@ -1,17 +1,17 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
-import { Todo } from 'src/app/models/todo';
+import { Musique } from 'src/app/models/Musique';
 import { PlaylistService } from 'src/app/services/playlist.service';
 
 @Component({
-  selector: 'app-create-todo',
-  templateUrl: './create-todo.component.html',
-  styleUrls: ['./create-todo.component.css']
+  selector: 'app-create-musique',
+  templateUrl: './create-musique.component.html',
+  styleUrls: ['./create-musique.component.css']
 })
-export class CreateTodoComponent implements OnInit {
+export class CreateMusiqueComponent implements OnInit {
 
-  @Input() playlistId: number;
+  @Input() playlistId: string;
 
   todoForm: FormGroup;
 
@@ -26,8 +26,8 @@ export class CreateTodoComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  addTodo() {
-    this.playlistService.addTodo(this.playlistId, new Todo(this.todoForm.get('name').value, this.todoForm.get('description').value));
+  addMusique() {
+    this.playlistService.addMusic(this.playlistId, new Musique('musiqueDemo','autheurDemo',"urlMusiqueDemo","musiqueDemo"));
     this.modalController.dismiss();
   }
 

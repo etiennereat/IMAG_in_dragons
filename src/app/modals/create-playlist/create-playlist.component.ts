@@ -20,8 +20,8 @@ export class CreatePlaylistComponent implements OnInit {
 
   ngOnInit() { }
 
-  addPlaylist() {
-    this.playlistService.addPlaylist(new Playlist(this.playlistForm.get('name').value));
+  addPlaylist(playlist: Playlist) {
+    this.playlistService.addPlaylist(playlist);
     this.modalController.dismiss();
   }
 

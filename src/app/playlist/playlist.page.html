@@ -18,7 +18,7 @@
         <ion-list>
             <ion-item-sliding *ngFor="let playlist of playlists$ | async;">
                 <ion-item [routerLink]="[playlist?.id]" routerLinkActive="true">
-                    <ion-label>{{ playlist.name }}</ion-label>
+                    <ion-label>{{ playlist.nom }}</ion-label>
                 </ion-item>
                 <ion-item-options side="end">
                     <ion-item-option (click)="delete(playlist)" color="danger">

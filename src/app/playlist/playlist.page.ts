@@ -1,11 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { CreatePlaylistComponent } from '../modals/create-playlist/create-playlist.component';
 import { Playlist } from '../models/playlist';
 import { PlaylistService } from '../services/playlist.service';
 import { EMPTY, Observable } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
-import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/compat/firestore';
 
 @Component({
   selector: 'app-playlist',
@@ -17,13 +15,11 @@ export class PlaylistPage implements OnInit {
   playlists$: Observable<Playlist[]> = EMPTY;
 
   constructor(private playlistService: PlaylistService,
-    private modalController: ModalController,
-    private afs: AngularFirestore) {
-    const playlistsCollection = this.afs.collection<Playlist>('playlists');
-    this.playlists$ = playlistsCollection.valueChanges();
+    private modalController: ModalController) {
   }
 
   ngOnInit(): void {
+    this.playlists$ = this.playlistService.getAll();
   }
 
   delete(playlist: Playlist) {
