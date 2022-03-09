@@ -14,20 +14,15 @@ export class AuthService {
     this.auth.createUserWithEmailAndPassword(email, password)
     .then((userCredential) => {
       // Signed in 
-      this.sendVerificationEmail();
+      userCredential.user.sendEmailVerification();
+      this.router.navigate(['/login'])
+      this.auth.signOut();
     })
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
         console.error("["+errorCode+"]"+" "+errorMessage);
       });
-  }
-
-  private sendVerificationEmail(){
-    firebase.auth().currentUser.sendEmailVerification()
-  .then(() => {
-    this.router.navigate(['/login'])
-  });
   }
 
   private failConnect(errorMessage){
