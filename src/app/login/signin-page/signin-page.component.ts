@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import firebase from 'firebase/compat/app';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-signin-page',
@@ -13,10 +11,7 @@ export class SigninPageComponent implements OnInit {
 
   signinForm: FormGroup
 
-  constructor(private fb: FormBuilder,
-    public auth: AngularFireAuth, 
-    private router: Router
-    ) {
+  constructor(private fb: FormBuilder, private authService: AuthService) {
       this.signinForm = this.fb.group(
         { 
           email: ['', [Validators.required, Validators.email]],
@@ -27,71 +22,21 @@ export class SigninPageComponent implements OnInit {
   ngOnInit() {}
   
   connectWithUserAuthentification(){
-  
-  const email = this.signinForm.get('email').value;
-  const password = this.signinForm.get('password').value;
-  this.auth.signInWithEmailAndPassword(email, password)
-  .then((userCredential) => {
-
-      // Signed in 
-      const user = userCredential.user;
-      this.succesConnect();
-    })
-    .catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      console.error("["+errorCode+"]"+" "+errorMessage);
-    });
-  }
+    var email = this.signinForm.get('email').value;
+    var password = this.signinForm.get('password').value;
+    this.authService.connectWithUserAuthentification(email, password);
+    }
 
   connectwithgoogle(){
-    this.auth.signInWithPopup(new firebase.auth.GoogleAuthProvider())
-      .then((userCredential) => {
-        // Signed in
-        var user = userCredential.user;
-        this.succesConnect();
-      })
-      .catch((error) => {
-        var errorCode = error.code;
-        var errorMessage = error.message;
-        console.log(error)
-      });
+    this.authService.connectwithgoogle();
   }
 
   connectwithtwitter(){
-    this.auth.signInWithPopup(new firebase.auth.GoogleAuthProvider())
-      .then((userCredential) => {
-        // Signed in
-        var user = userCredential.user;
-        this.succesConnect();
-      })
-      .catch((error) => {
-        var errorCode = error.code;
-        var errorMessage = error.message;
-        console.log(error)
-      });
+    this.authService.connectwithtwitter();
   }
 
   connectwithgithub(){
-    this.auth.signInWithPopup(new firebase.auth.GoogleAuthProvider())
-      .then((userCredential) => {
-        // Signed in
-        var user = userCredential.user;
-        this.succesConnect();
-      })
-      .catch((error) => {
-        var errorCode = error.code;
-        var errorMessage = error.message;
-        console.log(error)
-      });
-  }
-
-  private succesConnect(){
-    this.router.navigate(["/home"]);
-  }
-
-  private failConnect(errorMessage){
-      //todo pop up error
+    this.authService.connectwithgithub();
   }
 }
 
