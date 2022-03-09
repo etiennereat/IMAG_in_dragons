@@ -22,7 +22,7 @@
         </ion-item>
         <ion-row>
             <ion-col>
-                <ion-button [disabled]="registerForm.invalid" expand="block" type="submit" color="danger">Sign Up</ion-button>
+                <ion-button [routerLink]="['/home']" [disabled]="registerForm.invalid" expand="block" type="submit" color="danger">Sign Up</ion-button>
             </ion-col>
         </ion-row>
     </form>

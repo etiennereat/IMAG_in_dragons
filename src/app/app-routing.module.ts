@@ -3,8 +3,6 @@ import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { RegisterPageComponent } from './login/register-page/register-page.component';
 import { SigninOrRegisterPageComponent } from './login/signin-or-register-page/signin-or-register-page.component';
 import { SigninPageComponent } from './login/signin-page/signin-page.component';
-import { AuthGuard, redirectUnauthorizedTo } from '@angular/fire/auth-guard'
-const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['login']);
 
 const routes: Routes = [
   {
@@ -13,9 +11,7 @@ const routes: Routes = [
   },
   {
     path: 'home',
-    loadChildren: () => import('./home/home.module').then(m => m.HomeModule),
-    canActivate: [AuthGuard],
-    data: {authGuardPipe: redirectUnauthorizedToLogin}
+    loadChildren: () => import('./home/home.module').then(m => m.HomeModule)
   },
   {
     path: 'login-or-register',
