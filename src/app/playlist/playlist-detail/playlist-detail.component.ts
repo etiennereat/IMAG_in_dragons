@@ -6,6 +6,7 @@ import { CreateMusiqueComponent } from 'src/app/modals/create-musique/create-mus
 import { Playlist } from 'src/app/models/playlist';
 import { Musique } from 'src/app/models/Musique';
 import { PlaylistService } from 'src/app/services/playlist.service';
+import { MusiqueService } from 'src/app/services/musique.service';
 
 @Component({
   selector: 'app-playlist-detail',
@@ -18,6 +19,7 @@ export class PlaylistDetailComponent implements OnInit {
 
   constructor(private route: ActivatedRoute,
     private playlistService: PlaylistService,
+    private musiqueService: MusiqueService,
     private modalController: ModalController) { }
 
   ngOnInit(): void {
@@ -33,6 +35,13 @@ export class PlaylistDetailComponent implements OnInit {
       this.playlist$ = this.playlistService.getOne(this.route.snapshot.params.id);
     })
   }
+
+  playMusique(musiqueLite: Musique){
+    var musique$ = this.musiqueService.getMusique(musiqueLite.id);
+    musique$.subscribe(res => {
+      this.musiqueService.playMusique(res);
+    })
+  } 
 
   async openModal() {
     const modal = await this.modalController.create({

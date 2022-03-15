@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { combineLatest, Observable } from 'rxjs';
 import { Playlist } from '../models/playlist';
 import { Musique } from '../models/Musique';
@@ -18,7 +18,7 @@ export class PlaylistService {
     return this.fs.collection<Playlist>('playlist').valueChanges({idField:'id'});
   }
 
-  getOne(id: string) : Observable<any>{
+  getOne(id: string) : Observable<Playlist>{
     let playlistTmp = this.fs.doc<Playlist>('playlist/'+id).valueChanges({idField:'id'}).pipe(
       switchMap((playlist: Playlist) => {
         return this.fs

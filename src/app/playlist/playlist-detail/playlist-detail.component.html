@@ -18,7 +18,7 @@
         <ng-container *ngIf="playlist$ | async as playlist;">
         <ion-item-sliding *ngFor="let musique of playlist.musiques;">
           <ion-item>
-            <ion-label>{{ musique.nom }}</ion-label>
+            <ion-label (click)="playMusique(musique)">{{ musique.nom }}</ion-label>
             <ion-label>{{ musique.idAuteur }}</ion-label>
           </ion-item>
           <ion-item-options side="end">

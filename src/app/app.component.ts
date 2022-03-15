@@ -1,6 +1,4 @@
 import { Component } from '@angular/core';
-import { initializeApp } from 'firebase/app';
-
 
 @Component({
   selector: 'app-root',
@@ -8,5 +6,7 @@ import { initializeApp } from 'firebase/app';
   styleUrls: ['app.component.scss'],
 })
 export class AppComponent {
-  constructor() {}
+  constructor() {
+
+  }
 }
