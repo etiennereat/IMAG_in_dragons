@@ -17,7 +17,7 @@
             </ion-list-header>
 
             <ion-item-sliding *ngFor="let musique of playlist.musiques;">
-                <ion-item (click)="playMusique(musique)">
+                <ion-item [routerLink]="['music/'+musique.nom]" (click)="playMusique(musique)">
                     <ion-avatar slot="start">
                         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRspsZ1EU8IH4m29uCG9eQ6UrrdtfwF8uFtN_nzxOPoj-YHbvv9X80_GApgrWKupB0UdL0&usqp=CAU">
                     </ion-avatar>
