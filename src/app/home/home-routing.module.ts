@@ -18,7 +18,7 @@ const routes: Routes = [
     component: AlbumsComponent, 
   },
   {
-    path: 'morceaux',
+    path: 'tracks',
     component: MorceauxComponent, 
   },
 ];
