@@ -4,7 +4,7 @@ import { Musique } from '../models/Musique';
 import { Observable } from 'rxjs';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/storage';
-
+import { Media } from '@ionic-native/media/ngx';
 
 @Injectable({
   providedIn: 'root'
@@ -29,7 +29,7 @@ export class MusiqueService {
   playMusique(musique: Musique){
  
 
-
+      /*
       // [START storage_download_full_example]
       // Create a reference to the file we want to download
       var starsRef = this.storageMusiqueRef.child(musique.idMusiqueStorage);
@@ -65,6 +65,6 @@ export class MusiqueService {
               console.error("Unknown error occurred, inspect the server response")
             break;
         }
-      });
+      });*/
     } 
 }
