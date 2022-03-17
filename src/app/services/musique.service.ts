@@ -4,19 +4,20 @@ import { Musique } from '../models/Musique';
 import { Observable } from 'rxjs';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/storage';
-import { Media } from '@ionic-native/media/ngx';
+import { Media, MediaObject } from '@ionic-native/media/ngx';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MusiqueService {
+  
   storageMusiqueRef;
   storageImageRef;
-  constructor(private afs: AngularFirestore) {
+  currentMusique : MediaObject;
+
+  constructor(private afs: AngularFirestore, private media: Media) {
     this.storageMusiqueRef = firebase.storage().ref('musiques');
     this.storageImageRef = firebase.storage().ref('Images');
-
-
   }
 
     
@@ -24,28 +25,17 @@ export class MusiqueService {
       return this.afs.doc<Musique>('musique/'+idMusique).valueChanges({idField:'id'});
   }
 
-  
-
-  playMusique(musique: Musique){
- 
-
-      /*
+  playMusique(musique: Musique) : Boolean{      
       // [START storage_download_full_example]
       // Create a reference to the file we want to download
       var starsRef = this.storageMusiqueRef.child(musique.idMusiqueStorage);
   
       // Get the download URL
-      starsRef.getDownloadURL()
+      return starsRef.getDownloadURL()
       .then((url) => {
-         // This can be downloaded directly:
-          var xhr = new XMLHttpRequest();
-          xhr.responseType = 'blob';
-          xhr.onload = (event) => {
-              var blob = xhr.response;
-          };
-          xhr.open('GET', url);
-          xhr.send();
-          console.log(xhr);
+        this.currentMusique = this.media.create(url);
+        this.currentMusique.play();
+        return true;
       })
       .catch((error) => {
         switch (error.code) {
@@ -65,6 +55,20 @@ export class MusiqueService {
               console.error("Unknown error occurred, inspect the server response")
             break;
         }
-      });*/
+        return false;
+      });
     } 
+
+    pauseMusique(){
+      this.currentMusique.pause();
+    }
+    
+    stopMusique(){
+      this.currentMusique.stop();
+      this.currentMusique.release();
+    }
+
+    resumeMusique(){
+      this.currentMusique.play();
+    }
 }

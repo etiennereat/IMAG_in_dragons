@@ -42,8 +42,6 @@ export class PlaylistDetailComponent implements OnInit {
     var musique$ = this.musiqueService.getMusique(musiqueLite.id);
     musique$.subscribe(res => {
       this.musiqueService.playMusique(res);
-      let m = this.media.create("https://firebasestorage.googleapis.com/v0/b/imagindragons-e576d.appspot.com/o/musiques%2FmusiqueDemo.mp3?alt=media&token=aac891b5-5c70-4d43-abb5-848193f48cb7")
-      m.play();
     })
   } 
 

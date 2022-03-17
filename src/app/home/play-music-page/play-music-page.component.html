@@ -26,10 +26,15 @@
                 <ion-label slot="start">0:00</ion-label>
                 <ion-label slot="end">2:00</ion-label>
             </ion-range>
-            <ion-icon class="icons" size="large" name="play-back-circle-outline"></ion-icon>
-            <ion-icon class="icons" size="large" name="pause-circle-outline"></ion-icon>
-            <ion-icon class="icons" size="large" name="play-circle-outline"></ion-icon>
-            <ion-icon class="icons" size="large" name="play-forward-circle-outline"></ion-icon>
+            <ion-button shape="round" color="light">
+                <ion-icon slot="icon-only" name="play-back-outline"></ion-icon>
+            </ion-button>
+            <ion-button (click)="playPause()" shape="round" color="light">
+                <ion-icon slot="icon-only" [name]="playIcon"></ion-icon>
+            </ion-button>
+            <ion-button shape="round" color="light">
+                <ion-icon slot="icon-only" name="play-forward-outline"></ion-icon>
+            </ion-button>
         </ion-card-content>
     </ion-card>
 </ion-content>
