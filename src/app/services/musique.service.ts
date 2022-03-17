@@ -20,6 +20,17 @@ export class MusiqueService {
     this.storageImageRef = firebase.storage().ref('Images');
   }
 
+  isNull(){
+    return this.currentMusique == null;
+  }
+
+  getDuration(){
+    return Math.floor(this.currentMusique.getDuration());
+  }
+
+  getPosition(){
+    return this.currentMusique.getCurrentPosition()
+  }
     
   getMusique(idMusique: string) :Observable<Musique>{
       return this.afs.doc<Musique>('musique/'+idMusique).valueChanges({idField:'id'});

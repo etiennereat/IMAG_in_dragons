@@ -1,0 +1,40 @@
+<ion-tabs>
+    <!--#tabs (ionTabsDidChange)="setSelectedTab()"-->
+
+    <!-- The dummy player stacked above the tabs -->
+    <div class="player" *ngIf="!isMusicNull">
+        <div class="progress-bar">
+            <div class="progress" [style.width]="progress + '%'"></div>
+        </div>
+        <ion-row class="ion-no-padding">
+            <ion-col size="2" class="ion-no-padding">
+                <img src="https://store-images.s-microsoft.com/image/apps.33844.9007199266251864.cae5b893-a71b-40d7-abde-a6e8e23675c3.87610d96-f943-498a-89af-cc09d8a5eb7f">
+            </ion-col>
+            <ion-col size="8" class="ion-align-self-center">
+                <b>All the Good Girls Go to Hell</b><br>
+                <span>Billie Eilish</span>
+            </ion-col>
+            <ion-col size="2" class="ion-text-center ion-no-padding ion-align-self-center">
+                <ion-icon (click)="playPause()" [name]="playIcon" size="large"></ion-icon>
+            </ion-col>
+        </ion-row>
+    </div>
+
+    <!-- The Ionic tab bar -->
+    <ion-tab-bar slot="bottom">
+        <ion-tab-button tab="home">
+            <ion-icon [name]="selected == 'home' ? 'home' : 'home-outline'"></ion-icon>
+            <ion-label>Home</ion-label>
+        </ion-tab-button>
+
+        <ion-tab-button tab="playlist">
+            <ion-icon [name]="selected == 'playlist' ? 'list' : 'list-outline'"></ion-icon>
+            <ion-label>Playlists</ion-label>
+        </ion-tab-button>
+
+        <ion-tab-button tab="albums">
+            <ion-icon [name]="selected == 'albums' ? 'albums' : 'albums-outline'"></ion-icon>
+            <ion-label>Albums</ion-label>
+        </ion-tab-button>
+    </ion-tab-bar>
+</ion-tabs>
