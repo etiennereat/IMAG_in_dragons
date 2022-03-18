@@ -1,4 +1,6 @@
-import { Component, ViewChild, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Component, ViewChild } from '@angular/core';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { IonTabs } from '@ionic/angular';
 import { MusiqueService } from '../services/musique.service';
 
@@ -12,10 +14,17 @@ export class TabsPage {
   selected = 'home';
   progress:number;
   isMusicNull:boolean  
-  constructor(private musiqueServ: MusiqueService) {}
+  isOnMusicPage: boolean;
+  constructor(private musiqueServ: MusiqueService,public auth: AngularFireAuth, private router:Router,private route: ActivatedRoute) {}
 
   ngOnInit() {
+    this.auth.currentUser.then((user) => {
+      if(user){
+        this.router.navigate(['login-or-register'])
+      }
+    })
     setInterval(() => {
+      this.isOnMusicPage = this.router.routerState.snapshot.url.includes("music")
       this.isMusicNull = this.musiqueServ.isNull()
       if(!this.musiqueServ.isNull()){
         this.musiqueServ.getPosition().then((position) => {
@@ -30,7 +39,6 @@ export class TabsPage {
   setSelectedTab() {
     this.selected = this.tabs.getSelected();
   }
-
 
   playIcon = 'pause';
   playPause() {

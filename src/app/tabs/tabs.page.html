@@ -2,7 +2,7 @@
     <!--#tabs (ionTabsDidChange)="setSelectedTab()"-->
 
     <!-- The dummy player stacked above the tabs -->
-    <div class="player" *ngIf="!isMusicNull">
+    <div class="player" *ngIf="!isMusicNull && !isOnMusicPage">
         <div class="progress-bar">
             <div class="progress" [style.width]="progress + '%'"></div>
         </div>
