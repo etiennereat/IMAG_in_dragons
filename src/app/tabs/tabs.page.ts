@@ -1,4 +1,4 @@
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { Component, ViewChild } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { IonTabs } from '@ionic/angular';
@@ -15,7 +15,7 @@ export class TabsPage {
   progress:number;
   isMusicNull:boolean  
   isOnMusicPage: boolean;
-  constructor(private musiqueServ: MusiqueService,public auth: AngularFireAuth, private router:Router,private route: ActivatedRoute) {}
+  constructor(private musiqueServ: MusiqueService,public auth: AngularFireAuth, private router:Router) {}
 
   ngOnInit() {
     this.auth.currentUser.then((user) => {
