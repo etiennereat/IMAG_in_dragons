@@ -19,7 +19,7 @@ export class TabsPage {
 
   ngOnInit() {
     this.auth.currentUser.then((user) => {
-      if(user){
+      if(!user){
         this.router.navigate(['login-or-register'])
       }
     })
