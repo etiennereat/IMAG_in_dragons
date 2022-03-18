@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, UrlSerializer } from '@angular/router';
 import { ModalController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { CreateMusiqueComponent } from 'src/app/modals/create-musique/create-musique.component';
@@ -8,6 +8,7 @@ import { Musique } from 'src/app/models/Musique';
 import { PlaylistService } from 'src/app/services/playlist.service';
 import { MusiqueService } from 'src/app/services/musique.service';
 import { Media } from '@ionic-native/media/ngx';
+import { promises } from 'dns';
 
 @Component({
   selector: 'app-playlist-detail',
@@ -26,9 +27,6 @@ export class PlaylistDetailComponent implements OnInit {
 
   ngOnInit(): void {
     this.playlist$ = this.playlistService.getOne(this.route.snapshot.params.id);
-    this.playlist$.subscribe(res => {
-      console.log(res)
-    })
   }
 
   delete(musique: Musique) {
@@ -44,6 +42,10 @@ export class PlaylistDetailComponent implements OnInit {
       this.musiqueService.playMusique(res);
     })
   } 
+
+  getUrlMusiquePicture(musiqueLite : Musique) : Promise<string>{
+    return this.musiqueService.getMusiqueUrl(musiqueLite)
+  }
 
   async openModal() {
     const modal = await this.modalController.create({
