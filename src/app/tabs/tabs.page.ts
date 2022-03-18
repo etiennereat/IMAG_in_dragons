@@ -15,9 +15,14 @@ export class TabsPage {
   progress:number;
   isMusicNull:boolean  
   isOnMusicPage: boolean;
+  playIcon:string;
+
   constructor(private musiqueServ: MusiqueService,public auth: AngularFireAuth, private router:Router) {}
 
   ngOnInit() {
+    this.musiqueServ.getCurrentplayicon().subscribe((icon)=>{
+      this.playIcon = icon
+    })
     this.auth.currentUser.then((user) => {
       if(!user){
         this.router.navigate(['login-or-register'])
@@ -36,19 +41,16 @@ export class TabsPage {
     }, 1000 );
   }
 
-  setSelectedTab() {
-    this.selected = this.tabs.getSelected();
-  }
-
-  playIcon = 'pause';
   playPause() {
     if(this.musiqueServ.isNull()){return}
     if(this.playIcon == 'pause') {
-      this.playIcon = 'play';
       this.musiqueServ.pauseMusique();
     } else {
-      this.playIcon = 'pause';
       this.musiqueServ.resumeMusique();
     }
   }
+
+  // setSelectedTab() {
+  //   this.selected = this.tabs.getSelected();
+  // }
 }
