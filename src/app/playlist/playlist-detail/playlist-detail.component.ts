@@ -27,6 +27,12 @@ export class PlaylistDetailComponent implements OnInit {
 
   ngOnInit(): void {
     this.playlist$ = this.playlistService.getOne(this.route.snapshot.params.id);
+    this.playlist$.subscribe(res => {
+      for (var element of res.musiques) {
+          element.urlImage = this.musiqueService.getMusiqueUrl(element);
+          console.log(element.urlImage);
+        }
+    })
   }
 
   delete(musique: Musique) {
