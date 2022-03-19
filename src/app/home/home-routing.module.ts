@@ -1,3 +1,4 @@
+import { MorceauxModule } from './morceaux/morceaux.module';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AlbumsComponent } from './albums/albums.component';
@@ -19,7 +20,7 @@ const routes: Routes = [
   },
   {
     path: 'tracks',
-    component: MorceauxComponent, 
+    loadChildren: () => import('./morceaux/morceaux.module').then(m => m.MorceauxModule)
   },
 ];
 

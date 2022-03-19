@@ -110,4 +110,8 @@ export class MusiqueService {
     getMusique(idMusique: string) :Observable<Musique>{
         return this.afs.doc<Musique>('musique/'+idMusique).valueChanges({idField:'id'});
     }
+
+    getAllMusique():Observable<Musique[]>{ 
+      return this.afs.collection<Musique>('musique').valueChanges({idField:'id'});
+    }
 }
