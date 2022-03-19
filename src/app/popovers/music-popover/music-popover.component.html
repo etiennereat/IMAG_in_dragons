@@ -1,5 +1,4 @@
 <ion-list>
-    <ion-list-header>{{musics.nom}}</ion-list-header>
     <ion-item button *ngIf="!inPlaylist" (click)="openPlaylistPopover($event)">Add to playlist</ion-item>
     <ion-item button *ngIf="inPlaylist">Delete from playlist</ion-item>
     <ion-item button>Add to queue</ion-item>

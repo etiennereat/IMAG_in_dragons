@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { Musique } from 'src/app/models/Musique';
 import { Component, OnInit, Input } from '@angular/core';
 import { PlaylistPopoverComponent } from '../playlist-popover/playlist-popover.component';
+import { MusiqueService } from 'src/app/services/musique.service';
 
 @Component({
   selector: 'app-music-popover',
@@ -15,7 +16,7 @@ export class MusicPopoverComponent implements OnInit {
   @Input() musics: Musique;
 
   inPlaylist:boolean
-  constructor(private router:Router,private popoverController:PopoverController) { }
+  constructor(private router:Router,private popoverController:PopoverController,private musiqueService:MusiqueService) { }
 
   ngOnInit() {
     this.inPlaylist = this.router.routerState.snapshot.url.includes("playlist")
@@ -28,6 +29,10 @@ export class MusicPopoverComponent implements OnInit {
       translucent: true
     });
     return await popover.present()
+  }
+
+  addToQueue(){
+    this.musiqueService.addToQueue(this.musics)
   }
 
 }
