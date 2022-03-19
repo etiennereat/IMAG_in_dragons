@@ -7,6 +7,8 @@ export class Musique {
     nom: string;
     nomAlbum: string;
     urlImage: string;
+    urlMusique: string;
+
 
     constructor(id: string, idAuteur: string, idImageStorage: string, nom: string, dateAjout? : Date, idMusiqueStorage? : string) {
         this.id = id;
