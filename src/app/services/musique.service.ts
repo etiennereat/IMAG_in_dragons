@@ -1,25 +1,26 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { AngularFirestore, Reference } from '@angular/fire/compat/firestore';
 import { Musique } from '../models/Musique';
 import { Observable, Subject } from 'rxjs';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/storage';
 import { Media, MediaObject } from '@ionic-native/media/ngx';
+import { url } from 'inspector';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MusiqueService {
   
-  private storageMusiqueRef;
-  private storageImageRef;
+  storageMusiqueRef : firebase.storage.Reference;
+  storageImageRef : firebase.storage.Reference;
   private currentMusique : MediaObject;
   public currentMusiqueInfo: Musique;
   private playIcon = new Subject<string>();
 
   constructor(private afs: AngularFirestore, private media: Media) {
     this.storageMusiqueRef = firebase.storage().ref('musiques');
-    this.storageImageRef = firebase.storage().ref('Images');
+    this.storageImageRef = firebase.storage().ref('images');
   }
 
 
@@ -27,7 +28,13 @@ export class MusiqueService {
     return this.playIcon
   }
 
-   playMusique(musique: Musique) : Boolean{      
+  getMusiqueUrl(musique: Musique): Promise<string>{
+      var starsRef = this.storageImageRef.child(musique.idImageStorage);
+      return starsRef.getDownloadURL();
+
+  }
+
+  playMusique(musique: Musique) : Promise<Boolean>{         
       this.currentMusiqueInfo = musique;
       // [START storage_download_full_example]
       // Create a reference to the file we want to download
