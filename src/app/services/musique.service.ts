@@ -5,7 +5,6 @@ import { Observable, Subject } from 'rxjs';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/storage';
 import { Media, MediaObject } from '@ionic-native/media/ngx';
-import { url } from 'inspector';
 
 @Injectable({
   providedIn: 'root'
@@ -28,28 +27,34 @@ export class MusiqueService {
     return this.playIcon
   }
 
-  getMusiqueUrl(musique: Musique): Promise<string>{
+  getMusiqueUrl(musique: Musique){
       var starsRef = this.storageImageRef.child(musique.idImageStorage);
-      return starsRef.getDownloadURL();
-
+      starsRef.getDownloadURL().then(res => {
+          musique.urlImage = res;
+      });
   }
 
-  playMusique(musique: Musique) : Promise<Boolean>{         
-      this.currentMusiqueInfo = musique;
+  playMusique(musique: Musique){         
       // [START storage_download_full_example]
       // Create a reference to the file we want to download
-      // if(this.currentMusique==null){
-      //   console.log(this.media.MEDIA_RUNNING)
-      //   return true
-      // }
+      if(this.currentMusique!=null){
+        if(this.currentMusiqueInfo.id == musique.id){
+          //resume current musique
+          this.resumeMusique(); 
+          return;
+        }
+        else{
+          this.stopMusique();
+        }
+      }
+      this.currentMusiqueInfo = musique;
       var starsRef = this.storageMusiqueRef.child(musique.idMusiqueStorage);
       // Get the download URL
-      return starsRef.getDownloadURL()
+      starsRef.getDownloadURL()
       .then((url) => {
         this.currentMusique = this.media.create(url);
         this.currentMusique.play();
         this.playIcon.next("pause")
-        return true;
       })
       .catch((error) => {
         switch (error.code) {
@@ -70,7 +75,6 @@ export class MusiqueService {
             break;
         }
         this.currentMusiqueInfo = null;
-        return false;
       });
     } 
 

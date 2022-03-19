@@ -29,7 +29,7 @@ export class PlaylistDetailComponent implements OnInit {
     this.playlist$ = this.playlistService.getOne(this.route.snapshot.params.id);
     this.playlist$.subscribe(res => {
       for (var element of res.musiques) {
-          element.urlImage = this.musiqueService.getMusiqueUrl(element);
+          this.musiqueService.getMusiqueUrl(element);
           console.log(element.urlImage);
         }
     })
@@ -47,11 +47,7 @@ export class PlaylistDetailComponent implements OnInit {
     musique$.subscribe(res => {
       this.musiqueService.playMusique(res);
     })
-  } 
-
-  getUrlMusiquePicture(musiqueLite : Musique) : Promise<string>{
-    return this.musiqueService.getMusiqueUrl(musiqueLite)
-  }
+  }   
 
   async openModal() {
     const modal = await this.modalController.create({
