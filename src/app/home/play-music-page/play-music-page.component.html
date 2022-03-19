@@ -1,0 +1,40 @@
+<ion-header [translucent]="true">
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-back-button></ion-back-button>
+        </ion-buttons>
+        <ion-title>
+            Music
+        </ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content class="page" [fullscreen]="true">
+    <ion-header class="header" collapse="condense">
+        <ion-toolbar>
+            <ion-title size="large">Music</ion-title>
+        </ion-toolbar>
+    </ion-header>
+    <ion-card class="card">
+        <img class="img" src="https://cdn2.clc2l.fr/t/a/p/apple-music-tNKCFp.jpg" />
+        <ion-card-header>
+            <ion-card-title>Music Name</ion-card-title>
+            <ion-card-subtitle>Artiste</ion-card-subtitle>
+        </ion-card-header>
+        <ion-card-content class="content">
+            <ion-range class="range" min="0" max="100" value="0" color="light">
+                <ion-label slot="start">0:00</ion-label>
+                <ion-label slot="end">2:00</ion-label>
+            </ion-range>
+            <ion-button shape="round" color="light">
+                <ion-icon slot="icon-only" name="play-back-outline"></ion-icon>
+            </ion-button>
+            <ion-button (click)="playPause()" shape="round" color="light">
+                <ion-icon slot="icon-only" [name]="playIcon"></ion-icon>
+            </ion-button>
+            <ion-button shape="round" color="light">
+                <ion-icon slot="icon-only" name="play-forward-outline"></ion-icon>
+            </ion-button>
+        </ion-card-content>
+    </ion-card>
+</ion-content>

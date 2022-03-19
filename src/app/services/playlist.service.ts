@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { combineLatest, Observable } from 'rxjs';
 import { Playlist } from '../models/playlist';
 import { Musique } from '../models/Musique';
 import { flatMap, map, switchMap, tap } from 'rxjs/operators'
+import { MusiqueService } from './musique.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,14 +12,14 @@ import { flatMap, map, switchMap, tap } from 'rxjs/operators'
 export class PlaylistService {
   playlists: Playlist[];
 
-  constructor(private fs: AngularFirestore) {
+  constructor(private fs: AngularFirestore, private musiqueService : MusiqueService) {
   }
   
   getAll() : Observable<Playlist[]>{
     return this.fs.collection<Playlist>('playlist').valueChanges({idField:'id'});
   }
 
-  getOne(id: string) : Observable<any>{
+  getOne(id: string) : Observable<Playlist>{
     let playlistTmp = this.fs.doc<Playlist>('playlist/'+id).valueChanges({idField:'id'}).pipe(
       switchMap((playlist: Playlist) => {
         return this.fs
@@ -30,7 +31,6 @@ export class PlaylistService {
           )
         }
       ),
-      tap(console.log)
     );
 
     return playlistTmp;

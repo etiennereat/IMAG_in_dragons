@@ -1,36 +1,38 @@
-<ion-header [translucent]="true">
-    <ion-toolbar>
-      <ion-title>
-        {{playlist?.nom | titlecase}}
-      </ion-title>
-    </ion-toolbar>
-  </ion-header>
-  
-  <ion-content [fullscreen]="true">
-    <ion-header collapse="condense">
-      <ion-toolbar>
-        <ion-title size="large">{{playlist?.nom | titlecase}}</ion-title>
-      </ion-toolbar>
+<ng-container *ngIf="playlist$ | async as playlist;">
+    <ion-header [translucent]="true">
+        <ion-toolbar>
+            <ion-buttons slot="start">
+                <ion-back-button></ion-back-button>
+            </ion-buttons>
+            <ion-title>{{playlist.nom}}</ion-title>
+        </ion-toolbar>
     </ion-header>
-  
-    <div id="container">
-      <ion-list>
-        <ng-container *ngIf="playlist$ | async as playlist;">
-        <ion-item-sliding *ngFor="let musique of playlist.musiques;">
-          <ion-item>
-            <ion-label>{{ musique.nom }}</ion-label>
-            <ion-label>{{ musique.idAuteur }}</ion-label>
-          </ion-item>
-          <ion-item-options side="end">
-            <ion-item-option (click)="delete(music)" color="danger">
-              <ion-icon slot="icon-only" name="trash"></ion-icon>
-            </ion-item-option>
-          </ion-item-options>
-        </ion-item-sliding>
-      </ng-container>
-  
-      </ion-list>
-  
-      <ion-button expand="block" (click)="openModal()">Add Musique</ion-button>
-    </div>
-  </ion-content>
+    <ion-content [fullscreen]="true">
+        <ion-header collapse="condense">
+            <ion-toolbar>
+                <ion-title size="large">{{playlist.nom}}</ion-title>
+            </ion-toolbar>
+        </ion-header>
+
+        <ion-button expand="block" (click)="openModal()">Add Musique</ion-button>
+
+        <ion-list>
+            <ion-item-sliding *ngFor="let musique of playlist.musiques;">
+                <ion-item [routerLink]="['music/'+musique.nom]" (click)="playMusique(musique)">
+                    <ion-avatar slot="start">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRspsZ1EU8IH4m29uCG9eQ6UrrdtfwF8uFtN_nzxOPoj-YHbvv9X80_GApgrWKupB0UdL0&usqp=CAU">
+                    </ion-avatar>
+                    <ion-label>
+                        <h2>{{ musique.nom }}</h2>
+                        <p>{{ musique.idAuteur }}</p>
+                    </ion-label>
+                </ion-item>
+                <ion-item-options side="end">
+                    <ion-item-option (click)="delete(musique)" color="danger">
+                        <ion-icon slot="icon-only" name="trash"></ion-icon>
+                    </ion-item-option>
+                </ion-item-options>
+            </ion-item-sliding>
+        </ion-list>
+    </ion-content>
+</ng-container>
