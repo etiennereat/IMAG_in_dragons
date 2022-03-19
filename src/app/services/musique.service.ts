@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Musique } from '../models/Musique';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/storage';
 import { Media, MediaObject } from '@ionic-native/media/ngx';
@@ -15,6 +15,7 @@ export class MusiqueService {
   private storageImageRef;
   private currentMusique : MediaObject;
   public currentMusiqueInfo: Musique;
+  private playIcon = new Subject<string>();
 
   constructor(private afs: AngularFirestore, private media: Media) {
     this.storageMusiqueRef = firebase.storage().ref('musiques');
@@ -22,17 +23,25 @@ export class MusiqueService {
   }
 
 
-  playMusique(musique: Musique) : Boolean{
+  getCurrentplayicon():Subject<string>{
+    return this.playIcon
+  }
+
+   playMusique(musique: Musique) : Boolean{      
       this.currentMusiqueInfo = musique;
       // [START storage_download_full_example]
       // Create a reference to the file we want to download
+      // if(this.currentMusique==null){
+      //   console.log(this.media.MEDIA_RUNNING)
+      //   return true
+      // }
       var starsRef = this.storageMusiqueRef.child(musique.idMusiqueStorage);
-  
       // Get the download URL
       return starsRef.getDownloadURL()
       .then((url) => {
         this.currentMusique = this.media.create(url);
         this.currentMusique.play();
+        this.playIcon.next("pause")
         return true;
       })
       .catch((error) => {
@@ -60,6 +69,7 @@ export class MusiqueService {
 
     pauseMusique(){
       this.currentMusique.pause();
+      this.playIcon.next("play")
     }
     
     stopMusique(){
@@ -71,6 +81,7 @@ export class MusiqueService {
 
     resumeMusique(){
       this.currentMusique.play();
+      this.playIcon.next("pause")
     }
 
     isNull(){
