@@ -36,6 +36,9 @@ export class TabsPage {
           var audioDuration = Math.floor(this.musiqueServ.getDuration());
           var currentPosition = Math.floor(position);
           this.progress = (currentPosition / audioDuration) * 100
+          if(this.progress == 100){
+            this.musiqueServ.playNextMusique();
+          }
         });
       }
     }, 1000 );
@@ -49,7 +52,6 @@ export class TabsPage {
       this.musiqueServ.resumeMusique();
     }
   }
-
   // setSelectedTab() {
   //   this.selected = this.tabs.getSelected();
   // }

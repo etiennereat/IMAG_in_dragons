@@ -14,12 +14,16 @@ export class MusiqueService {
   storageMusiqueRef : firebase.storage.Reference;
   storageImageRef : firebase.storage.Reference;
   private currentMusique : MediaObject;
-  public currentMusiqueInfo: Musique;
+  public indiceCurrentMusiquePlay: number;
   private playIcon = new Subject<string>();
+  private currentMusiqueQueue: Musique[];
+  private state : number; //0 play classique / 1 repet queue / 2 repet track
 
   constructor(private afs: AngularFirestore, private media: Media) {
     this.storageMusiqueRef = firebase.storage().ref('musiques');
     this.storageImageRef = firebase.storage().ref('images');
+    this.currentMusiqueQueue = new Array<Musique>();
+    this.state = 2;
   }
 
 
@@ -34,20 +38,56 @@ export class MusiqueService {
       });
   }
 
-  playMusique(musique: Musique){         
-      // [START storage_download_full_example]
-      // Create a reference to the file we want to download
-      if(this.currentMusique!=null){
-        if(this.currentMusiqueInfo.id == musique.id){
-          //resume current musique
-          this.resumeMusique(); 
-          return;
-        }
-        else{
-          this.stopMusique();
-        }
+  //reset queue by the only musique 
+  playMusique(musique: Musique){     
+    //if same musique do nothing exept resume musique     
+      if(this.indiceCurrentMusiquePlay != null && this.currentMusiqueQueue[this.indiceCurrentMusiquePlay].id == musique.id){
+        //resume current musique
+        this.resumeMusique(); 
       }
-      this.currentMusiqueInfo = musique;
+      //else reset queue by this only one music
+      else{
+        this.indiceCurrentMusiquePlay = 0;
+        this.currentMusiqueQueue = new Array<Musique>();
+        this.currentMusiqueQueue.push(musique)
+        this.startMusique(musique);
+      }      
+    }
+
+
+    addToQueue(musique:Musique){
+      this.currentMusiqueQueue.push(musique);
+    }
+
+    addListToQueue(musiqueList:Musique[]){
+      for (var index = 0; index < musiqueList.length; index++) {
+        this.currentMusiqueQueue.push(musiqueList[index]);
+      }
+    }
+
+    playNextMusique(){
+      switch(this.state){
+        case 0 :
+          if(this.indiceCurrentMusiquePlay + 1 == this.currentMusiqueQueue.length){
+            //do nothing end of the queue
+            this.stopMusique();
+          }
+          else{
+            this.indiceCurrentMusiquePlay = this.indiceCurrentMusiquePlay + 1;
+            this.startMusique(this.currentMusiqueQueue[this.indiceCurrentMusiquePlay])
+          }
+          break;
+        case 1 :
+            this.indiceCurrentMusiquePlay = this.indiceCurrentMusiquePlay + 1 % this.currentMusiqueQueue.length;
+            this.startMusique(this.currentMusiqueQueue[this.indiceCurrentMusiquePlay])
+            break;
+        case 2 :
+            this.startMusique(this.currentMusiqueQueue[this.indiceCurrentMusiquePlay])
+            break;
+        }
+    }
+
+    startMusique(musique:Musique){
       var starsRef = this.storageMusiqueRef.child(musique.idMusiqueStorage);
       // Get the download URL
       starsRef.getDownloadURL()
@@ -74,9 +114,11 @@ export class MusiqueService {
               console.error("Unknown error occurred, inspect the server response")
             break;
         }
-        this.currentMusiqueInfo = null;
+        if(this.state != 2){
+          this.playNextMusique();
+        }
       });
-    } 
+    }
 
     pauseMusique(){
       this.currentMusique.pause();
@@ -86,7 +128,6 @@ export class MusiqueService {
     stopMusique(){
       this.currentMusique.stop();
       this.currentMusique.release();
-      this.currentMusiqueInfo = null;
       this.currentMusique = null;
     }
 
@@ -109,5 +150,9 @@ export class MusiqueService {
       
     getMusique(idMusique: string) :Observable<Musique>{
         return this.afs.doc<Musique>('musique/'+idMusique).valueChanges({idField:'id'});
+    }
+
+    getProgress(): number{
+      return 0
     }
 }

@@ -25,4 +25,8 @@ export class PlayMusicPageComponent implements OnInit {
       this.musiqueServ.resumeMusique();
     }
   }
+  nextMusique(){
+    this.musiqueServ.stopMusique();
+    this.musiqueServ.playNextMusique();
+  }
 }
