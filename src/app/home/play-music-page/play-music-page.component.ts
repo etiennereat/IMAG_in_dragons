@@ -26,7 +26,17 @@ export class PlayMusicPageComponent implements OnInit {
     }
   }
   nextMusique(){
-    this.musiqueServ.stopMusique();
     this.musiqueServ.playNextMusique();
+  }
+
+  previousMusique(){
+    this.musiqueServ.getPosition().then((position) => {
+      if(Math.floor(((position/60/60)*60)*60) < 5){
+        this.musiqueServ.playPreviousMusique();
+      }
+      else{
+        this.musiqueServ.restartCurrentMusique();
+      }
+    });
   }
 }
