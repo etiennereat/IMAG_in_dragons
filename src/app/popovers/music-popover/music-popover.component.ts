@@ -29,23 +29,37 @@ export class MusicPopoverComponent implements OnInit {
     const popover = await this.popoverController.create({
       component: PlaylistPopoverComponent,
       event:ev,
+      componentProps: {
+        music: this.musics
+      },
       translucent: true
     });
     return await popover.present()
   }
 
-  async presentToast(){
+  async dismiss(){
+    this.popoverController.dismiss();
+  }
+
+  async presentToast(text:string){
     const toast = await this.toastController.create({
-      message: "Music added to queue",
+      message: text,
       duration: 2000,
       icon:"checkmark-outline"
     });
+    this.dismiss()
     toast.present();
   }
 
   addToQueue(){
     this.musiqueService.addToQueue(this.musics)
-    this.presentToast()
+    this.dismiss()
+    this.presentToast("Music added to queue")
+  }
+
+  deleteFromPlaylist(){
+    this.presentToast("Music deleted from playlist")
+    this.dismiss()
   }
 
 }
