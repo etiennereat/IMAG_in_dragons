@@ -14,6 +14,7 @@ import { RegisterPageComponent } from './login/register-page/register-page.compo
 import { SigninPageComponent } from './login/signin-page/signin-page.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Media } from '@ionic-native/media/ngx';
+import { MusiqueService } from './services/musique.service';
 
 @NgModule({
   declarations: [AppComponent,SigninOrRegisterPageComponent,RegisterPageComponent,SigninPageComponent],
@@ -26,7 +27,7 @@ import { Media } from '@ionic-native/media/ngx';
     FormsModule,
     ReactiveFormsModule,
   ],
-  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }, Media],
+  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }, Media, MusiqueService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

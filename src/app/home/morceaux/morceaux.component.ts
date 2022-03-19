@@ -11,19 +11,24 @@ import { MusiqueService } from 'src/app/services/musique.service';
   styleUrls: ['./morceaux.component.scss'],
 })
 export class MorceauxComponent implements OnInit {
-
+  
+  musics$: Observable<Musique[]> = EMPTY;
+  
   constructor(private musiqueService:MusiqueService,
     private popoverController:PopoverController) { }
-  musics$: Observable<Musique[]> = EMPTY;
+ 
 
   ngOnInit(): void {
     this.musics$ = this.musiqueService.getAllMusique();
   }
 
   playMusique(musiqueLite: Musique){
-    var musique$ = this.musiqueService.getMusique(musiqueLite.id);
-    musique$.subscribe(res => {
-      this.musiqueService.playMusique(res);
+    var nb = 0
+    this.musiqueService.getMusique(musiqueLite.id).subscribe(res => {
+      if(nb == 0){
+        this.musiqueService.playMusique(res);
+        nb=1
+      }
     })
   }
 

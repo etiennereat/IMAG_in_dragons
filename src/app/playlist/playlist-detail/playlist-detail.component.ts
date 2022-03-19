@@ -45,8 +45,7 @@ export class PlaylistDetailComponent implements OnInit {
   }
 
   playMusique(musiqueLite: Musique){
-    var musique$ = this.musiqueService.getMusique(musiqueLite.id);
-    musique$.subscribe(res => {
+    this.musiqueService.getMusique(musiqueLite.id).subscribe(res => {
       this.musiqueService.playMusique(res);
     })
   }   

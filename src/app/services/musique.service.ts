@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, Reference } from '@angular/fire/compat/firestore';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Musique } from '../models/Musique';
 import { Observable, Subject } from 'rxjs';
 import firebase from 'firebase/compat/app';
@@ -39,7 +39,9 @@ export class MusiqueService {
   }
 
   //reset queue by the only musique 
-  playMusique(musique: Musique){     
+  playMusique(musique: Musique){    
+    console.log(this.indiceCurrentMusiquePlay)
+    console.log(this.currentMusiqueQueue)
     //if same musique do nothing exept resume musique     
       if(this.indiceCurrentMusiquePlay != null && this.currentMusiqueQueue[this.indiceCurrentMusiquePlay].id == musique.id){
         //resume current musique
@@ -57,6 +59,15 @@ export class MusiqueService {
 
     addToQueue(musique:Musique){
       this.currentMusiqueQueue.push(musique);
+      if(this.currentMusique == null){
+        if(this.indiceCurrentMusiquePlay == null){
+          this.playMusique(musique);
+        }
+        else{
+          this.indiceCurrentMusiquePlay = this.indiceCurrentMusiquePlay + 1;
+          this.startMusique(this.currentMusiqueQueue[this.indiceCurrentMusiquePlay])
+        }
+      }
     }
 
     addListToQueue(musiqueList:Musique[]){
@@ -80,7 +91,7 @@ export class MusiqueService {
           break;
         case 1 :
             this.stopMusique();
-            this.indiceCurrentMusiquePlay = this.indiceCurrentMusiquePlay + 1 % this.currentMusiqueQueue.length;
+            this.indiceCurrentMusiquePlay = (this.indiceCurrentMusiquePlay + 1) % this.currentMusiqueQueue.length;
             this.startMusique(this.currentMusiqueQueue[this.indiceCurrentMusiquePlay])
             break;
         case 2 :
@@ -194,7 +205,7 @@ export class MusiqueService {
     }
       
     getMusique(idMusique: string) :Observable<Musique>{
-        return this.afs.doc<Musique>('musique/'+idMusique).valueChanges({idField:'id'});
+      return this.afs.doc<Musique>('musique/'+idMusique).valueChanges({idField:'id'});
     }
 
     getAllMusique():Observable<Musique[]>{ 
