@@ -1,9 +1,7 @@
-import { MorceauxModule } from './morceaux/morceaux.module';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AlbumsComponent } from './albums/albums.component';
 import { HomeComponent } from './home.component';
-import { MorceauxComponent } from './morceaux/morceaux.component';
 
 const routes: Routes = [
   {

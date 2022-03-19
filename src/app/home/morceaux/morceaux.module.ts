@@ -3,10 +3,11 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { MorceauxRoutingModule } from './morceaux-routing.module';
+import { MorceauxComponent } from './morceaux.component';
 
 
 @NgModule({
-  declarations: [],
+  declarations: [MorceauxComponent],
   imports: [
     CommonModule,
     MorceauxRoutingModule,

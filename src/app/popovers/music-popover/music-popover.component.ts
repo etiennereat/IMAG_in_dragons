@@ -1,4 +1,4 @@
-import { PopoverController } from '@ionic/angular';
+import { PopoverController, ToastController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { Musique } from 'src/app/models/Musique';
 import { Component, OnInit, Input } from '@angular/core';
@@ -16,7 +16,10 @@ export class MusicPopoverComponent implements OnInit {
   @Input() musics: Musique;
 
   inPlaylist:boolean
-  constructor(private router:Router,private popoverController:PopoverController,private musiqueService:MusiqueService) { }
+  constructor(private router:Router,
+    private popoverController:PopoverController,
+    private musiqueService:MusiqueService,
+    private toastController: ToastController) { }
 
   ngOnInit() {
     this.inPlaylist = this.router.routerState.snapshot.url.includes("playlist")
@@ -31,8 +34,18 @@ export class MusicPopoverComponent implements OnInit {
     return await popover.present()
   }
 
+  async presentToast(){
+    const toast = await this.toastController.create({
+      message: "Music added to queue",
+      duration: 2000,
+      icon:"checkmark-outline"
+    });
+    toast.present();
+  }
+
   addToQueue(){
     this.musiqueService.addToQueue(this.musics)
+    this.presentToast()
   }
 
 }
