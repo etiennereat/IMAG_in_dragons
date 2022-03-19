@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, UrlSerializer } from '@angular/router';
-import { ModalController } from '@ionic/angular';
+import { ModalController, PopoverController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { CreateMusiqueComponent } from 'src/app/modals/create-musique/create-musique.component';
 import { Playlist } from 'src/app/models/playlist';
@@ -9,6 +9,7 @@ import { PlaylistService } from 'src/app/services/playlist.service';
 import { MusiqueService } from 'src/app/services/musique.service';
 import { Media } from '@ionic-native/media/ngx';
 import { promises } from 'dns';
+import { MusicPopoverComponent } from 'src/app/popovers/music-popover/music-popover.component';
 
 @Component({
   selector: 'app-playlist-detail',
@@ -23,6 +24,7 @@ export class PlaylistDetailComponent implements OnInit {
     private playlistService: PlaylistService,
     private musiqueService: MusiqueService,
     private modalController: ModalController,
+    private popoverController:PopoverController,
     private media : Media) { }
 
   ngOnInit(): void {
@@ -58,6 +60,18 @@ export class PlaylistDetailComponent implements OnInit {
     });
     await modal.present();
     this.playlist$ = this.playlistService.getOne(this.route.snapshot.params.id);
+  }
+
+  async openPopover(ev:any,music:Musique){
+    const popover = await this.popoverController.create({
+      component: MusicPopoverComponent,
+      event:ev,
+      componentProps: {
+        musics: music
+      },
+      translucent: true
+    });
+    return await popover.present()
   }
 
 }

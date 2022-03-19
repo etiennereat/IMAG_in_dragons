@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { CreatePlaylistComponent } from '../modals/create-playlist/create-playlist.component';
 import { Playlist } from '../models/playlist';
