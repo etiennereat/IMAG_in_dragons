@@ -87,7 +87,7 @@ export class SigninPageComponent implements OnInit {
   }
 
   private succesConnect(){
-    this.router.navigate(["/home"]);
+    this.router.navigate([""]);
   }
 
   private failConnect(errorMessage){

@@ -7,18 +7,21 @@ import { MusiqueService } from 'src/app/services/musique.service';
   styleUrls: ['./play-music-page.component.scss'],
 })
 export class PlayMusicPageComponent implements OnInit {
+  playIcon:string;
 
   constructor(private musiqueServ: MusiqueService) { }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.musiqueServ.getCurrentplayicon().subscribe((icon)=>{
+      this.playIcon = icon
+    })
+  }
 
-  playIcon = 'pause';
   playPause() {
+    if(this.musiqueServ.isNull()){return}
     if(this.playIcon == 'pause') {
-      this.playIcon = 'play';
       this.musiqueServ.pauseMusique();
     } else {
-      this.playIcon = 'pause';
       this.musiqueServ.resumeMusique();
     }
   }
