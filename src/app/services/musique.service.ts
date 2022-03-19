@@ -11,32 +11,19 @@ import { Media, MediaObject } from '@ionic-native/media/ngx';
 })
 export class MusiqueService {
   
-  storageMusiqueRef;
-  storageImageRef;
-  currentMusique : MediaObject;
+  private storageMusiqueRef;
+  private storageImageRef;
+  private currentMusique : MediaObject;
+  public currentMusiqueInfo: Musique;
 
   constructor(private afs: AngularFirestore, private media: Media) {
     this.storageMusiqueRef = firebase.storage().ref('musiques');
     this.storageImageRef = firebase.storage().ref('Images');
   }
 
-  isNull(){
-    return this.currentMusique == null;
-  }
 
-  getDuration(){
-    return Math.floor(this.currentMusique.getDuration());
-  }
-
-  getPosition(){
-    return this.currentMusique.getCurrentPosition()
-  }
-    
-  getMusique(idMusique: string) :Observable<Musique>{
-      return this.afs.doc<Musique>('musique/'+idMusique).valueChanges({idField:'id'});
-  }
-
-  playMusique(musique: Musique) : Boolean{      
+  playMusique(musique: Musique) : Boolean{
+      this.currentMusiqueInfo = musique;
       // [START storage_download_full_example]
       // Create a reference to the file we want to download
       var starsRef = this.storageMusiqueRef.child(musique.idMusiqueStorage);
@@ -66,6 +53,7 @@ export class MusiqueService {
               console.error("Unknown error occurred, inspect the server response")
             break;
         }
+        this.currentMusiqueInfo = null;
         return false;
       });
     } 
@@ -77,9 +65,27 @@ export class MusiqueService {
     stopMusique(){
       this.currentMusique.stop();
       this.currentMusique.release();
+      this.currentMusiqueInfo = null;
+      this.currentMusique = null;
     }
 
     resumeMusique(){
       this.currentMusique.play();
+    }
+
+    isNull(){
+      return this.currentMusique == null;
+    }
+  
+    getDuration(){
+      return Math.floor(this.currentMusique.getDuration());
+    }
+  
+    getPosition(){
+      return this.currentMusique.getCurrentPosition()
+    }
+      
+    getMusique(idMusique: string) :Observable<Musique>{
+        return this.afs.doc<Musique>('musique/'+idMusique).valueChanges({idField:'id'});
     }
 }
