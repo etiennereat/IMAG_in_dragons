@@ -197,7 +197,8 @@ export class MusiqueService {
         return this.afs.doc<Musique>('musique/'+idMusique).valueChanges({idField:'id'});
     }
 
-    getProgress(): number{
-      return 0
+    getAllMusique():Observable<Musique[]>{ 
+      return this.afs.collection<Musique>('musique').valueChanges({idField:'id'});
+
     }
 }

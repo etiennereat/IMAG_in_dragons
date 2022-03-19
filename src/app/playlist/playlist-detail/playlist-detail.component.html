@@ -17,22 +17,18 @@
         <ion-button expand="block" (click)="openModal()">Add Musique</ion-button>
 
         <ion-list>
-            <ion-item-sliding *ngFor="let musique of playlist.musiques;">
-                <ion-item [routerLink]="['music/'+musique.nom]" (click)="playMusique(musique)">
+            <ion-item *ngFor="let music of playlist.musiques;">
+                <ion-item class="music" [routerLink]="['music/'+music.nom]" (click)="playMusique(music)">
                     <ion-avatar slot="start">
                         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRspsZ1EU8IH4m29uCG9eQ6UrrdtfwF8uFtN_nzxOPoj-YHbvv9X80_GApgrWKupB0UdL0&usqp=CAU">
                     </ion-avatar>
                     <ion-label>
-                        <h2>{{ musique.nom }}</h2>
-                        <p>{{ musique.idAuteur }}</p>
+                        <h2>{{ music.nom }}</h2>
+                        <p>{{ music.idAuteur }}</p>
                     </ion-label>
                 </ion-item>
-                <ion-item-options side="end">
-                    <ion-item-option (click)="delete(musique)" color="danger">
-                        <ion-icon slot="icon-only" name="trash"></ion-icon>
-                    </ion-item-option>
-                </ion-item-options>
-            </ion-item-sliding>
+                <ion-icon slot="end" name="ellipsis-vertical" (click)="openPopover($event,music)"></ion-icon>
+            </ion-item>
         </ion-list>
     </ion-content>
 </ng-container>
