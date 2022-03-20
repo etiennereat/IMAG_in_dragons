@@ -165,77 +165,49 @@ export class MusiqueService {
         if(musique.idMusiqueStorage == null){
           this.getMusique(musique.id).subscribe(res => {
             this.currentMusiqueQueue[this.indiceCurrentMusiquePlay] = res;
-            var starsRef = this.storageMusiqueRef.child(this.currentMusiqueQueue[this.indiceCurrentMusiquePlay].idMusiqueStorage);
-            // Get the download URL
-            starsRef.getDownloadURL()
-            .then((url) => {
-              this.currentMusiqueQueue[this.indiceCurrentMusiquePlay].urlMusique = url;
-              this.currentMusique = this.media.create(url);
-              this.currentMusique.play();
-              this.updatePlayIcon("pause")
-              this.updateMusiqueInfosubscribable(this.currentMusiqueQueue[this.indiceCurrentMusiquePlay])
-
-            })
-            .catch((error) => {
-              switch (error.code) {
-                case 'storage/object-not-found':
-                    console.error("File doesn't exist")
-                  break;
-                case 'storage/unauthorized':
-                    console.error("User doesn't have permission to access the object");
-                  break;
-                case 'storage/canceled':
-                    console.error("User canceled the upload")
-                  break;
-        
-                // ...
-        
-                case 'storage/unknown':
-                    console.error("Unknown error occurred, inspect the server response")
-                  break;
-              }
-              if(this.state != 2){
-                this.playNextMusique();
-              }
-            });
+            this.launchMusique(this.currentMusiqueQueue[this.indiceCurrentMusiquePlay])
           })
         }
         else{
-          var starsRef = this.storageMusiqueRef.child(musique.idMusiqueStorage);
-          // Get the download URL
-          starsRef.getDownloadURL()
-          .then((url) => {
-            musique.urlMusique = url;
-            this.currentMusique = this.media.create(url);
-            this.currentMusique.play();
-            this.updatePlayIcon("pause")
-            this.updateMusiqueInfosubscribable(musique)
-
-          })
-          .catch((error) => {
-            switch (error.code) {
-              case 'storage/object-not-found':
-                  console.error("File doesn't exist")
-                break;
-              case 'storage/unauthorized':
-                  console.error("User doesn't have permission to access the object");
-                break;
-              case 'storage/canceled':
-                  console.error("User canceled the upload")
-                break;
-      
-              // ...
-      
-              case 'storage/unknown':
-                  console.error("Unknown error occurred, inspect the server response")
-                break;
-            }
-            if(this.state != 2){
-              this.playNextMusique();
-            }
-          });
+          this.launchMusique(musique)
         }
       }
+    }
+
+    launchMusique(musique : Musique){
+      var starsRef = this.storageMusiqueRef.child(musique.idMusiqueStorage);
+      // Get the download URL
+      starsRef.getDownloadURL()
+      .then((url) => {
+        musique.urlMusique = url;
+        this.currentMusique = this.media.create(url);
+        this.currentMusique.play();
+        this.updatePlayIcon("pause")
+        this.updateMusiqueInfosubscribable(musique)
+
+      })
+      .catch((error) => {
+        switch (error.code) {
+          case 'storage/object-not-found':
+              console.error("File doesn't exist")
+            break;
+          case 'storage/unauthorized':
+              console.error("User doesn't have permission to access the object");
+            break;
+          case 'storage/canceled':
+              console.error("User canceled the upload")
+            break;
+  
+          // ...
+  
+          case 'storage/unknown':
+              console.error("Unknown error occurred, inspect the server response")
+            break;
+        }
+        if(this.state != 2){
+          this.playNextMusique();
+        }
+      });
     }
 
     restartCurrentMusique(){
