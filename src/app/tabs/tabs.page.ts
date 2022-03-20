@@ -45,6 +45,10 @@ export class TabsPage {
     }, 1000 );
   }
 
+  goToMusic(){
+    this.router.navigate([this.router.routerState.snapshot.url+'/music/'+this.musique.nom])
+  }
+
   playPause() {
     if(this.musiqueServ.isNull()){return}
     if(this.playIcon == 'pause') {

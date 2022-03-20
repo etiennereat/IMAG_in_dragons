@@ -21,6 +21,8 @@ export class PlayMusicPageComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.audioDuration = "--:--"
+    this.currentTime = "--:--"
     this.musiqueServ.getCurrentplayicon().subscribe((icon)=>{
       this.playIcon = icon
     })

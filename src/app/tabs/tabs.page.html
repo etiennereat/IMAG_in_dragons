@@ -7,15 +7,19 @@
             <div class="progress" [style.width]="progress + '%'"></div>
         </div>
         <ion-row class="ion-no-padding">
-            <ion-col size="2" class="ion-no-padding">
+            <ion-col (click)="goToMusic()" size="2" class="ion-no-padding">
                 <img src="https://store-images.s-microsoft.com/image/apps.33844.9007199266251864.cae5b893-a71b-40d7-abde-a6e8e23675c3.87610d96-f943-498a-89af-cc09d8a5eb7f">
             </ion-col>
-            <ion-col size="8" class="ion-align-self-center">
+            <ion-col (click)="goToMusic()" size="7" class="ion-align-self-center">
                 <b>{{musique.nom}}</b><br>
                 <span>{{musique.idAuteur}}</span>
             </ion-col>
-            <ion-col size="2" class="ion-text-center ion-no-padding ion-align-self-center">
-                <ion-icon (click)="playPause()" [name]="playIcon" size="large"></ion-icon>
+            <ion-col size="3" class="ion-text-center ion-no-padding ion-align-self-center">
+                <ion-buttons>
+                    <ion-icon (click)="playPause()" name="play-back" size="large"></ion-icon>
+                    <ion-icon (click)="playPause()" [name]="playIcon" size="large"></ion-icon>
+                    <ion-icon (click)="playPause()" name="play-forward" size="large"></ion-icon>
+                </ion-buttons>
             </ion-col>
         </ion-row>
     </div>
