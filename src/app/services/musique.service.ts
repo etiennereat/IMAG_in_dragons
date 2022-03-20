@@ -76,8 +76,8 @@ export class MusiqueService {
 
     addToQueue(musique:Musique){
       this.currentMusiqueQueue.push(musique);
-      if(this.currentMusique == null){
-        if(this.indiceCurrentMusiquePlay == null){
+      if(this.currentMusique == null && this.getActualStateOfPlayIcon() != "cloud-download-outline"){
+        if(this.currentMusiqueQueue.length == 1){
           this.playMusique(musique);
         }
         else{
@@ -87,9 +87,16 @@ export class MusiqueService {
       }
     }
 
-    addListToQueue(musiqueList:Musique[]){
+    addPlaylistToQueue(musiqueList:Musique[]){
       for (var index = 0; index < musiqueList.length; index++) {
-        this.currentMusiqueQueue.push(musiqueList[index]);
+        this.addToQueue(musiqueList[index]);
+      }
+    }
+
+    playPlaylist(musiqueList:Musique[]){
+      if(musiqueList.length > 0){
+        this.playMusique(musiqueList[0]);
+        this.addPlaylistToQueue(musiqueList.slice(1))
       }
     }
 
@@ -153,39 +160,81 @@ export class MusiqueService {
 
       }
       else{
-        var starsRef = this.storageMusiqueRef.child(musique.idMusiqueStorage);
-        // Get the download URL
-        starsRef.getDownloadURL()
-        .then((url) => {
-          musique.urlMusique = url;
-          this.currentMusique = this.media.create(url);
-          this.currentMusique.play();
-          this.updatePlayIcon("pause")
-          this.updateMusiqueInfosubscribable(musique)
+        //si les info de la musique sont seulement light
+        this.updatePlayIcon("cloud-download-outline");
+        if(musique.idMusiqueStorage == null){
+          this.getMusique(musique.id).subscribe(res => {
+            this.currentMusiqueQueue[this.indiceCurrentMusiquePlay] = res;
+            var starsRef = this.storageMusiqueRef.child(this.currentMusiqueQueue[this.indiceCurrentMusiquePlay].idMusiqueStorage);
+            // Get the download URL
+            starsRef.getDownloadURL()
+            .then((url) => {
+              this.currentMusiqueQueue[this.indiceCurrentMusiquePlay].urlMusique = url;
+              this.currentMusique = this.media.create(url);
+              this.currentMusique.play();
+              this.updatePlayIcon("pause")
+              this.updateMusiqueInfosubscribable(this.currentMusiqueQueue[this.indiceCurrentMusiquePlay])
 
-        })
-        .catch((error) => {
-          switch (error.code) {
-            case 'storage/object-not-found':
-                console.error("File doesn't exist")
-              break;
-            case 'storage/unauthorized':
-                console.error("User doesn't have permission to access the object");
-              break;
-            case 'storage/canceled':
-                console.error("User canceled the upload")
-              break;
-    
-            // ...
-    
-            case 'storage/unknown':
-                console.error("Unknown error occurred, inspect the server response")
-              break;
-          }
-          if(this.state != 2){
-            this.playNextMusique();
-          }
-        });
+            })
+            .catch((error) => {
+              switch (error.code) {
+                case 'storage/object-not-found':
+                    console.error("File doesn't exist")
+                  break;
+                case 'storage/unauthorized':
+                    console.error("User doesn't have permission to access the object");
+                  break;
+                case 'storage/canceled':
+                    console.error("User canceled the upload")
+                  break;
+        
+                // ...
+        
+                case 'storage/unknown':
+                    console.error("Unknown error occurred, inspect the server response")
+                  break;
+              }
+              if(this.state != 2){
+                this.playNextMusique();
+              }
+            });
+          })
+        }
+        else{
+          var starsRef = this.storageMusiqueRef.child(musique.idMusiqueStorage);
+          // Get the download URL
+          starsRef.getDownloadURL()
+          .then((url) => {
+            musique.urlMusique = url;
+            this.currentMusique = this.media.create(url);
+            this.currentMusique.play();
+            this.updatePlayIcon("pause")
+            this.updateMusiqueInfosubscribable(musique)
+
+          })
+          .catch((error) => {
+            switch (error.code) {
+              case 'storage/object-not-found':
+                  console.error("File doesn't exist")
+                break;
+              case 'storage/unauthorized':
+                  console.error("User doesn't have permission to access the object");
+                break;
+              case 'storage/canceled':
+                  console.error("User canceled the upload")
+                break;
+      
+              // ...
+      
+              case 'storage/unknown':
+                  console.error("Unknown error occurred, inspect the server response")
+                break;
+            }
+            if(this.state != 2){
+              this.playNextMusique();
+            }
+          });
+        }
       }
     }
 

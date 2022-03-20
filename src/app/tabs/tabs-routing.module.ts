@@ -1,4 +1,3 @@
-import { AlbumsComponent } from './../home/albums/albums.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { TabsPage } from './tabs.page';
@@ -17,8 +16,8 @@ const routes: Routes = [
         loadChildren: () => import('../playlist/playlist.module').then(m => m.PlaylistPageModule)
       },
       {
-        path: 'albums',
-        component:AlbumsComponent
+        path: 'tracks',
+        loadChildren: () => import('../home/morceaux/morceaux.module').then(m => m.MorceauxModule)
       },
       {
         path: '',

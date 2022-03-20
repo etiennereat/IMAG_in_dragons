@@ -32,7 +32,6 @@ export class PlaylistDetailComponent implements OnInit {
     this.playlist$.subscribe(res => {
       for (var element of res.musiques) {
           this.musiqueService.getMusiqueUrl(element);
-          console.log(element.urlImage);
         }
     })
   }
@@ -75,7 +74,7 @@ export class PlaylistDetailComponent implements OnInit {
 
   playThisShuffuledPlaylist(){
     this.playlist$.subscribe((playlist)=>{
-      this.musiqueService.addListToQueue(this.shuffle(playlist.musiques))
+      this.musiqueService.playPlaylist(this.shuffle(playlist.musiques))
     })
   }
 
@@ -91,7 +90,7 @@ export class PlaylistDetailComponent implements OnInit {
 
   playThisPlaylist(){
     this.playlist$.subscribe((playlist)=>{
-      this.musiqueService.addListToQueue(playlist.musiques)
+      this.musiqueService.playPlaylist(playlist.musiques)
     })
   }
 

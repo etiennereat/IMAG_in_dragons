@@ -40,7 +40,6 @@ export class SigninPageComponent implements OnInit {
     .catch((error) => {
       const errorCode = error.code;
       const errorMessage = error.message;
-      console.error("["+errorCode+"]"+" "+errorMessage);
     });
   }
 
@@ -54,7 +53,6 @@ export class SigninPageComponent implements OnInit {
       .catch((error) => {
         var errorCode = error.code;
         var errorMessage = error.message;
-        console.log(error)
       });
   }
 
@@ -68,7 +66,6 @@ export class SigninPageComponent implements OnInit {
       .catch((error) => {
         var errorCode = error.code;
         var errorMessage = error.message;
-        console.log(error)
       });
   }
 
@@ -82,7 +79,6 @@ export class SigninPageComponent implements OnInit {
       .catch((error) => {
         var errorCode = error.code;
         var errorMessage = error.message;
-        console.log(error)
       });
   }
 
