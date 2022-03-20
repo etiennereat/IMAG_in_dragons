@@ -40,8 +40,6 @@ export class MusiqueService {
 
   //reset queue by the only musique 
   playMusique(musique: Musique){    
-    console.log(this.indiceCurrentMusiquePlay)
-    console.log(this.currentMusiqueQueue)
     //if same musique do nothing exept resume musique     
       if(this.indiceCurrentMusiquePlay != null && this.currentMusiqueQueue[this.indiceCurrentMusiquePlay].id == musique.id){
         //resume current musique
