@@ -16,6 +16,7 @@ export class MusiqueService {
   private currentMusique : MediaObject;
   public indiceCurrentMusiquePlay: number;
   private playIcon = new Subject<string>();
+  private musiqueInfoSubscibable = new Subject<Musique>();
   private currentMusiqueQueue: Musique[];
   private state : number; //0 play classique / 1 repet queue / 2 repet track
 
@@ -26,24 +27,13 @@ export class MusiqueService {
     this.state = 1;
   }
 
-
-  getCurrentplayicon():Subject<string>{
-    return this.playIcon
-  }
-
-  getMusiqueUrl(musique: Musique){
-      var starsRef = this.storageImageRef.child(musique.idImageStorage);
-      starsRef.getDownloadURL().then(res => {
-          musique.urlImage = res;
-      });
-  }
-
   //reset queue by the only musique 
   playMusique(musique: Musique){    
     //if same musique do nothing exept resume musique     
       if(this.indiceCurrentMusiquePlay != null && this.currentMusiqueQueue[this.indiceCurrentMusiquePlay].id == musique.id){
         //resume current musique
-        this.resumeMusique(); 
+        this.resumeMusique();
+        this.musiqueInfoSubscibable.next(musique)
       }
       //else reset queue by this only one music
       else{
@@ -133,6 +123,7 @@ export class MusiqueService {
         this.currentMusique = this.media.create(musique.urlMusique);
         this.currentMusique.play();
         this.playIcon.next("pause");
+        this.musiqueInfoSubscibable.next(musique)
       }
       else{
         var starsRef = this.storageMusiqueRef.child(musique.idMusiqueStorage);
@@ -143,6 +134,7 @@ export class MusiqueService {
           this.currentMusique = this.media.create(url);
           this.currentMusique.play();
           this.playIcon.next("pause")
+          this.musiqueInfoSubscibable.next(musique)
         })
         .catch((error) => {
           switch (error.code) {
@@ -211,6 +203,38 @@ export class MusiqueService {
 
     getAllMusique():Observable<Musique[]>{ 
       return this.afs.collection<Musique>('musique').valueChanges({idField:'id'});
+    }
+    
+    getCurrentplayicon():Subject<string>{
+      return this.playIcon
+    }
+  
+    getMusiqueUrl(musique: Musique){
+        var starsRef = this.storageImageRef.child(musique.idImageStorage);
+        starsRef.getDownloadURL().then(res => {
+            musique.urlImage = res;
+        });
+    }
+
+    getCurrentPlayMusique(): Subject<Musique>{
+      console.log(this.musiqueInfoSubscibable)
+      return this.musiqueInfoSubscibable;
+    }
+    
+    addMusiqueToFirestore(musique :Musique, pathMusique:string, pathImage?:string){
+      //I)need to load the musique file 
+
+      //II)need to get Date + load metadata to complete musique (to do this great exemple -> https://codepen.io/codefoxx/pen/OJmGrzG)
+
+      //III)if presente load Image or set default image 
+
+      //IV)upload musique file in storage
+
+      //V)if presente upload image file in storage
+
+      //VI)Add auteur document to firestore 
+
+      //VII)Add musique document to firestore 
 
     }
 }
