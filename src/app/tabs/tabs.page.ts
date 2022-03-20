@@ -21,7 +21,8 @@ export class TabsPage {
 
 
   constructor(private musiqueServ: MusiqueService,public auth: AngularFireAuth, private router:Router) {
-    this.musique = new Musique("loading", "loading", "loading", "loading")
+    this.musique = musiqueServ.getActualMusiqueInfosubscribable()
+    this.playIcon = musiqueServ.getActualStateOfPlayIcon();
   }
 
   ngOnInit() {

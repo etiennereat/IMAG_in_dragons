@@ -15,12 +15,16 @@ export class MusiqueService {
   storageImageRef : firebase.storage.Reference;
   private currentMusique : MediaObject;
   public indiceCurrentMusiquePlay: number;
+  
   private playIcon = new Subject<string>();
   private actualStateOfPlayIcon : string;
+
+  private musiqueInfosubscribable = new Subject<Musique>();
+  private actualMusiqueInfosubscribable : Musique;
+
   private musicTimeDuration = new Subject<number>();
   private musicProgress = new Subject<number>();
   private musicCurrrentTime = new Subject<number>();
-  private musiqueInfoSubscibable = new Subject<Musique>();
   private currentMusiqueQueue: Musique[];
   private state : number; //0 play classique / 1 repet queue / 2 repet track
   private progress:number;
@@ -30,7 +34,8 @@ export class MusiqueService {
     this.storageImageRef = firebase.storage().ref('images');
     this.currentMusiqueQueue = new Array<Musique>();
     this.state = 1;
-    this.updatePlaIcon("play")
+    this.actualMusiqueInfosubscribable = new Musique("Loading","Loading","Loading","Loading")
+    this.updatePlayIcon("play")
     setInterval(() => {
       if(!this.isNull()){
         this.getPosition().then((position) => {
@@ -54,7 +59,7 @@ export class MusiqueService {
       if(this.indiceCurrentMusiquePlay != null && this.currentMusiqueQueue[this.indiceCurrentMusiquePlay].id == musique.id){
         //resume current musique
         this.resumeMusique();
-        this.musiqueInfoSubscibable.next(musique)
+        this.updateMusiqueInfosubscribable(musique)
       }
       //else reset queue by this only one music
       else{
@@ -143,8 +148,9 @@ export class MusiqueService {
       if(musique.urlMusique != null){
         this.currentMusique = this.media.create(musique.urlMusique);
         this.currentMusique.play();
-        this.updatePlaIcon("pause")
-        this.musiqueInfoSubscibable.next(musique)
+        this.updatePlayIcon("pause")
+        this.updateMusiqueInfosubscribable(musique)
+
       }
       else{
         var starsRef = this.storageMusiqueRef.child(musique.idMusiqueStorage);
@@ -154,8 +160,9 @@ export class MusiqueService {
           musique.urlMusique = url;
           this.currentMusique = this.media.create(url);
           this.currentMusique.play();
-          this.updatePlaIcon("pause")
-          this.musiqueInfoSubscibable.next(musique)
+          this.updatePlayIcon("pause")
+          this.updateMusiqueInfosubscribable(musique)
+
         })
         .catch((error) => {
           switch (error.code) {
@@ -192,19 +199,19 @@ export class MusiqueService {
 
     pauseMusique(){
       this.currentMusique.pause();
-      this.updatePlaIcon("play")
+      this.updatePlayIcon("play")
     }
     
     stopMusique(){
       this.currentMusique.stop();
       this.currentMusique.release();
-      this.updatePlaIcon("play")
+      this.updatePlayIcon("play")
       this.currentMusique = null;
     }
 
     resumeMusique(){
       this.currentMusique.play();
-      this.updatePlaIcon("pause")
+      this.updatePlayIcon("pause")
     }
 
     isNull(){
@@ -260,14 +267,22 @@ export class MusiqueService {
     }
 
     getCurrentPlayMusique(): Subject<Musique>{
-      console.log(this.musiqueInfoSubscibable)
-      return this.musiqueInfoSubscibable;
+      return this.musiqueInfosubscribable;
+    }
+
+    getActualMusiqueInfosubscribable() : Musique {
+        return this.actualMusiqueInfosubscribable;
     }
     
 
-    private updatePlaIcon(state : string){
+    private updatePlayIcon(state : string){
       this.playIcon.next(state);
       this.actualStateOfPlayIcon = state;
+    }
+
+    private updateMusiqueInfosubscribable(musique : Musique){
+      this.musiqueInfosubscribable.next(musique)
+      this.actualMusiqueInfosubscribable = musique;
     }
     
     addMusiqueToFirestore(musique :Musique, pathMusique:string, pathImage?:string){

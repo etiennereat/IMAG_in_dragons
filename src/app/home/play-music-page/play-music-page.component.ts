@@ -17,7 +17,7 @@ export class PlayMusicPageComponent implements OnInit {
 
   constructor(private musiqueServ: MusiqueService) {
     //set musique 
-    this.musique = new Musique("loading", "loading", "loading", "loading")
+    this.musique = musiqueServ.getActualMusiqueInfosubscribable();
     this.playIcon = musiqueServ.getActualStateOfPlayIcon();
   }
 
