@@ -22,9 +22,9 @@
             <ion-card-subtitle>Artiste</ion-card-subtitle>
         </ion-card-header>
         <ion-card-content class="content">
-            <ion-range class="range" min="0" max="100" value="0" color="light">
-                <ion-label slot="start">0:00</ion-label>
-                <ion-label slot="end">2:00</ion-label>
+            <ion-range class="range" min="0" max="100" [value]="progress">
+                <ion-label slot="start">{{currentTime}}</ion-label>
+                <ion-label slot="end">{{audioDuration}}</ion-label>
             </ion-range>
             <ion-button (click)="previousMusique()" shape="round" color="light">
                 <ion-icon slot="icon-only" name="play-back-outline"></ion-icon>

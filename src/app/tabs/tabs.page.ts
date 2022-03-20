@@ -20,9 +20,6 @@ export class TabsPage {
   constructor(private musiqueServ: MusiqueService,public auth: AngularFireAuth, private router:Router) {}
 
   ngOnInit() {
-    this.musiqueServ.getCurrentplayicon().subscribe((icon)=>{
-      this.playIcon = icon
-    })
     this.auth.currentUser.then((user) => {
       if(!user){
         this.router.navigate(['login-or-register'])
@@ -31,17 +28,13 @@ export class TabsPage {
     setInterval(() => {
       this.isOnMusicPage = this.router.routerState.snapshot.url.includes("music")
       this.isMusicNull = this.musiqueServ.isNull()
-      if(!this.musiqueServ.isNull()){
-        this.musiqueServ.getPosition().then((position) => {
-          var audioDuration = Math.floor(this.musiqueServ.getDuration());
-          var currentPosition = Math.floor(position);
-          this.progress = (currentPosition / audioDuration) * 100
-          if(this.progress == 100){
-            this.musiqueServ.playNextMusique();
-          }
-        });
-      }
     }, 1000 );
+    this.musiqueServ.getCurrentplayicon().subscribe((icon)=>{
+      this.playIcon = icon
+    })
+    this.musiqueServ.getCurrentmsucProgress().subscribe((progress)=>{
+      this.progress = progress
+    })
   }
 
   playPause() {

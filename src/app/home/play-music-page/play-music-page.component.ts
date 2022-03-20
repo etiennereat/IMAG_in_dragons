@@ -8,6 +8,9 @@ import { MusiqueService } from 'src/app/services/musique.service';
 })
 export class PlayMusicPageComponent implements OnInit {
   playIcon:string;
+  progress:number;
+  audioDuration:string;
+  currentTime:string;
 
   constructor(private musiqueServ: MusiqueService) { }
 
@@ -15,6 +18,25 @@ export class PlayMusicPageComponent implements OnInit {
     this.musiqueServ.getCurrentplayicon().subscribe((icon)=>{
       this.playIcon = icon
     })
+    this.musiqueServ.getCurrentmusicCurrentTime().subscribe((position)=>{
+      this.currentTime = this.sToTime(position)
+    })
+    this.musiqueServ.getCurrentmusicTimeDuration().subscribe((duration)=>{
+      this.audioDuration = this.sToTime(duration)
+    })
+    this.musiqueServ.getCurrentmsucProgress().subscribe((progress)=>{
+      this.progress = progress
+    })
+  }
+
+  sToTime(duration:number){
+    var minutes = Math.floor(duration/60)
+    var seconds = Math.floor(duration-(minutes*60))
+    const fomarttedTime = [
+      minutes.toString().padStart(2,"0"),
+      seconds.toString().padStart(2,"0")
+    ].join(":");
+    return fomarttedTime;
   }
 
   playPause() {
