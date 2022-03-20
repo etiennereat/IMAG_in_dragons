@@ -12,24 +12,26 @@
             <ion-title size="large">Home</ion-title>
         </ion-toolbar>
     </ion-header>
-    <ion-item detail class="item" [routerLink]="['playlist']">
-        <ion-label>
-            Playlists
-        </ion-label>
-    </ion-item>
-    <ion-item detail class="item">
-        <ion-label>
-            Artists
-        </ion-label>
-    </ion-item>
-    <ion-item detail class="item" [routerLink]="['albums']">
-        <ion-label>
-            Albums
-        </ion-label>
-    </ion-item>
-    <ion-item detail class="item" [routerLink]="['tracks']">
-        <ion-label>
-            Tracks
-        </ion-label>
-    </ion-item>
+    <ion-list>
+        <ion-item detail class="item" [routerLink]="['playlist']">
+            <ion-label>
+                Playlists
+            </ion-label>
+        </ion-item>
+        <ion-item detail class="item">
+            <ion-label>
+                Artists
+            </ion-label>
+        </ion-item>
+        <ion-item detail class="item" [routerLink]="['albums']">
+            <ion-label>
+                Albums
+            </ion-label>
+        </ion-item>
+        <ion-item detail class="item" [routerLink]="['tracks']">
+            <ion-label>
+                Tracks
+            </ion-label>
+        </ion-item>
+    </ion-list>
 </ion-content>

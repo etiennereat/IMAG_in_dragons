@@ -20,8 +20,8 @@
     </ion-header>
 
     <ion-list>
-        <ion-item-sliding *ngFor="let playlist of playlists$ | async;">
-            <ion-item [routerLink]="[playlist?.id]" routerLinkActive="true">
+        <ion-item-sliding detail="false" *ngFor="let playlist of playlists$ | async;">
+            <ion-item detail="false" [routerLink]="[playlist?.id]" routerLinkActive="true">
                 <ion-label>{{ playlist.nom }}</ion-label>
             </ion-item>
             <ion-item-options side="end">

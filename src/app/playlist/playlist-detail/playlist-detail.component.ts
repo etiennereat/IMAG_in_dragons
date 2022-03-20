@@ -73,4 +73,26 @@ export class PlaylistDetailComponent implements OnInit {
     return await popover.present()
   }
 
+  playThisShuffuledPlaylist(){
+    this.playlist$.subscribe((playlist)=>{
+      this.musiqueService.addListToQueue(this.shuffle(playlist.musiques))
+    })
+  }
+
+  shuffle(list) {
+    let currentIndex = list.length,randomIndex;
+    while (currentIndex != 0) {
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex--;
+      [list[currentIndex], list[randomIndex]] = [list[randomIndex], list[currentIndex]];
+    }
+    return list;
+  }
+
+  playThisPlaylist(){
+    this.playlist$.subscribe((playlist)=>{
+      this.musiqueService.addListToQueue(playlist.musiques)
+    })
+  }
+
 }

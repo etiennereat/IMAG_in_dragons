@@ -1,3 +1,22 @@
 .music {
     width: 100%;
 }
+
+.leftbuttons {
+    width: 47.5%;
+    margin-left: 1.25%;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+.rightbuttons {
+    width: 47.5%;
+    margin-left: 2.5%;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+.section {
+    width: 100%;
+    background-color: var(--ion-toolbar-background);
+}
