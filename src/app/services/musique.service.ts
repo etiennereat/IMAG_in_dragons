@@ -19,6 +19,7 @@ export class MusiqueService {
   private musicTimeDuration = new Subject<number>();
   private musicProgress = new Subject<number>();
   private musicCurrrentTime = new Subject<number>();
+  private musiqueInfoSubscibable = new Subject<Musique>();
   private currentMusiqueQueue: Musique[];
   private state : number; //0 play classique / 1 repet queue / 2 repet track
   private progress:number;
@@ -45,45 +46,19 @@ export class MusiqueService {
     }, 500 );
   }
 
-
-  getCurrentplayicon():Subject<string>{
-    return this.playIcon
-  }
-
-  getCurrentmusicTimeDuration():Subject<number>{
-    return this.musicTimeDuration
-  }
-
-  getCurrentmusicCurrentTime():Subject<number>{
-    return this.musicCurrrentTime
-  }
-
-  getCurrentmsucProgress():Subject<number>{
-    return this.musicProgress
-  }
-
-  getMusiqueUrl(musique: Musique){
-      var starsRef = this.storageImageRef.child(musique.idImageStorage);
-      starsRef.getDownloadURL().then(res => {
-          musique.urlImage = res;
-      });
-  }
-
-  seekTo(time:number){
-    this.currentMusique.seekTo(time);
-  }
-
   //reset queue by the only musique 
   playMusique(musique: Musique){    
-    console.log(this.indiceCurrentMusiquePlay)
-    console.log(this.currentMusiqueQueue)
     //if same musique do nothing exept resume musique     
       if(this.indiceCurrentMusiquePlay != null && this.currentMusiqueQueue[this.indiceCurrentMusiquePlay].id == musique.id){
         //resume current musique
-        this.resumeMusique(); 
+        this.resumeMusique();
+        this.musiqueInfoSubscibable.next(musique)
       }
       //else reset queue by this only one music
       else{
+        if(this.currentMusique !=null){
+          this.stopMusique();
+        }
         this.indiceCurrentMusiquePlay = 0;
         this.currentMusiqueQueue = new Array<Musique>();
         this.currentMusiqueQueue.push(musique)
@@ -167,6 +142,7 @@ export class MusiqueService {
         this.currentMusique = this.media.create(musique.urlMusique);
         this.currentMusique.play();
         this.playIcon.next("pause");
+        this.musiqueInfoSubscibable.next(musique)
       }
       else{
         var starsRef = this.storageMusiqueRef.child(musique.idMusiqueStorage);
@@ -177,6 +153,7 @@ export class MusiqueService {
           this.currentMusique = this.media.create(url);
           this.currentMusique.play();
           this.playIcon.next("pause")
+          this.musiqueInfoSubscibable.next(musique)
         })
         .catch((error) => {
           switch (error.code) {
@@ -238,6 +215,22 @@ export class MusiqueService {
     getPosition(){
       return this.currentMusique.getCurrentPosition()
     }
+  
+    getCurrentmusicTimeDuration():Subject<number>{
+    return this.musicTimeDuration
+    }
+
+    getCurrentmusicCurrentTime():Subject<number>{
+      return this.musicCurrrentTime
+    }
+
+    getCurrentmsucProgress():Subject<number>{
+      return this.musicProgress
+    }
+  
+    seekTo(time:number){
+      this.currentMusique.seekTo(time);
+    }
       
     getMusique(idMusique: string) :Observable<Musique>{
       return this.afs.doc<Musique>('musique/'+idMusique).valueChanges({idField:'id'});
@@ -245,6 +238,38 @@ export class MusiqueService {
 
     getAllMusique():Observable<Musique[]>{ 
       return this.afs.collection<Musique>('musique').valueChanges({idField:'id'});
+    }
+    
+    getCurrentplayicon():Subject<string>{
+      return this.playIcon
+    }
+  
+    getMusiqueUrl(musique: Musique){
+        var starsRef = this.storageImageRef.child(musique.idImageStorage);
+        starsRef.getDownloadURL().then(res => {
+            musique.urlImage = res;
+        });
+    }
+
+    getCurrentPlayMusique(): Subject<Musique>{
+      console.log(this.musiqueInfoSubscibable)
+      return this.musiqueInfoSubscibable;
+    }
+    
+    addMusiqueToFirestore(musique :Musique, pathMusique:string, pathImage?:string){
+      //I)need to load the musique file 
+
+      //II)need to get Date + load metadata to complete musique (to do this great exemple -> https://codepen.io/codefoxx/pen/OJmGrzG)
+
+      //III)if presente load Image or set default image 
+
+      //IV)upload musique file in storage
+
+      //V)if presente upload image file in storage
+
+      //VI)Add auteur document to firestore 
+
+      //VII)Add musique document to firestore 
 
     }
 }

@@ -1,4 +1,5 @@
-import { Component, ComponentFactoryResolver, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Musique } from 'src/app/models/Musique';
 import { MusiqueService } from 'src/app/services/musique.service';
 
 @Component({
@@ -12,8 +13,12 @@ export class PlayMusicPageComponent implements OnInit {
   audioDuration:string;
   currentTime:string;
   audioDurationInS: number;
+  musique: Musique;
 
-  constructor(private musiqueServ: MusiqueService) { }
+  constructor(private musiqueServ: MusiqueService) {
+    //set musique 
+    this.musique = new Musique("loading", "loading", "loading", "loading")
+  }
 
   ngOnInit() {
     this.musiqueServ.getCurrentplayicon().subscribe((icon)=>{
@@ -28,6 +33,9 @@ export class PlayMusicPageComponent implements OnInit {
     })
     this.musiqueServ.getCurrentmsucProgress().subscribe((progress)=>{
       this.progress = progress
+    })
+    this.musiqueServ.getCurrentPlayMusique().subscribe((musique)=>{
+      this.musique = musique
     })
   }
 
@@ -60,6 +68,7 @@ export class PlayMusicPageComponent implements OnInit {
 
   previousMusique(){
     this.musiqueServ.getPosition().then((position) => {
+      //si la musique tourne depuis moins de 5 sec on passe a celle d'avant sinon on la recommence 
       if(Math.floor(((position/60/60)*60)*60) < 5){
         this.musiqueServ.playPreviousMusique();
       }
