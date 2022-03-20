@@ -29,8 +29,10 @@ export class TabsPage {
       this.playIcon = icon
     })
     this.musiqueServ.getCurrentPlayMusique().subscribe((musique)=>{
-      console.log(musique)
       this.musique = musique
+    })
+    this.musiqueServ.getCurrentmsucProgress().subscribe((progress)=>{
+      this.progress = progress
     })
     this.auth.currentUser.then((user) => {
       if(!user){
@@ -40,16 +42,6 @@ export class TabsPage {
     setInterval(() => {
       this.isOnMusicPage = this.router.routerState.snapshot.url.includes("music")
       this.isMusicNull = this.musiqueServ.isNull()
-      if(!this.musiqueServ.isNull()){
-        this.musiqueServ.getPosition().then((position) => {
-          var audioDuration = Math.floor(this.musiqueServ.getDuration());
-          var currentPosition = Math.floor(position);
-          this.progress = (currentPosition / audioDuration) * 100
-          if(this.progress == 100){
-            this.musiqueServ.playNextMusique();
-          }
-        });
-      }
     }, 1000 );
   }
 

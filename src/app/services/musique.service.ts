@@ -16,15 +16,34 @@ export class MusiqueService {
   private currentMusique : MediaObject;
   public indiceCurrentMusiquePlay: number;
   private playIcon = new Subject<string>();
+  private musicTimeDuration = new Subject<number>();
+  private musicProgress = new Subject<number>();
+  private musicCurrrentTime = new Subject<number>();
   private musiqueInfoSubscibable = new Subject<Musique>();
   private currentMusiqueQueue: Musique[];
   private state : number; //0 play classique / 1 repet queue / 2 repet track
+  private progress:number;
 
   constructor(private afs: AngularFirestore, private media: Media) {
     this.storageMusiqueRef = firebase.storage().ref('musiques');
     this.storageImageRef = firebase.storage().ref('images');
     this.currentMusiqueQueue = new Array<Musique>();
     this.state = 1;
+    setInterval(() => {
+      if(!this.isNull()){
+        this.getPosition().then((position) => {
+          var audioDuration = Math.floor(this.getDuration());
+          this.musicTimeDuration.next(audioDuration)
+          var currentPosition = Math.floor(position);
+          this.musicCurrrentTime.next(currentPosition)
+          this.progress = (currentPosition / audioDuration) * 100
+          this.musicProgress.next(this.progress)
+          if(this.progress == 100){
+            this.playNextMusique();
+          }
+        });
+      }
+    }, 500 );
   }
 
   //reset queue by the only musique 
@@ -195,6 +214,22 @@ export class MusiqueService {
   
     getPosition(){
       return this.currentMusique.getCurrentPosition()
+    }
+  
+    getCurrentmusicTimeDuration():Subject<number>{
+    return this.musicTimeDuration
+    }
+
+    getCurrentmusicCurrentTime():Subject<number>{
+      return this.musicCurrrentTime
+    }
+
+    getCurrentmsucProgress():Subject<number>{
+      return this.musicProgress
+    }
+  
+    seekTo(time:number){
+      this.currentMusique.seekTo(time);
     }
       
     getMusique(idMusique: string) :Observable<Musique>{
