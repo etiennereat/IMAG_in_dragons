@@ -42,7 +42,7 @@ export class MusiqueService {
           }
         });
       }
-    }, 1000 );
+    }, 500 );
   }
 
 
@@ -67,6 +67,10 @@ export class MusiqueService {
       starsRef.getDownloadURL().then(res => {
           musique.urlImage = res;
       });
+  }
+
+  seekTo(time:number){
+    this.currentMusique.seekTo(time);
   }
 
   //reset queue by the only musique 

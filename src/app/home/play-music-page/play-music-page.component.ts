@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ComponentFactoryResolver, OnInit } from '@angular/core';
 import { MusiqueService } from 'src/app/services/musique.service';
 
 @Component({
@@ -11,6 +11,7 @@ export class PlayMusicPageComponent implements OnInit {
   progress:number;
   audioDuration:string;
   currentTime:string;
+  audioDurationInS: number;
 
   constructor(private musiqueServ: MusiqueService) { }
 
@@ -22,11 +23,17 @@ export class PlayMusicPageComponent implements OnInit {
       this.currentTime = this.sToTime(position)
     })
     this.musiqueServ.getCurrentmusicTimeDuration().subscribe((duration)=>{
+      this.audioDurationInS = duration
       this.audioDuration = this.sToTime(duration)
     })
     this.musiqueServ.getCurrentmsucProgress().subscribe((progress)=>{
       this.progress = progress
     })
+  }
+
+  seekTo(value:number){
+    var currentPosition = value*(this.audioDurationInS/100)
+    this.musiqueServ.seekTo(currentPosition*1000)
   }
 
   sToTime(duration:number){
