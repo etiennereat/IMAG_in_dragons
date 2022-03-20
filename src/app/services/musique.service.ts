@@ -49,6 +49,9 @@ export class MusiqueService {
       }
       //else reset queue by this only one music
       else{
+        if(this.currentMusique !=null){
+          this.stopMusique();
+        }
         this.indiceCurrentMusiquePlay = 0;
         this.currentMusiqueQueue = new Array<Musique>();
         this.currentMusiqueQueue.push(musique)
