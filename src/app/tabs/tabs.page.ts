@@ -3,6 +3,7 @@ import { Component, ViewChild } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { IonTabs } from '@ionic/angular';
 import { MusiqueService } from '../services/musique.service';
+import { Musique } from '../models/Musique';
 
 @Component({
   selector: 'app-tabs',
@@ -16,12 +17,20 @@ export class TabsPage {
   isMusicNull:boolean  
   isOnMusicPage: boolean;
   playIcon:string;
+  musique: Musique;
 
-  constructor(private musiqueServ: MusiqueService,public auth: AngularFireAuth, private router:Router) {}
+
+  constructor(private musiqueServ: MusiqueService,public auth: AngularFireAuth, private router:Router) {
+    this.musique = new Musique("loading", "loading", "loading", "loading")
+  }
 
   ngOnInit() {
     this.musiqueServ.getCurrentplayicon().subscribe((icon)=>{
       this.playIcon = icon
+    })
+    this.musiqueServ.getCurrentPlayMusique().subscribe((musique)=>{
+      console.log(musique)
+      this.musique = musique
     })
     this.auth.currentUser.then((user) => {
       if(!user){
