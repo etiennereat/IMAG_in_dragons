@@ -18,6 +18,7 @@ export class PlayMusicPageComponent implements OnInit {
   constructor(private musiqueServ: MusiqueService) {
     //set musique 
     this.musique = new Musique("loading", "loading", "loading", "loading")
+    this.playIcon = musiqueServ.getActualStateOfPlayIcon();
   }
 
   ngOnInit() {
