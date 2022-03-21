@@ -4,6 +4,7 @@ import { CreatePlaylistComponent } from '../modals/create-playlist/create-playli
 import { Playlist } from '../models/playlist';
 import { PlaylistService } from '../services/playlist.service';
 import { EMPTY, Observable } from 'rxjs';
+import { OptionModalComponent } from '../modals/option-modal/option-modal.component';
 
 @Component({
   selector: 'app-playlist',
@@ -28,10 +29,22 @@ export class PlaylistPage implements OnInit {
 
   async openModal() {
     const modal = await this.modalController.create({
-      component: CreatePlaylistComponent
+      component: CreatePlaylistComponent,
+      initialBreakpoint:0.4
     });
     await modal.present();
     // this.playlists = this.playlistService.getAll();
+  }
+
+  async openOptionModal(playlist:Playlist){
+    const modal = await this.modalController.create({
+      component: OptionModalComponent,
+      initialBreakpoint:0.6,
+      componentProps:{
+        playlists:playlist
+      }
+    });
+    await modal.present();
   }
 
 }

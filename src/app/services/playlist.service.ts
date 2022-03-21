@@ -64,6 +64,20 @@ export class PlaylistService {
     });
   }
 
+  sharePlaylistReadOnly(id:string,email:string){
+    // Create a reference to the SF doc.
+    var canReadDocRef = this.fs.collection("playlist").doc(id);
+    // Atomically add a new region to the "regions" array field.
+    canReadDocRef.update({canRead: firebase.firestore.FieldValue.arrayUnion(email)});
+  }
+
+  sharePlaylistReadAndWrite(id:string,email:string){
+    // Create a reference to the SF doc.
+    var canReadDocRef = this.fs.collection("playlist").doc(id);
+    // Atomically add a new region to the "regions" array field.
+    canReadDocRef.update({canWrite: firebase.firestore.FieldValue.arrayUnion(email)});
+  }
+
   addMusic(playlistId: string, music: Musique) {
     var user = firebase.auth().currentUser
     if(user == null){

@@ -1,0 +1,30 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-title>Share this playlist</ion-title>
+        <ion-buttons slot="end">
+            <ion-button (click)="dismiss()">Close</ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+<ion-content>
+    <ion-item>
+        <ion-label position="floating">Email</ion-label>
+        <ion-input [formControl]="playlistForm" type="text"></ion-input>
+    </ion-item>
+    <ion-list>
+        <ion-radio-group>
+            <ion-list-header>
+                <ion-label>Share mode</ion-label>
+            </ion-list-header>
+            <ion-item>
+                <ion-label>Read Only</ion-label>
+                <ion-radio slot="start" [(ngModel)]="ReadOnly" (click)="ReadOnly = !ReadOnly" checked="true" color="light"></ion-radio>
+            </ion-item>
+            <ion-item>
+                <ion-label>Read and Write</ion-label>
+                <ion-radio slot="start" [(ngModel)]="!ReadOnly" (click)="ReadOnly = !ReadOnly" color="light"></ion-radio>
+            </ion-item>
+        </ion-radio-group>
+    </ion-list>
+    <ion-button [disabled]="playlistForm.invalid" expand="block" (click)="sharePlaylist()">Validate</ion-button>
+</ion-content>

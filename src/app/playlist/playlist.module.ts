@@ -1,3 +1,4 @@
+import { OptionModalComponent } from './../modals/option-modal/option-modal.component';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
@@ -16,6 +17,6 @@ import { CreatePlaylistComponent } from '../modals/create-playlist/create-playli
     IonicModule,
     PlaylistPageRoutingModule
   ],
-  declarations: [PlaylistPage, CreatePlaylistComponent]
+  declarations: [PlaylistPage, CreatePlaylistComponent,OptionModalComponent]
 })
 export class PlaylistPageModule { }
