@@ -27,6 +27,7 @@ export class PlaylistPopoverComponent implements OnInit {
 
   addToPlaylist(playlist:Playlist){
     this.dismiss()
+    this.playlistService.addMusic(playlist.id,this.music)
     this.presentToast("Music added to playlist")
   }
 

@@ -1,9 +1,10 @@
+import firebase from "firebase/compat/app";
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { combineLatest, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Playlist } from '../models/playlist';
 import { Musique } from '../models/Musique';
-import { flatMap, map, switchMap, tap } from 'rxjs/operators'
+import { map, switchMap } from 'rxjs/operators'
 import { MusiqueService } from './musique.service';
 
 @Injectable({
@@ -36,25 +37,56 @@ export class PlaylistService {
     return playlistTmp;
   }
 
-  addPlaylist(playlist: Playlist) {
-    this.playlists = this.playlists.concat(playlist);
+  addPlaylist(name:string,image?:string) {
+    var user = firebase.auth().currentUser
+    if(user == null){
+      console.error("[ERROR] User non identifié")
+    }
+    else{
+      // Add a new document in collection "playlist"
+      this.fs.collection("playlist").doc(name).set({
+        nom: name,
+        idUserCreateur:user.email,
+        canWrite:[],
+        canRead:[],
+        idImageStorage: image == undefined ? "imagePlaylistDemo.jpeg" : image
+      })
+      .catch((error) => {
+        console.error("Error writing document: ", error);
+      });
+    }
   }
 
-  removePlaylist(playlist: Playlist) {
-    this.playlists = this.playlists.filter(p => p.id !== playlist.id);
+  removePlaylist(id: string) {
+    this.fs.collection("playlist").doc(id).delete()
+    .catch((error) => {
+      console.error("Error removing document: ", error);
+    });
   }
 
   addMusic(playlistId: string, music: Musique) {
-    /*const playlistIndex = this.playlists.findIndex(p => p.id === playlistId);
-    if (this.playlists[playlistIndex]) {
-      this.playlists[playlistIndex].musics = this.playlists[playlistIndex].musics.concat(music);
-    }*/
+    var user = firebase.auth().currentUser
+    if(user == null){
+      console.error("[ERROR] User non identifié")
+    }
+    else{
+      // Add a new document in collection "playlist"
+      this.fs.collection("playlist").doc(playlistId).collection('musiques').doc(music.id).set({
+        nom: music.nom,
+        idAuteur:music.idAuteur,
+        idImageStorage:music.idImageStorage,
+        refMusique:"/musiques/"+music.idMusiqueStorage.replace(".mp3","")
+      })
+      .catch((error) => {
+        console.error("Error writing document: ", error);
+      });
+    }
   }
 
   removeMusique(playlistId: string, music: Musique) {
-    /*const playlistIndex = this.playlists.findIndex(p => p.id === playlistId);
-    if (this.playlists[playlistIndex]) {
-      this.playlists[playlistIndex].musics = this.playlists[playlistIndex].musics.filter(t => t.id !== todo.id);
-    }*/
+    this.fs.collection("playlist").doc(playlistId).collection('musiques').doc(music.id).delete()
+    .catch((error) => {
+      console.error("Error removing document: ", error);
+    });
   }
 }

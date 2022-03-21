@@ -60,12 +60,13 @@ export class PlaylistDetailComponent implements OnInit {
     this.playlist$ = this.playlistService.getOne(this.route.snapshot.params.id);
   }
 
-  async openPopover(ev:any,music:Musique){
+  async openPopover(ev:any,music:Musique,playlist:Playlist){
     const popover = await this.popoverController.create({
       component: MusicPopoverComponent,
       event:ev,
       componentProps: {
-        musics: music
+        musics: music,
+        playlists: playlist
       },
       translucent: true
     });

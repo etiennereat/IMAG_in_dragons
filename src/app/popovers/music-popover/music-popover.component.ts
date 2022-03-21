@@ -1,9 +1,11 @@
+import { PlaylistService } from 'src/app/services/playlist.service';
 import { PopoverController, ToastController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { Musique } from 'src/app/models/Musique';
 import { Component, OnInit, Input } from '@angular/core';
 import { PlaylistPopoverComponent } from '../playlist-popover/playlist-popover.component';
 import { MusiqueService } from 'src/app/services/musique.service';
+import { Playlist } from 'src/app/models/playlist';
 
 @Component({
   selector: 'app-music-popover',
@@ -14,12 +16,14 @@ import { MusiqueService } from 'src/app/services/musique.service';
 
 export class MusicPopoverComponent implements OnInit {
   @Input() musics: Musique;
+  @Input() playlists: Playlist;
 
   inPlaylist:boolean
   constructor(private router:Router,
     private popoverController:PopoverController,
     private musiqueService:MusiqueService,
-    private toastController: ToastController) { }
+    private toastController: ToastController,
+    private playlistService:PlaylistService) { }
 
   ngOnInit() {
     this.inPlaylist = this.router.routerState.snapshot.url.includes("playlist")
@@ -58,8 +62,9 @@ export class MusicPopoverComponent implements OnInit {
   }
 
   deleteFromPlaylist(){
-    this.presentToast("Music deleted from playlist")
     this.dismiss()
+    this.playlistService.removeMusique(this.playlists.id,this.musics)
+    this.presentToast("Music deleted from playlist")
   }
 
 }

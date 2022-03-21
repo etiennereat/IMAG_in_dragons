@@ -22,8 +22,8 @@ export class PlaylistPage implements OnInit {
     this.playlists$ = this.playlistService.getAll();
   }
 
-  delete(playlist: Playlist) {
-    this.playlistService.removePlaylist(playlist);
+  delete(id: string) {
+    this.playlistService.removePlaylist(id);
   }
 
   async openModal() {
