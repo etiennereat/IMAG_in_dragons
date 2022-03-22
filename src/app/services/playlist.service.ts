@@ -57,7 +57,6 @@ export class PlaylistService {
     else{
       // Add a new document in collection "playlist"
       this.fs.collection("playlist").doc(name).set({
-        nom: name,
         idUserCreateur:user.email,
         canWrite:[],
         canRead:[],

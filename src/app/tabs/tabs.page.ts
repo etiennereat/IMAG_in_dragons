@@ -47,7 +47,7 @@ export class TabsPage {
   }
 
   goToMusic(){
-    this.router.navigate(['t/home/tracks/music/'+this.musique.nom])
+    this.router.navigate(['t/home/tracks/music/'+this.musique.id])
   }
 
   playPause() {
