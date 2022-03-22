@@ -53,8 +53,8 @@ export class MusiqueService {
     }, 500 );
   }
 
-  //reset queue by the only musique 
-  playMusique(musique: Musique){    
+  //Reset queue by the only musique 
+  public playMusique(musique: Musique){    
     //if same musique do nothing exept resume musique     
       if(this.indiceCurrentMusiquePlay != null && this.currentMusiqueQueue[this.indiceCurrentMusiquePlay].id == musique.id){
         //resume current musique
@@ -73,34 +73,8 @@ export class MusiqueService {
       }      
     }
 
-
-    addToQueue(musique:Musique){
-      this.currentMusiqueQueue.push(musique);
-      if(this.currentMusique == null && this.getActualStateOfPlayIcon() != "cloud-download-outline"){
-        if(this.currentMusiqueQueue.length == 1){
-          this.playMusique(musique);
-        }
-        else{
-          this.indiceCurrentMusiquePlay = this.indiceCurrentMusiquePlay + 1;
-          this.startMusique(this.currentMusiqueQueue[this.indiceCurrentMusiquePlay])
-        }
-      }
-    }
-
-    addPlaylistToQueue(musiqueList:Musique[]){
-      for (var index = 0; index < musiqueList.length; index++) {
-        this.addToQueue(musiqueList[index]);
-      }
-    }
-
-    playPlaylist(musiqueList:Musique[]){
-      if(musiqueList.length > 0){
-        this.playMusique(musiqueList[0]);
-        this.addPlaylistToQueue(musiqueList.slice(1))
-      }
-    }
-
-    playNextMusique(){
+    //joue la musique suivante en fonction du state 
+    public playNextMusique(){
       switch(this.state){
         case 0 :
           if(this.indiceCurrentMusiquePlay + 1 == this.currentMusiqueQueue.length){
@@ -124,7 +98,8 @@ export class MusiqueService {
         }
     }
 
-    playPreviousMusique(){
+    //joue la musique precedente en fonction du state 
+    public playPreviousMusique(){
       switch(this.state){
         case 0 :
             if(this.indiceCurrentMusiquePlay != 0){
@@ -150,31 +125,37 @@ export class MusiqueService {
         }
     }
 
-    startMusique(musique:Musique){
-      //si on a deja download l'url on le recup direct 
-      if(musique.urlMusique != null){
-        this.currentMusique = this.media.create(musique.urlMusique);
-        this.currentMusique.play();
-        this.updatePlayIcon("pause")
-        this.updateMusiqueInfosubscribable(musique)
-
-      }
-      else{
-        //si les info de la musique sont seulement light
-        this.updatePlayIcon("cloud-download-outline");
-        if(musique.idMusiqueStorage == null){
-          this.getMusique(musique.id).subscribe(res => {
-            this.currentMusiqueQueue[this.indiceCurrentMusiquePlay] = res;
-            this.launchMusique(this.currentMusiqueQueue[this.indiceCurrentMusiquePlay])
-          })
+    //ajoute a la queue la musique en parametre la demare si la liste etait vide ou términé 
+    public addToQueue(musique:Musique){
+      this.currentMusiqueQueue.push(musique);
+      if(this.currentMusique == null && this.getActualStateOfPlayIcon() != "cloud-download-outline"){
+        if(this.currentMusiqueQueue.length == 1){
+          this.playMusique(musique);
         }
         else{
-          this.launchMusique(musique)
+          this.indiceCurrentMusiquePlay = this.indiceCurrentMusiquePlay + 1;
+          this.startMusique(this.currentMusiqueQueue[this.indiceCurrentMusiquePlay])
         }
       }
     }
 
-    launchMusique(musique : Musique){
+    //ajoute une liste a la queue de lecture 
+    public addPlaylistToQueue(musiqueList:Musique[]){
+      for (var index = 0; index < musiqueList.length; index++) {
+        this.addToQueue(musiqueList[index]);
+      }
+    }
+
+    //joue et ajoute les musique de la liste a la queue de lecture 
+    public playPlaylist(musiqueList:Musique[]){
+      if(musiqueList.length > 0){
+        this.playMusique(musiqueList[0]);
+        this.addPlaylistToQueue(musiqueList.slice(1))
+      }
+    }
+
+    //recupère l'URL de telechargement et lance la musique 
+    private launchMusique(musique : Musique){
       var starsRef = this.storageMusiqueRef.child(musique.idMusiqueStorage);
       // Get the download URL
       starsRef.getDownloadURL()
@@ -187,6 +168,7 @@ export class MusiqueService {
 
       })
       .catch((error) => {
+        console.error(error.code)
         switch (error.code) {
           case 'storage/object-not-found':
               console.error("File doesn't exist")
@@ -210,7 +192,34 @@ export class MusiqueService {
       });
     }
 
-    restartCurrentMusique(){
+    // Joue une musique en fonction de son etat
+
+    private startMusique(musique:Musique){
+      //si on a deja download l'url on le recup direct 
+      if(musique.urlMusique != null){
+        this.currentMusique = this.media.create(musique.urlMusique);
+        this.currentMusique.play();
+        this.updatePlayIcon("pause")
+        this.updateMusiqueInfosubscribable(musique)
+
+      }
+      else{
+        //si les info de la musique sont seulement light
+        this.updatePlayIcon("cloud-download-outline");
+        if(musique.idMusiqueStorage == null){
+          this.getMusique(musique.id).subscribe(res => {
+            this.currentMusiqueQueue[this.indiceCurrentMusiquePlay] = res;
+            this.launchMusique(this.currentMusiqueQueue[this.indiceCurrentMusiquePlay])
+          })
+        }
+        else{
+          this.launchMusique(musique)
+        }
+      }
+    }
+
+/*-------------------------------------------------Methode-manipulation-Media-Musique-------------------------------------------------------*/
+    public restartCurrentMusique(){
       this.currentMusique.pause()
       this.currentMusique.getCurrentPosition().then(res=>{
         this.currentMusique.seekTo(res);
@@ -218,22 +227,24 @@ export class MusiqueService {
       });
     }
 
-    pauseMusique(){
+    public pauseMusique(){
       this.currentMusique.pause();
       this.updatePlayIcon("play")
     }
     
-    stopMusique(){
+    public stopMusique(){
       this.currentMusique.stop();
       this.currentMusique.release();
       this.updatePlayIcon("play")
       this.currentMusique = null;
     }
 
-    resumeMusique(){
+    public resumeMusique(){
       this.currentMusique.play();
       this.updatePlayIcon("pause")
     }
+
+/*------------------------------------------------------------Getter-Setter------------------------------------------------------------------*/
 
     isNull(){
       return this.currentMusique == null;
