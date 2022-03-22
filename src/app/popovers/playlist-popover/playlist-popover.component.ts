@@ -13,12 +13,14 @@ import { Musique } from 'src/app/models/Musique';
 export class PlaylistPopoverComponent implements OnInit {
   @Input() music: Musique;
 
-  playlists$: Observable<Playlist[]> = EMPTY;
+  playlistsOwner$: Observable<Playlist[]> = EMPTY;
+  playlistsReadAndWrite$: Observable<Playlist[]> = EMPTY;
 
   constructor(private playlistService:PlaylistService,private popoverController:PopoverController,private toastController:ToastController) { }
 
   ngOnInit() {
-    this.playlists$ = this.playlistService.getAll();
+    this.playlistsOwner$ = this.playlistService.getAllOwner();
+    this.playlistsReadAndWrite$ = this.playlistService.getAllReadAndWrite();
   }
 
   async dismiss(){

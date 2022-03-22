@@ -1,7 +1,7 @@
 import firebase from "firebase/compat/app";
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { Playlist } from '../models/playlist';
 import { Musique } from '../models/Musique';
 import { map, switchMap } from 'rxjs/operators'
@@ -11,13 +11,25 @@ import { MusiqueService } from './musique.service';
   providedIn: 'root'
 })
 export class PlaylistService {
+  
   playlists: Playlist[];
 
   constructor(private fs: AngularFirestore, private musiqueService : MusiqueService) {
   }
   
-  getAll() : Observable<Playlist[]>{
-    return this.fs.collection<Playlist>('playlist').valueChanges({idField:'id'});
+  getAllOwner() : Observable<Playlist[]>{
+    var user = firebase.auth().currentUser
+    return this.fs.collection<Playlist>('playlist', ref => ref.where('idUserCreateur','==',user.email)).valueChanges({idField:'id'});
+  }
+
+  getAllReadOnly() : Observable<Playlist[]>{
+    var user = firebase.auth().currentUser
+    return this.fs.collection<Playlist>('playlist', ref => ref.where('canRead','array-contains',user.email)).valueChanges({idField:'id'});
+  }
+
+  getAllReadAndWrite() : Observable<Playlist[]>{
+    var user = firebase.auth().currentUser
+    return this.fs.collection<Playlist>('playlist', ref => ref.where('canWrite','array-contains',user.email)).valueChanges({idField:'id'});
   }
 
   getOne(id: string) : Observable<Playlist>{
@@ -59,6 +71,26 @@ export class PlaylistService {
 
   removePlaylist(id: string) {
     this.fs.collection("playlist").doc(id).delete()
+    .catch((error) => {
+      console.error("Error removing document: ", error);
+    });
+  }
+
+  unfollowPlaylistRO(id: string) {
+    var user = firebase.auth().currentUser
+    this.fs.collection("playlist").doc(id).update({
+      canRead:firebase.firestore.FieldValue.arrayRemove(user.email)
+    })
+    .catch((error) => {
+      console.error("Error removing document: ", error);
+    });
+  }
+
+  unfollowPlaylistRaW(id: string) {
+    var user = firebase.auth().currentUser
+    this.fs.collection("playlist").doc(id).update({
+      canWrite:firebase.firestore.FieldValue.arrayRemove(user.email)
+    })
     .catch((error) => {
       console.error("Error removing document: ", error);
     });

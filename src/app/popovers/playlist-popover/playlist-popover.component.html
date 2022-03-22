@@ -1,5 +1,8 @@
 <ion-list>
-    <ion-item detail="false" (click)="addToPlaylist(playlist)" *ngFor="let playlist of playlists$ | async;">
+    <ion-item detail="false" (click)="addToPlaylist(playlist)" *ngFor="let playlist of playlistsOwner$ | async;">
+        {{playlist.nom}}
+    </ion-item>
+    <ion-item detail="false" (click)="addToPlaylist(playlist)" *ngFor="let playlist of playlistsReadAndWrite$ | async;">
         {{playlist.nom}}
     </ion-item>
 </ion-list>
