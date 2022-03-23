@@ -1,6 +1,5 @@
 import { Router } from '@angular/router';
 import { Component, ViewChild } from '@angular/core';
-import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { IonTabs } from '@ionic/angular';
 import { MusiqueService } from '../services/musique.service';
 import { Musique } from '../models/Musique';
@@ -20,7 +19,8 @@ export class TabsPage {
   musique: Musique;
 
 
-  constructor(private musiqueServ: MusiqueService,public auth: AngularFireAuth, private router:Router) {
+  constructor(private musiqueServ: MusiqueService,
+    private router:Router) {
     this.musique = musiqueServ.getActualMusiqueInfosubscribable()
     this.playIcon = musiqueServ.getActualStateOfPlayIcon();
   }
