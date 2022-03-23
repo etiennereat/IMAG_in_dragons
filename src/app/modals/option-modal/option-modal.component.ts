@@ -34,14 +34,32 @@ export class OptionModalComponent implements OnInit {
   }
 
   sharePlaylist(){
+    if(this.playlistForm.value == this.playlists.idUserCreateur){
+      this.presentErrorToast("Can't share the playlist with the owner")
+      return
+    }
+    if((this.playlists.canRead.includes(this.playlistForm.value) && this.ReadOnly == "ReadOnly") ||
+       (this.playlists.canWrite.includes(this.playlistForm.value) && this.ReadOnly != "ReadOnly")){
+      this.presentErrorToast("Already shared this playlist in the same mode")
+      return
+    }
+    var text:string = "Successfully shared playlist"
     if(this.ReadOnly == "ReadOnly"){
+      if(this.playlists.canWrite.includes(this.playlistForm.value)){
+        this.playlistService.unSharePlaylistReadAndWrite(this.playlists.id,this.playlistForm.value)
+        text="Changed share mode to read only"
+      }
       this.playlistService.sharePlaylistReadOnly(this.playlists.id,this.playlistForm.value)
     }
     else{
+      if(this.playlists.canRead.includes(this.playlistForm.value)){
+        this.playlistService.unSharePlaylistReadOnly(this.playlists.id,this.playlistForm.value)
+        text="Changed share mode to read and write"
+      }
       this.playlistService.sharePlaylistReadAndWrite(this.playlists.id,this.playlistForm.value)
     }
     this.dismiss()
-    this.presentToast("Successfully shared playlist")
+    this.presentToast(text)
   }
 
   async presentToast(text:string){
@@ -49,6 +67,15 @@ export class OptionModalComponent implements OnInit {
       message: text,
       duration: 2000,
       icon:"checkmark-outline"
+    });
+    toast.present();
+  }
+
+  async presentErrorToast(text:string){
+    const toast = await this.toastController.create({
+      message: text,
+      duration: 2000,
+      icon:"close-outline"
     });
     toast.present();
   }
