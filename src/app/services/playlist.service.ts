@@ -1,3 +1,4 @@
+import { AuthService } from './auth.service';
 import firebase from "firebase/compat/app";
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
@@ -5,19 +6,31 @@ import { Observable } from 'rxjs';
 import { Playlist } from '../models/playlist';
 import { Musique } from '../models/Musique';
 import { map, switchMap } from 'rxjs/operators'
-import { MusiqueService } from './musique.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PlaylistService {
+  
   playlists: Playlist[];
 
-  constructor(private fs: AngularFirestore, private musiqueService : MusiqueService) {
+  constructor(private fs: AngularFirestore,
+    private authService:AuthService) {
   }
   
-  getAll() : Observable<Playlist[]>{
-    return this.fs.collection<Playlist>('playlist').valueChanges({idField:'id'});
+  getAllOwner() : Observable<Playlist[]>{
+    var user = firebase.auth().currentUser
+    return this.fs.collection<Playlist>('playlist', ref => ref.where('idUserCreateur','==',user.email)).valueChanges({idField:'id'});
+  }
+
+  getAllReadOnly() : Observable<Playlist[]>{
+    var user = firebase.auth().currentUser
+    return this.fs.collection<Playlist>('playlist', ref => ref.where('canRead','array-contains',user.email)).valueChanges({idField:'id'});
+  }
+
+  getAllReadAndWrite() : Observable<Playlist[]>{
+    var user = firebase.auth().currentUser
+    return this.fs.collection<Playlist>('playlist', ref => ref.where('canWrite','array-contains',user.email)).valueChanges({idField:'id'});
   }
 
   getOne(id: string) : Observable<Playlist>{
@@ -38,23 +51,24 @@ export class PlaylistService {
   }
 
   addPlaylist(name:string,image?:string) {
-    var user = firebase.auth().currentUser
-    if(user == null){
-      console.error("[ERROR] User non identifié")
-    }
-    else{
-      // Add a new document in collection "playlist"
-      this.fs.collection("playlist").doc(name).set({
-        nom: name,
-        idUserCreateur:user.email,
-        canWrite:[],
-        canRead:[],
-        idImageStorage: image == undefined ? "imagePlaylistDemo.jpeg" : image
-      })
-      .catch((error) => {
-        console.error("Error writing document: ", error);
-      });
-    }
+    this.authService.getCurrentUser().then(user =>{
+      if(user == null){
+        console.error("[ERROR] User non identifié")
+      }
+      else{
+        // Add a new document in collection "playlist"
+        this.fs.collection("playlist").doc().set({
+          nom:name,
+          idUserCreateur:user.email,
+          canWrite:[],
+          canRead:[],
+          idImageStorage: image == undefined ? "imagePlaylistDemo.jpeg" : image
+        })
+        .catch((error) => {
+          console.error("Error writing document: ", error);
+        });
+      }
+    })
   }
 
   removePlaylist(id: string) {
@@ -62,6 +76,28 @@ export class PlaylistService {
     .catch((error) => {
       console.error("Error removing document: ", error);
     });
+  }
+
+  unfollowPlaylistRO(id: string) {
+    this.authService.getCurrentUser().then(user =>{
+      this.fs.collection("playlist").doc(id).update({
+        canRead:firebase.firestore.FieldValue.arrayRemove(user.email)
+      })
+      .catch((error) => {
+        console.error("Error removing document: ", error);
+      });
+    })
+  }
+
+  unfollowPlaylistRaW(id: string) {
+    this.authService.getCurrentUser().then(user => {
+      this.fs.collection("playlist").doc(id).update({
+        canWrite:firebase.firestore.FieldValue.arrayRemove(user.email)
+      })
+      .catch((error) => {
+        console.error("Error removing document: ", error);
+      });
+    })
   }
 
   sharePlaylistReadOnly(id:string,email:string){
@@ -78,23 +114,38 @@ export class PlaylistService {
     canReadDocRef.update({canWrite: firebase.firestore.FieldValue.arrayUnion(email)});
   }
 
+  unSharePlaylistReadOnly(id:string,email:string){
+    // Create a reference to the SF doc.
+    var canReadDocRef = this.fs.collection("playlist").doc(id);
+    // Atomically add a new region to the "regions" array field.
+    canReadDocRef.update({canRead: firebase.firestore.FieldValue.arrayRemove(email)});
+  }
+
+  unSharePlaylistReadAndWrite(id:string,email:string){
+    // Create a reference to the SF doc.
+    var canReadDocRef = this.fs.collection("playlist").doc(id);
+    // Atomically add a new region to the "regions" array field.
+    canReadDocRef.update({canWrite: firebase.firestore.FieldValue.arrayRemove(email)});
+  }
+
   addMusic(playlistId: string, music: Musique) {
-    var user = firebase.auth().currentUser
-    if(user == null){
-      console.error("[ERROR] User non identifié")
-    }
-    else{
-      // Add a new document in collection "playlist"
-      this.fs.collection("playlist").doc(playlistId).collection('musiques').doc(music.id).set({
-        nom: music.nom,
-        idAuteur:music.idAuteur,
-        idImageStorage:music.idImageStorage,
-        refMusique:"/musiques/"+music.idMusiqueStorage.replace(".mp3","")
-      })
-      .catch((error) => {
-        console.error("Error writing document: ", error);
-      });
-    }
+    this.authService.getCurrentUser().then(user =>{
+      if(user == null){
+        console.error("[ERROR] User non identifié")
+      }
+      else{
+        // Add a new document in collection "playlist"
+        this.fs.collection("playlist").doc(playlistId).collection('musiques').doc(music.id).set({
+          nom: music.nom,
+          idAuteur:music.idAuteur,
+          idImageStorage:music.idImageStorage,
+          refMusique:"/musiques/"+music.idMusiqueStorage.replace(".mp3","")
+        })
+        .catch((error) => {
+          console.error("Error writing document: ", error);
+        });
+      }
+    })
   }
 
   removeMusique(playlistId: string, music: Musique) {

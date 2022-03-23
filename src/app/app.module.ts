@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
+import { PERSISTENCE } from '@angular/fire/compat/auth';
 
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 
@@ -27,7 +28,11 @@ import { MusiqueService } from './services/musique.service';
     FormsModule,
     ReactiveFormsModule,
   ],
-  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }, Media, MusiqueService],
+  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+     Media,
+     MusiqueService,
+     { provide: PERSISTENCE, useValue: 'local' }
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

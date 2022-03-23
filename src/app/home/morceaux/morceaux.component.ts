@@ -1,3 +1,4 @@
+import { AuthService } from './../../services/auth.service';
 import { Component, OnInit } from '@angular/core';
 import { ModalController, PopoverController } from '@ionic/angular';
 import { EMPTY, Observable } from 'rxjs';
@@ -20,10 +21,8 @@ export class MorceauxComponent implements OnInit {
   
   constructor(private musiqueService:MusiqueService,
     private popoverController:PopoverController,
-    private modalController: ModalController
-    ) {}
-   
-
+    private modalController: ModalController,
+    private authService:AuthService) { }
   ngOnInit(): void {
     this.musics$ = this.musiqueService.getAllMusique();
   }
@@ -56,6 +55,10 @@ export class MorceauxComponent implements OnInit {
       initialBreakpoint : 0.2
     })
     await modal.present();
+  }
+  
+  disconnect(){
+    this.authService.disconnect()
   }
 
 }

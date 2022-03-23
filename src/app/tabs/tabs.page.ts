@@ -1,6 +1,5 @@
 import { Router } from '@angular/router';
 import { Component, ViewChild } from '@angular/core';
-import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { IonTabs } from '@ionic/angular';
 import { MusiqueService } from '../services/musique.service';
 import { Musique } from '../models/Musique';
@@ -20,7 +19,8 @@ export class TabsPage {
   musique: Musique;
 
 
-  constructor(private musiqueServ: MusiqueService,public auth: AngularFireAuth, private router:Router) {
+  constructor(private musiqueServ: MusiqueService,
+    private router:Router) {
     this.musique = musiqueServ.getActualMusiqueInfosubscribable()
     this.playIcon = musiqueServ.getActualStateOfPlayIcon();
   }
@@ -35,11 +35,6 @@ export class TabsPage {
     this.musiqueServ.getCurrentmsucProgress().subscribe((progress)=>{
       this.progress = progress
     })
-    this.auth.currentUser.then((user) => {
-      if(!user){
-        this.router.navigate(['login-or-register'])
-      }
-    })
     setInterval(() => {
       this.isOnMusicPage = this.router.routerState.snapshot.url.includes("music")
       this.isMusicNull = this.musiqueServ.isNull()
@@ -47,7 +42,7 @@ export class TabsPage {
   }
 
   goToMusic(){
-    this.router.navigate(['t/home/tracks/music/'+this.musique.nom])
+    this.router.navigate(['t/home/tracks/music/'+this.musique.id])
   }
 
   playPause() {

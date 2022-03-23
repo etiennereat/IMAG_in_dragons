@@ -19,7 +19,7 @@
         <ion-row class="row">
             <ion-col>
                 <ion-button [disabled]="signinForm.invalid" expand="block" type="submit" color="primary">Sign In</ion-button>
-                <a [routerLink]="['/forgot-password']" class="small-text">Forgot Password?</a>
+                <a (click)="forgotPassword()" class="small-text">Forgot Password?</a>
             </ion-col>
         </ion-row>
         <ion-row>

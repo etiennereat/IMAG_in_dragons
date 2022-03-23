@@ -1,7 +1,6 @@
+import { AuthService } from './../../services/auth.service';
 import { Component, OnInit } from '@angular/core';
-import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-register-page',
@@ -12,7 +11,8 @@ export class RegisterPageComponent implements OnInit {
 
   registerForm: FormGroup
 
-  constructor(private fb: FormBuilder,public auth: AngularFireAuth,    private router: Router) {
+  constructor(private fb: FormBuilder,
+    private authService:AuthService) {
     this.registerForm = this.fb.group(
       { 
         pseudo: ['', [Validators.required, Validators.minLength(3)]],
@@ -24,31 +24,9 @@ export class RegisterPageComponent implements OnInit {
   ngOnInit() {}
 
   register(){
-
-  const email = this.registerForm.get('email').value;
-  const password = this.registerForm.get('password').value;
-
-  this.auth.createUserWithEmailAndPassword(email, password)
-  .then((userCredential) => {
-    // Signed in 
-    var user = userCredential.user;
-    
-    this.succesConnect();
-  })
-
-    .catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      console.error("["+errorCode+"]"+" "+errorMessage);
-    });
-  }
-
-  private succesConnect(){
-    this.router.navigate([""]);
-  }
-
-  private failConnect(errorMessage){
-      //todo pop up error
+    const email = this.registerForm.get('email').value;
+    const password = this.registerForm.get('password').value;
+    this.authService.register(email,password)
   }
 
 }
