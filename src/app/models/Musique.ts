@@ -10,13 +10,13 @@ export class Musique {
     urlMusique: string;
 
 
-    constructor(id: string, idAuteur: string, idImageStorage: string, nom: string, dateAjout? : Date, idMusiqueStorage? : string) {
+    constructor(id: string, idAuteur: string, idImageStorage: string, nom: string, dateAjout ?: Date, idMusiqueStorage ?: string, nomAlbum ?: string) {
         this.id = id;
         this.nom = nom;
         this.idAuteur = idAuteur;
         this.idImageStorage = idImageStorage;
-        this.nomAlbum ?? this.nomAlbum;
-        this.idMusiqueStorage ?? idMusiqueStorage;
-        this.dateAjout ?? dateAjout;
+        this.nomAlbum =  nomAlbum;
+        this.idMusiqueStorage = idMusiqueStorage;
+        this.dateAjout = dateAjout;
     }
 }

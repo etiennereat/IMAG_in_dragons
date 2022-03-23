@@ -29,5 +29,10 @@
                 <ion-icon slot="end" name="ellipsis-vertical" (click)="openPopover($event,music)"></ion-icon>
             </ion-item>
         </ion-list>
+        <ion-fab horizontal="center" vertical="bottom" slot="fixed">
+            <ion-fab-button color="tertiary" (click)="openModal()">
+                <ion-icon name="add-outline"></ion-icon>
+            </ion-fab-button>
+        </ion-fab>
     </ion-content>
 </ng-container>

@@ -50,7 +50,7 @@ export class MusiqueService {
           }
         });
       }
-    }, 500 );
+    }, 1000 );
   }
 
   //Reset queue by the only musique 
@@ -317,20 +317,18 @@ export class MusiqueService {
       this.actualMusiqueInfosubscribable = musique;
     }
     
-    addMusiqueToFirestore(musique :Musique, pathMusique:string, pathImage?:string){
-      //I)need to load the musique file 
-
-      //II)need to get Date + load metadata to complete musique (to do this great exemple -> https://codepen.io/codefoxx/pen/OJmGrzG)
-
-      //III)if presente load Image or set default image 
-
-      //IV)upload musique file in storage
-
-      //V)if presente upload image file in storage
-
-      //VI)Add auteur document to firestore 
-
-      //VII)Add musique document to firestore 
-
+    addMusiqueToFirestore(musique :Musique){  
+      console.log(musique)
+      this.afs.collection("musique").doc().set({
+        idUserContributor : firebase.auth().currentUser.email,
+        dateAjout : firebase.firestore.Timestamp.fromDate(new Date()),
+        idAuteur : musique.idAuteur,
+        idImageStorage : musique.idImageStorage,
+        idMusiqueStorage : musique.idMusiqueStorage,
+        nom : musique.nom,
+        nomAlbum : musique.nomAlbum
+      }).catch((error)=>{
+        console.error(error)
+      })
     }
 }
