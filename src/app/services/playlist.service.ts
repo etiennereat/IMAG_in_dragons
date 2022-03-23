@@ -6,7 +6,6 @@ import { Observable } from 'rxjs';
 import { Playlist } from '../models/playlist';
 import { Musique } from '../models/Musique';
 import { map, switchMap } from 'rxjs/operators'
-import { MusiqueService } from './musique.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +15,6 @@ export class PlaylistService {
   playlists: Playlist[];
 
   constructor(private fs: AngularFirestore,
-    private musiqueService : MusiqueService,
     private authService:AuthService) {
   }
   
