@@ -35,11 +35,6 @@ export class TabsPage {
     this.musiqueServ.getCurrentmsucProgress().subscribe((progress)=>{
       this.progress = progress
     })
-    this.auth.currentUser.then((user) => {
-      if(!user){
-        this.router.navigate(['login-or-register'])
-      }
-    })
     setInterval(() => {
       this.isOnMusicPage = this.router.routerState.snapshot.url.includes("music")
       this.isMusicNull = this.musiqueServ.isNull()

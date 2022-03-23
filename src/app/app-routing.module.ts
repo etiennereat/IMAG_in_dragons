@@ -3,15 +3,18 @@ import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { RegisterPageComponent } from './login/register-page/register-page.component';
 import { SigninOrRegisterPageComponent } from './login/signin-or-register-page/signin-or-register-page.component';
 import { SigninPageComponent } from './login/signin-page/signin-page.component';
+import { AngularFireAuthGuard,emailVerified } from '@angular/fire/compat/auth-guard';
+import { pipe } from 'rxjs';
+import { map } from 'rxjs/operators';
+const redirectUnverifiedTo = (redirect: any[]) => pipe(emailVerified, map(emailVerified => emailVerified || redirect));
+const redirectUnauthorizedToLogin = () => redirectUnverifiedTo(['/login-or-register']);
 
 const routes: Routes = [
   {
-    path: 'playlist',
-    loadChildren: () => import('./playlist/playlist.module').then(m => m.PlaylistPageModule)
-  },
-  {
     path: '',
-    loadChildren: () => import('./tabs/tabs.module').then(m => m.TabsPageModule)
+    loadChildren: () => import('./tabs/tabs.module').then(m => m.TabsPageModule),
+    canActivate:[AngularFireAuthGuard],
+    data:{ authGuardPipe : redirectUnauthorizedToLogin}
   },
   {
     path: 'login-or-register',
@@ -24,11 +27,6 @@ const routes: Routes = [
   {
     path: 'registration',
     component: RegisterPageComponent, 
-  },
-  {
-    path: '',
-    redirectTo: 'login-or-register',
-    pathMatch: 'full'
   },
 ];
 

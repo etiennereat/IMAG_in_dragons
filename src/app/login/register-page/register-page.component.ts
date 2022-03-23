@@ -1,3 +1,5 @@
+import { ToastController } from '@ionic/angular';
+import { emailVerified } from '@angular/fire/auth-guard';
 import { Component, OnInit } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -12,7 +14,10 @@ export class RegisterPageComponent implements OnInit {
 
   registerForm: FormGroup
 
-  constructor(private fb: FormBuilder,public auth: AngularFireAuth,    private router: Router) {
+  constructor(private fb: FormBuilder,
+    public auth: AngularFireAuth,
+    private router: Router,
+    private toastController:ToastController) {
     this.registerForm = this.fb.group(
       { 
         pseudo: ['', [Validators.required, Validators.minLength(3)]],
@@ -24,31 +29,45 @@ export class RegisterPageComponent implements OnInit {
   ngOnInit() {}
 
   register(){
-
   const email = this.registerForm.get('email').value;
   const password = this.registerForm.get('password').value;
-
   this.auth.createUserWithEmailAndPassword(email, password)
-  .then((userCredential) => {
-    // Signed in 
-    var user = userCredential.user;
-    
-    this.succesConnect();
-  })
-
+      .then(_ => {
+      // User created
+      this.SendVerificationMail()
+    })
     .catch((error) => {
       const errorCode = error.code;
       const errorMessage = error.message;
-      console.error("["+errorCode+"]"+" "+errorMessage);
+      //console.error("["+errorCode+"]"+" "+errorMessage);
+      this.presentErrorToast("Error trying creating the account")
     });
   }
 
-  private succesConnect(){
-    this.router.navigate([""]);
+  SendVerificationMail(){
+    return this.auth.currentUser.then(user => {
+      user.sendEmailVerification().then(_ =>{
+        this.presentToast("Verification mail sent");
+        this.router.navigate(['/login'])
+      })
+    })
   }
 
-  private failConnect(errorMessage){
-      //todo pop up error
+  async presentToast(text:string){
+    const toast = await this.toastController.create({
+      message: text,
+      duration: 2000,
+      icon:"checkmark-outline"
+    });
+    toast.present();
   }
 
+  async presentErrorToast(text:string){
+    const toast = await this.toastController.create({
+      message: text,
+      duration: 2000,
+      icon:"close-outline"
+    });
+    toast.present();
+  }
 }
