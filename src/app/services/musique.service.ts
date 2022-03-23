@@ -185,11 +185,14 @@ export class MusiqueService {
           case 'storage/unknown':
               console.error("Unknown error occurred, inspect the server response")
             break;
+          case 'storage/quota-exceeded':
+            alert("Le quota d'utilisation est depassé !")
+            break;
         }
-        if(this.state != 2){
+        if(this.state != 2 && error.code != 'storage/quota-exceeded'){
           this.playNextMusique();
         }
-      });
+      })
     }
 
     // Joue une musique en fonction de son etat
