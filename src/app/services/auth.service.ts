@@ -110,6 +110,14 @@ export class AuthService {
     })
   }  
 
+  disconnect(){
+    this.auth.signOut().then(() => {
+      this.router.navigate([''])
+    }).catch((error) => {
+      this.presentErrorToast("Error trying to sign out")
+    });
+  }
+
   async presentToast(text:string){
     const toast = await this.toastController.create({
       message: text,

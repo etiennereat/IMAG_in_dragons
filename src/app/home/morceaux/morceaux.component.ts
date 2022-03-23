@@ -1,3 +1,4 @@
+import { AuthService } from './../../services/auth.service';
 import { Component, OnInit } from '@angular/core';
 import { PopoverController } from '@ionic/angular';
 import { EMPTY, Observable } from 'rxjs';
@@ -15,7 +16,8 @@ export class MorceauxComponent implements OnInit {
   musics$: Observable<Musique[]> = EMPTY;
   
   constructor(private musiqueService:MusiqueService,
-    private popoverController:PopoverController) { }
+    private popoverController:PopoverController,
+    private authService:AuthService) { }
  
 
   ngOnInit(): void {
@@ -42,6 +44,10 @@ export class MorceauxComponent implements OnInit {
       translucent: true
     });
     return await popover.present()
+  }
+
+  disconnect(){
+    this.authService.disconnect()
   }
 
 }

@@ -1,3 +1,4 @@
+import { AuthService } from './../../services/auth.service';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, UrlSerializer } from '@angular/router';
 import { ModalController, PopoverController } from '@ionic/angular';
@@ -7,8 +8,6 @@ import { Playlist } from 'src/app/models/playlist';
 import { Musique } from 'src/app/models/Musique';
 import { PlaylistService } from 'src/app/services/playlist.service';
 import { MusiqueService } from 'src/app/services/musique.service';
-import { Media } from '@ionic-native/media/ngx';
-import { promises } from 'dns';
 import { MusicPopoverComponent } from 'src/app/popovers/music-popover/music-popover.component';
 
 @Component({
@@ -25,7 +24,7 @@ export class PlaylistDetailComponent implements OnInit {
     private musiqueService: MusiqueService,
     private modalController: ModalController,
     private popoverController:PopoverController,
-    private media : Media) { }
+    private authService:AuthService) { }
 
   ngOnInit(): void {
     this.playlist$ = this.playlistService.getOne(this.route.snapshot.params.id);
@@ -93,6 +92,10 @@ export class PlaylistDetailComponent implements OnInit {
     this.playlist$.subscribe((playlist)=>{
       this.musiqueService.playPlaylist(playlist.musiques)
     })
+  }
+
+  disconnect(){
+    this.authService.disconnect()
   }
 
 }

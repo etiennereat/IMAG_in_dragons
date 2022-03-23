@@ -4,6 +4,11 @@
             <ion-buttons slot="start">
                 <ion-back-button></ion-back-button>
             </ion-buttons>
+            <ion-buttons slot="end">
+                <ion-button (click)="disconnect()">
+                    <ion-icon size="large" name="log-out-outline"></ion-icon>
+                </ion-button>
+            </ion-buttons>
             <ion-title>Tracks</ion-title>
         </ion-toolbar>
     </ion-header>

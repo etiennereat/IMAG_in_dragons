@@ -1,3 +1,4 @@
+import { AuthService } from './../services/auth.service';
 import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { CreatePlaylistComponent } from '../modals/create-playlist/create-playlist.component';
@@ -18,7 +19,8 @@ export class PlaylistPage implements OnInit {
   playlistsReadAndWrite$: Observable<Playlist[]> = EMPTY;
 
   constructor(private playlistService: PlaylistService,
-    private modalController: ModalController) {
+    private modalController: ModalController,
+    private authService:AuthService) {
   }
 
   ngOnInit(): void {
@@ -37,6 +39,10 @@ export class PlaylistPage implements OnInit {
 
   unfollowPlaylistRaW(id:string){
     this.playlistService.unfollowPlaylistRO(id);
+  }
+
+  disconnect(){
+    this.authService.disconnect();
   }
 
   async openModal() {

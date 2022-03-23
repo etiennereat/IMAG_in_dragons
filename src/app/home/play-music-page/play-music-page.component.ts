@@ -1,3 +1,4 @@
+import { AuthService } from './../../services/auth.service';
 import { Component, OnInit } from '@angular/core';
 import { Musique } from 'src/app/models/Musique';
 import { MusiqueService } from 'src/app/services/musique.service';
@@ -15,7 +16,8 @@ export class PlayMusicPageComponent implements OnInit {
   audioDurationInS: number;
   musique: Musique;
 
-  constructor(private musiqueServ: MusiqueService) {
+  constructor(private musiqueServ: MusiqueService,
+    private authService:AuthService) {
     //set musique 
     this.musique = musiqueServ.getActualMusiqueInfosubscribable();
     this.playIcon = musiqueServ.getActualStateOfPlayIcon();
@@ -79,5 +81,9 @@ export class PlayMusicPageComponent implements OnInit {
         this.musiqueServ.restartCurrentMusique();
       }
     });
+  }
+
+  disconnect(){
+    this.authService.disconnect()
   }
 }
