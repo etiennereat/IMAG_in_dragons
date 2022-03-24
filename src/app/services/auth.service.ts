@@ -1,4 +1,4 @@
-import { ToastController } from '@ionic/angular';
+import { AlertController, ToastController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
@@ -11,7 +11,8 @@ export class AuthService {
 
   constructor(public auth: AngularFireAuth,
     private router:Router,
-    private toastController:ToastController) { }
+    private toastController:ToastController,
+    private alertController:AlertController) { }
 
   getCurrentUser(){
     return this.auth.currentUser;
@@ -112,10 +113,30 @@ export class AuthService {
 
   disconnect(){
     this.auth.signOut().then(() => {
-      this.router.navigate([''])
+      this.presentAlertConfirm()
     }).catch((error) => {
       this.presentErrorToast("Error trying to sign out")
     });
+  }
+
+  async presentAlertConfirm() {
+    const alert = await this.alertController.create({
+      header: 'Log out?',
+      message: "Are you sure you want to log out ?",
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'secondary',
+        }, {
+          text: 'Ok',
+          handler: () => {
+            this.router.navigate(['/login-or-register'])
+          }
+        }
+      ]
+    });
+    await alert.present();
   }
 
   async presentToast(text:string){
