@@ -18,67 +18,78 @@
             <ion-title size="large">Playlists</ion-title>
         </ion-toolbar>
     </ion-header>
-    <ion-card>
-        <ion-card-header>
-            <ion-card-subtitle>My playlists</ion-card-subtitle>
-        </ion-card-header>
-        <ion-card-content>
-            <ion-item-sliding detail="false" *ngFor="let playlist of playlistsOwner$ | async;">
-                <ion-item detail="false" [routerLink]="[playlist?.id]" routerLinkActive="true">
-                    <ion-label>{{ playlist.nom }}</ion-label>
-                </ion-item>
-                <ion-item-options side="start">
-                    <ion-item-option (click)="openOptionModal(playlist)" color="primary">
-                        <ion-icon slot="icon-only" name="person-add"></ion-icon>
-                    </ion-item-option>
-                </ion-item-options>
-                <ion-item-options side="end">
-                    <ion-item-option (click)="delete(playlist.id)" color="danger">
-                        <ion-icon slot="icon-only" name="trash"></ion-icon>
-                    </ion-item-option>
-                </ion-item-options>
-            </ion-item-sliding>
-        </ion-card-content>
-    </ion-card>
-    <ion-card>
-        <ion-card-header>
-            <ion-card-subtitle>Imported playlists with rights</ion-card-subtitle>
-        </ion-card-header>
-        <ion-card-content>
-            <ion-item-sliding detail="false" *ngFor="let playlistRaW of playlistsReadAndWrite$ | async;">
-                <ion-item detail="false" [routerLink]="[playlistRaW?.id]" routerLinkActive="true">
-                    <ion-label>{{ playlistRaW.nom }}</ion-label>
-                </ion-item>
-                <ion-item-options side="start">
-                    <ion-item-option (click)="openOptionModal(playlistRaW)" color="primary">
-                        <ion-icon slot="icon-only" name="person-add"></ion-icon>
-                    </ion-item-option>
-                </ion-item-options>
-                <ion-item-options side="end">
-                    <ion-item-option (click)="unfollowPlaylistRaW(playlistRaW.id)" color="danger">
-                        <ion-icon slot="icon-only" name="trash"></ion-icon>
-                    </ion-item-option>
-                </ion-item-options>
-            </ion-item-sliding>
-        </ion-card-content>
-    </ion-card>
-    <ion-card>
-        <ion-card-header>
-            <ion-card-subtitle>My playlists</ion-card-subtitle>
-        </ion-card-header>
-        <ion-card-content>
-            <ion-item-sliding detail="false" *ngFor="let playlistRO of playlistsReadOnly$ | async;">
-                <ion-item detail="false" [routerLink]="[playlistRO?.id]" routerLinkActive="true">
-                    <ion-label>{{ playlistRO.nom }}</ion-label>
-                </ion-item>
-                <ion-item-options side="end">
-                    <ion-item-option (click)="unfollowPlaylistRO(playlistRO.id)" color="danger">
-                        <ion-icon slot="icon-only" name="trash"></ion-icon>
-                    </ion-item-option>
-                </ion-item-options>
-            </ion-item-sliding>
-        </ion-card-content>
-    </ion-card>
+    <ng-container *ngIf="playlistsOwner$ | async as owner">
+        <ion-card *ngIf="owner.length > 0">
+            <ion-card-header>
+                <ion-icon name="person" size="large" slot="icon-only"></ion-icon>
+                <ion-card-subtitle>My playlists</ion-card-subtitle>
+            </ion-card-header>
+            <ion-card-content>
+                <ion-item-sliding detail="false" *ngFor="let playlist of playlistsOwner$ | async;">
+                    <ion-item detail="false" [routerLink]="[playlist?.id]" routerLinkActive="true">
+                        <ion-label>{{ playlist.nom }}</ion-label>
+                    </ion-item>
+                    <ion-item-options side="start">
+                        <ion-item-option (click)="openOptionModal(playlist)" color="primary">
+                            <ion-icon slot="icon-only" name="person-add"></ion-icon>
+                        </ion-item-option>
+                    </ion-item-options>
+                    <ion-item-options side="end">
+                        <ion-item-option (click)="delete(playlist.id)" color="danger">
+                            <ion-icon slot="icon-only" name="trash"></ion-icon>
+                        </ion-item-option>
+                    </ion-item-options>
+                </ion-item-sliding>
+            </ion-card-content>
+        </ion-card>
+    </ng-container>
+    <ng-container *ngIf="playlistsReadAndWrite$ | async as write">
+        <ion-card *ngIf="write.length > 0">
+            <ion-card-header>
+                <ion-icon name="pencil" size="large" slot="icon-only"></ion-icon>
+                <ion-card-subtitle>Imported playlists with rights</ion-card-subtitle>
+            </ion-card-header>
+            <ion-card-content>
+                <ion-item-sliding detail="false" *ngFor="let playlistRaW of playlistsReadAndWrite$ | async;">
+                    <ion-item detail="false" [routerLink]="[playlistRaW?.id]" routerLinkActive="true">
+                        <ion-label>{{ playlistRaW.nom }}</ion-label>
+                    </ion-item>
+                    <ion-item-options side="start">
+                        <ion-item-option (click)="openOptionModal(playlistRaW)" color="primary">
+                            <ion-icon slot="icon-only" name="person-add"></ion-icon>
+                        </ion-item-option>
+                    </ion-item-options>
+                    <ion-item-options side="end">
+                        <ion-item-option (click)="unfollowPlaylistRaW(playlistRaW.id)" color="danger">
+                            <ion-icon slot="icon-only" name="trash"></ion-icon>
+                        </ion-item-option>
+                    </ion-item-options>
+                </ion-item-sliding>
+            </ion-card-content>
+        </ion-card>
+    </ng-container>
+    <ng-container *ngIf="playlistsReadOnly$ | async as read">
+        <ion-card *ngIf="read.length > 0">
+            <ion-card-header>
+                <ion-buttons>
+                    <ion-icon name="lock-closed" size="large" slot="icon-only"></ion-icon>
+                </ion-buttons>
+                <ion-card-subtitle>Imported playlists with no rights</ion-card-subtitle>
+            </ion-card-header>
+            <ion-card-content>
+                <ion-item-sliding detail="false" *ngFor="let playlistRO of playlistsReadOnly$ | async;">
+                    <ion-item detail="false" [routerLink]="[playlistRO?.id]" routerLinkActive="true">
+                        <ion-label>{{ playlistRO.nom }}</ion-label>
+                    </ion-item>
+                    <ion-item-options side="end">
+                        <ion-item-option (click)="unfollowPlaylistRO(playlistRO.id)" color="danger">
+                            <ion-icon slot="icon-only" name="trash"></ion-icon>
+                        </ion-item-option>
+                    </ion-item-options>
+                </ion-item-sliding>
+            </ion-card-content>
+        </ion-card>
+    </ng-container>
     <ion-fab horizontal="center" vertical="bottom" slot="fixed">
         <ion-fab-button color="tertiary" (click)="openModal()">
             <ion-icon name="add-outline"></ion-icon>
