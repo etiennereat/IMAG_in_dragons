@@ -89,9 +89,12 @@ export class AddMusiqueComponent implements OnInit {
     
     file.arrayBuffer().then(async res => {
       mm.parseBuffer(new Uint8Array(res)).then( common=>{
-        album = common.common.album;
-        artiste = common.common.artist;
-        title = common.common.title;
+        if(common.common.album != undefined)
+          album = common.common.album;
+        if(common.common.artist != undefined)
+          artiste = common.common.artist;
+        if(common.common.title != undefined)
+          title = common.common.title;
         const cover = mm.selectCover(common.common.picture);
         if(cover != null){
           let TYPED_ARRAY = new Uint8Array(cover.data);
