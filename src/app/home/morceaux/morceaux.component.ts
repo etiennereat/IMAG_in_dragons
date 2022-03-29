@@ -1,6 +1,6 @@
 import { AuthService } from './../../services/auth.service';
-import { Component, OnInit } from '@angular/core';
-import { ModalController, PopoverController } from '@ionic/angular';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { IonSearchbar, ModalController, PopoverController } from '@ionic/angular';
 import { EMPTY, Observable } from 'rxjs';
 import { AddMusiqueComponent } from 'src/app/modals/add-musique/add-musique.component';
 import { Musique } from 'src/app/models/Musique';
@@ -16,15 +16,40 @@ import { MusiqueService } from 'src/app/services/musique.service';
   styleUrls: ['./morceaux.component.scss'],
 })
 export class MorceauxComponent implements OnInit {
+@ViewChild('search', {static: false}) search:IonSearchbar;  
   
   musics$: Observable<Musique[]> = EMPTY;
+  searchedItem:any;
   
   constructor(private musiqueService:MusiqueService,
     private popoverController:PopoverController,
     private modalController: ModalController,
     private authService:AuthService) { }
+
   ngOnInit(): void {
     this.musics$ = this.musiqueService.getAllMusique();
+    this.musics$.subscribe((musics) =>{
+      this.searchedItem = musics
+    })
+  }
+
+  ionViewDidEnter() {
+    setTimeout(() => {
+      this.search?.setFocus();
+    });
+  }
+
+  _ionChange(ev:any){
+    const val = ev.target.value;
+    this.musics$.subscribe((musics) =>{
+      this.searchedItem = musics
+      if(val && val.trim() !=''){
+        this.searchedItem = this.searchedItem.filter((item:any)=>{
+          return (item.nom.toLowerCase().indexOf(val.toLowerCase()) > -1 || item.idAuteur.toLowerCase().indexOf(val.toLowerCase()) > -1)
+        })
+      }
+    })
+    
   }
 
   playMusique(musiqueLite: Musique){
