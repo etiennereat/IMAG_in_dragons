@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import firebase from 'firebase/compat/app';
+import { MusiqueService } from './musique.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,8 @@ export class AuthService {
   constructor(public auth: AngularFireAuth,
     private router:Router,
     private toastController:ToastController,
-    private alertController:AlertController) { }
+    private alertController:AlertController,
+    private musiqueServ: MusiqueService) { }
 
   getCurrentUser(){
     return this.auth.currentUser;
@@ -112,11 +114,7 @@ export class AuthService {
   }  
 
   disconnect(){
-    this.auth.signOut().then(() => {
-      this.presentAlertConfirm()
-    }).catch((error) => {
-      this.presentErrorToast("Error trying to sign out")
-    });
+    this.presentAlertConfirm();
   }
 
   async presentAlertConfirm() {
@@ -131,7 +129,14 @@ export class AuthService {
         }, {
           text: 'Ok',
           handler: () => {
-            this.router.navigate(['/login-or-register'])
+            this.musiqueServ.purgeService();
+            try{
+              this.auth.signOut()
+              this.router.navigate(['/login-or-register'])
+            }
+            catch(error){
+              this.presentErrorToast("Error trying to sign out")
+            };
           }
         }
       ]
