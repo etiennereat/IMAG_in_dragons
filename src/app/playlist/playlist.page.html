@@ -21,8 +21,10 @@
     <ng-container *ngIf="playlistsOwner$ | async as owner">
         <ion-card *ngIf="owner.length > 0">
             <ion-card-header>
-                <ion-icon name="person" size="large" slot="icon-only"></ion-icon>
-                <ion-card-subtitle>My playlists</ion-card-subtitle>
+                <ion-label position="floating">
+                    <ion-icon name="person" size="large" slot="icon-only"></ion-icon>
+                    <span class="text">My playlists</span>
+                </ion-label>
             </ion-card-header>
             <ion-card-content>
                 <ion-item-sliding detail="false" *ngFor="let playlist of playlistsOwner$ | async;">
@@ -46,8 +48,10 @@
     <ng-container *ngIf="playlistsReadAndWrite$ | async as write">
         <ion-card *ngIf="write.length > 0">
             <ion-card-header>
-                <ion-icon name="pencil" size="large" slot="icon-only"></ion-icon>
-                <ion-card-subtitle>Imported playlists with rights</ion-card-subtitle>
+                <ion-label position="floating">
+                    <ion-icon name="pencil" size="large" slot="icon-only"></ion-icon>
+                    <span class="text">Editable</span>
+                </ion-label>
             </ion-card-header>
             <ion-card-content>
                 <ion-item-sliding detail="false" *ngFor="let playlistRaW of playlistsReadAndWrite$ | async;">
@@ -71,10 +75,10 @@
     <ng-container *ngIf="playlistsReadOnly$ | async as read">
         <ion-card *ngIf="read.length > 0">
             <ion-card-header>
-                <ion-buttons>
-                    <ion-icon name="lock-closed" size="large" slot="icon-only"></ion-icon>
-                </ion-buttons>
-                <ion-card-subtitle>Imported playlists with no rights</ion-card-subtitle>
+                <ion-label position="floating">
+                    <ion-icon name="eye-outline" size="large" slot="icon-only"></ion-icon>
+                    <span class="text">Read only</span>
+                </ion-label>
             </ion-card-header>
             <ion-card-content>
                 <ion-item-sliding detail="false" *ngFor="let playlistRO of playlistsReadOnly$ | async;">

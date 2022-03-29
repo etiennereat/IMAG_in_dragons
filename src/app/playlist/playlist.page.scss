@@ -1,0 +1,17 @@
+.text {
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 25px;
+    margin: 20px;
+}
+
+ion-icon {
+    vertical-align: middle;
+    padding-bottom: 3px;
+}
+
+ion-label {
+    ion-icon {
+        margin-bottom: -3px;
+    }
+}
