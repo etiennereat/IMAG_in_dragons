@@ -67,11 +67,11 @@ export class AddMusiqueComponent implements OnInit {
       return;
     }
 
-    var title;
-    var artiste;
-    var musiquePathStorage ;
+    var title = "Unknown";
+    var artiste ="Unknown";
+    var musiquePathStorage;
     var dateAjout = new Date();
-    var album;
+    var album = "Unknown";
     var imagePathStorage = "imageDemo.jpeg"
 
     this.isImgUploading = true;
