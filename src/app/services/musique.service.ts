@@ -28,6 +28,7 @@ export class MusiqueService {
   private currentMusiqueQueue: Musique[];
   private state : number; //0 play classique / 1 repet queue / 2 repet track
   private progress:number;
+  private intervalID :  NodeJS.Timeout;
 
   constructor(private afs: AngularFirestore, private media: Media) {
     this.storageMusiqueRef = firebase.storage().ref('musiques');
@@ -35,8 +36,12 @@ export class MusiqueService {
     this.currentMusiqueQueue = new Array<Musique>();
     this.state = 1;
     this.actualMusiqueInfosubscribable = new Musique("Loading","Loading","Loading","Loading")
-    this.updatePlayIcon("play")
-    setInterval(() => {
+    this.updatePlayIcon("play");
+    this.intervalID = null;
+  }
+
+  private createPolling() : NodeJS.Timeout{
+    return setInterval(() => {
       if(!this.isNull()){
         this.getPosition().then((position) => {
           var audioDuration = Math.floor(this.getDuration());
@@ -51,6 +56,20 @@ export class MusiqueService {
         });
       }
     }, 1000 );
+  }
+
+
+  public purgeService(){
+    this.currentMusiqueQueue = new Array<Musique>();
+    this.indiceCurrentMusiquePlay = null;
+    this.actualMusiqueInfosubscribable = new Musique("Loading","Loading","Loading","Loading");
+    this.updatePlayIcon("play");
+    if(this.currentMusique != null){
+      this.stopMusique();
+    }
+    clearInterval(this.intervalID);
+    this.intervalID = null;
+    this.state = 1;
   }
 
   //Reset queue by the only musique 
@@ -154,8 +173,24 @@ export class MusiqueService {
       }
     }
 
+    public addMusiqueToFirestore(musique :Musique){  
+      console.log(musique)
+      this.afs.collection("musique").doc().set({
+        idUserContributor : firebase.auth().currentUser.email,
+        dateAjout : firebase.firestore.Timestamp.fromDate(new Date()),
+        idAuteur : musique.idAuteur,
+        idImageStorage : musique.idImageStorage,
+        idMusiqueStorage : musique.idMusiqueStorage,
+        nom : musique.nom,
+        nomAlbum : musique.nomAlbum
+      }).catch((error)=>{
+        console.error(error)
+      })
+    }
+
     //recupère l'URL de telechargement et lance la musique 
     private launchMusique(musique : Musique){
+      this.intervalID = this.createPolling();
       var starsRef = this.storageMusiqueRef.child(musique.idMusiqueStorage);
       // Get the download URL
       starsRef.getDownloadURL()
@@ -229,21 +264,6 @@ export class MusiqueService {
     private updateMusiqueInfosubscribable(musique : Musique){
       this.musiqueInfosubscribable.next(musique)
       this.actualMusiqueInfosubscribable = musique;
-    }
-    
-    addMusiqueToFirestore(musique :Musique){  
-      console.log(musique)
-      this.afs.collection("musique").doc().set({
-        idUserContributor : firebase.auth().currentUser.email,
-        dateAjout : firebase.firestore.Timestamp.fromDate(new Date()),
-        idAuteur : musique.idAuteur,
-        idImageStorage : musique.idImageStorage,
-        idMusiqueStorage : musique.idMusiqueStorage,
-        nom : musique.nom,
-        nomAlbum : musique.nomAlbum
-      }).catch((error)=>{
-        console.error(error)
-      })
     }
     
 /*-------------------------------------------------Methode-manipulation-Media-Musique-------------------------------------------------------*/
