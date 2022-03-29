@@ -269,7 +269,7 @@ export class MusiqueService {
       return this.musicCurrrentTime
     }
 
-    getCurrentmsucProgress():Subject<number>{
+    getCurrentmusicProgress():Subject<number>{
       return this.musicProgress
     }
   

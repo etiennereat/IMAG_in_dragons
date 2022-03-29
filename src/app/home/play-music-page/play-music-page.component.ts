@@ -36,7 +36,7 @@ export class PlayMusicPageComponent implements OnInit {
       this.audioDurationInS = duration
       this.audioDuration = this.sToTime(duration)
     })
-    this.musiqueServ.getCurrentmsucProgress().subscribe((progress)=>{
+    this.musiqueServ.getCurrentmusicProgress().subscribe((progress)=>{
       this.progress = progress
     })
     this.musiqueServ.getCurrentPlayMusique().subscribe((musique)=>{

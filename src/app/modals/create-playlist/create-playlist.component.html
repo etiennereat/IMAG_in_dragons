@@ -1,3 +1,4 @@
+<!--
 <ion-header>
     <ion-toolbar>
         <ion-title>Create a new playlist</ion-title>
@@ -13,3 +14,16 @@
     </ion-item>
     <ion-button [disabled]="playlistForm.invalid" expand="full" (click)="addPlaylist()">Validate</ion-button>
 </ion-content>
+-->
+<ion-card>
+    <ion-card-header>
+        <ion-card-title>Create a new playlist</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+        <ion-item>
+            <ion-label position="floating">Name</ion-label>
+            <ion-input [formControl]="playlistForm" type="text"></ion-input>
+        </ion-item>
+        <ion-button [disabled]="playlistForm.invalid" expand="full" (click)="addPlaylist()">Validate</ion-button>
+    </ion-card-content>
+</ion-card>

@@ -32,7 +32,7 @@ export class TabsPage {
     this.musiqueServ.getCurrentPlayMusique().subscribe((musique)=>{
       this.musique = musique
     })
-    this.musiqueServ.getCurrentmsucProgress().subscribe((progress)=>{
+    this.musiqueServ.getCurrentmusicProgress().subscribe((progress)=>{
       this.progress = progress
     })
     setInterval(() => {

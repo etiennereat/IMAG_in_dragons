@@ -1,3 +1,4 @@
+<!--
 <ion-header>
     <ion-toolbar>
         <ion-title>Share this playlist</ion-title>
@@ -26,3 +27,29 @@
     </ion-radio-group>
     <ion-button [disabled]="playlistForm.invalid" expand="full" (click)="sharePlaylist()">Validate</ion-button>
 </ion-content>
+-->
+<ion-card>
+    <ion-card-header>
+        <ion-card-title>Share this playlist</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+        <ion-item>
+            <ion-label position="floating">Email</ion-label>
+            <ion-input [formControl]="playlistForm" type="text"></ion-input>
+        </ion-item>
+        <ion-radio-group [(ngModel)]="ReadOnly" (ionChange)="changeMode()">
+            <ion-item class="items">
+                <h3>Sharing mode</h3>
+            </ion-item>
+            <ion-item class="items">
+                <ion-label>Read Only</ion-label>
+                <ion-radio slot="start" value="ReadOnly" color="primary"></ion-radio>
+            </ion-item>
+            <ion-item class="items">
+                <ion-label>Read and Write</ion-label>
+                <ion-radio slot="start" value="ReadAndWrite" color="primary"></ion-radio>
+            </ion-item>
+        </ion-radio-group>
+        <ion-button [disabled]="playlistForm.invalid" expand="full" (click)="sharePlaylist()">Validate</ion-button>
+    </ion-card-content>
+</ion-card>
