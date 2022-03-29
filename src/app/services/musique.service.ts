@@ -221,6 +221,31 @@ export class MusiqueService {
       }
     }
 
+    private updatePlayIcon(state : string){
+      this.playIcon.next(state);
+      this.actualStateOfPlayIcon = state;
+    }
+
+    private updateMusiqueInfosubscribable(musique : Musique){
+      this.musiqueInfosubscribable.next(musique)
+      this.actualMusiqueInfosubscribable = musique;
+    }
+    
+    addMusiqueToFirestore(musique :Musique){  
+      console.log(musique)
+      this.afs.collection("musique").doc().set({
+        idUserContributor : firebase.auth().currentUser.email,
+        dateAjout : firebase.firestore.Timestamp.fromDate(new Date()),
+        idAuteur : musique.idAuteur,
+        idImageStorage : musique.idImageStorage,
+        idMusiqueStorage : musique.idMusiqueStorage,
+        nom : musique.nom,
+        nomAlbum : musique.nomAlbum
+      }).catch((error)=>{
+        console.error(error)
+      })
+    }
+    
 /*-------------------------------------------------Methode-manipulation-Media-Musique-------------------------------------------------------*/
     public restartCurrentMusique(){
       this.currentMusique.pause()
@@ -307,31 +332,5 @@ export class MusiqueService {
 
     getActualMusiqueInfosubscribable() : Musique {
         return this.actualMusiqueInfosubscribable;
-    }
-    
-
-    private updatePlayIcon(state : string){
-      this.playIcon.next(state);
-      this.actualStateOfPlayIcon = state;
-    }
-
-    private updateMusiqueInfosubscribable(musique : Musique){
-      this.musiqueInfosubscribable.next(musique)
-      this.actualMusiqueInfosubscribable = musique;
-    }
-    
-    addMusiqueToFirestore(musique :Musique){  
-      console.log(musique)
-      this.afs.collection("musique").doc().set({
-        idUserContributor : firebase.auth().currentUser.email,
-        dateAjout : firebase.firestore.Timestamp.fromDate(new Date()),
-        idAuteur : musique.idAuteur,
-        idImageStorage : musique.idImageStorage,
-        idMusiqueStorage : musique.idMusiqueStorage,
-        nom : musique.nom,
-        nomAlbum : musique.nomAlbum
-      }).catch((error)=>{
-        console.error(error)
-      })
     }
 }
