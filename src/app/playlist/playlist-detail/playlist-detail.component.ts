@@ -18,6 +18,7 @@ import { MusicPopoverComponent } from 'src/app/popovers/music-popover/music-popo
 export class PlaylistDetailComponent implements OnInit {
 
   public playlist$: Observable<Playlist>;
+  canRemove: boolean = false;
 
   constructor(private route: ActivatedRoute,
     private playlistService: PlaylistService,
@@ -33,6 +34,7 @@ export class PlaylistDetailComponent implements OnInit {
           this.musiqueService.getMusiqueUrl(element);
         }
     })
+    this.checkRight();
   }
 
   delete(musique: Musique) {
@@ -98,4 +100,11 @@ export class PlaylistDetailComponent implements OnInit {
     this.authService.disconnect()
   }
 
+  checkRight(){
+     this.authService.getCurrentUser().then(res=>{
+       this.playlist$.subscribe(playlist=>{
+        this.canRemove = playlist.canWrite.includes(res.email) || playlist.idUserCreateur == res.email;
+      })
+    })
+  }
 }
