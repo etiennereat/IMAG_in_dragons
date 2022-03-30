@@ -18,9 +18,6 @@
             <div *ngIf="progressNum | async as percentage ">
                 Progress: {{ percentage | number }}%
                 <ion-progress-bar value="{{ percentage / 100 }} "></ion-progress-bar>
-                <ion-button color="danger " fill="outline " size="small " (click)="ngFireUploadTask.cancel() ">Cancel</ion-button>
-                <ion-button color="secondary " fill="outline " size="small " (click)="ngFireUploadTask.pause() ">Pause</ion-button>
-                <ion-button color="dark " fill="outline " size="small " (click)="ngFireUploadTask.resume() " class="button ">Resume</ion-button>
             </div>
         </ion-card-content>
     </ion-card>
