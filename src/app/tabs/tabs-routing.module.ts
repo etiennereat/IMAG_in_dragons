@@ -1,3 +1,4 @@
+import { QueueModule } from './../home/queue/queue.module';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { TabsPage } from './tabs.page';
@@ -18,6 +19,10 @@ const routes: Routes = [
       {
         path: 'tracks',
         loadChildren: () => import('../home/morceaux/morceaux.module').then(m => m.MorceauxModule)
+      },
+      {
+        path: 'queue',
+        loadChildren: () => import('../home/queue/queue.module').then(m => m.QueueModule)
       },
       {
         path: '',

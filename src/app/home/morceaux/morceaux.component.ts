@@ -7,9 +7,6 @@ import { Musique } from 'src/app/models/Musique';
 import { MusicPopoverComponent } from 'src/app/popovers/music-popover/music-popover.component';
 import { MusiqueService } from 'src/app/services/musique.service';
 
-
-
-
 @Component({
   selector: 'app-morceaux',
   templateUrl: './morceaux.component.html',

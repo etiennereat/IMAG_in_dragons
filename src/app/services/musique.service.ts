@@ -19,22 +19,26 @@ export class MusiqueService {
   private playIcon = new Subject<string>();
   private actualStateOfPlayIcon : string;
 
+  private currentMusiqueQueue = new Array<Musique>();
+  private currentQueue = new Subject<Array<Musique>>();
+
   private musiqueInfosubscribable = new Subject<Musique>();
   private actualMusiqueInfosubscribable : Musique;
+
+  private state : number; //0 play classique / 1 repet queue / 2 repet track
+  private QueueMode = new Subject<number>();
 
   private musicTimeDuration = new Subject<number>();
   private musicProgress = new Subject<number>();
   private musicCurrrentTime = new Subject<number>();
-  private currentMusiqueQueue: Musique[];
-  private state : number; //0 play classique / 1 repet queue / 2 repet track
   private progress:number;
   private intervalID :  NodeJS.Timeout;
 
   constructor(private afs: AngularFirestore, private media: Media) {
     this.storageMusiqueRef = firebase.storage().ref('musiques');
     this.storageImageRef = firebase.storage().ref('images');
-    this.currentMusiqueQueue = new Array<Musique>();
     this.state = 1;
+    this.updateQueueMode()
     this.actualMusiqueInfosubscribable = new Musique("Loading","Loading","Loading","Loading")
     this.updatePlayIcon("play");
     this.intervalID = null;
@@ -60,7 +64,8 @@ export class MusiqueService {
 
 
   public purgeService(){
-    this.currentMusiqueQueue = new Array<Musique>();
+    this.currentMusiqueQueue.splice(0)
+    this.updateQueue()
     this.indiceCurrentMusiquePlay = null;
     this.actualMusiqueInfosubscribable = new Musique("Loading","Loading","Loading","Loading");
     this.updatePlayIcon("play");
@@ -70,6 +75,7 @@ export class MusiqueService {
     clearInterval(this.intervalID);
     this.intervalID = null;
     this.state = 1;
+    this.updateQueueMode();
   }
 
   //Reset queue by the only musique 
@@ -86,8 +92,9 @@ export class MusiqueService {
           this.stopMusique();
         }
         this.indiceCurrentMusiquePlay = 0;
-        this.currentMusiqueQueue = new Array<Musique>();
+        this.currentMusiqueQueue.splice(0)
         this.currentMusiqueQueue.push(musique)
+        this.updateQueue()
         this.startMusique(musique);
       }      
     }
@@ -156,6 +163,7 @@ export class MusiqueService {
           this.startMusique(this.currentMusiqueQueue[this.indiceCurrentMusiquePlay])
         }
       }
+      this.updateQueue()
     }
 
     //ajoute une liste a la queue de lecture 
@@ -265,6 +273,39 @@ export class MusiqueService {
       this.musiqueInfosubscribable.next(musique)
       this.actualMusiqueInfosubscribable = musique;
     }
+
+    private updateQueue(){
+      this.currentQueue.next(this.currentMusiqueQueue)
+    }
+
+    public removeFromQueue(index:number){
+      this.currentMusiqueQueue.splice(index,1)
+      this.updateQueue()
+    }
+
+    public clearQueue(){
+      this.currentMusiqueQueue.splice(0)
+      this.updateQueue()
+    }
+
+    public shuffleQueue(){
+      this.currentMusiqueQueue = this.shuffle(this.currentMusiqueQueue)
+      this.updateQueue()
+    }
+
+    private shuffle(list) {
+      let currentIndex = list.length,randomIndex;
+      while (currentIndex != 0) {
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+        [list[currentIndex], list[randomIndex]] = [list[randomIndex], list[currentIndex]];
+      }
+      return list;
+    }
+
+    private updateQueueMode(){
+      this.QueueMode.next(this.state)
+    }
     
 /*-------------------------------------------------Methode-manipulation-Media-Musique-------------------------------------------------------*/
     public restartCurrentMusique(){
@@ -352,5 +393,18 @@ export class MusiqueService {
 
     getActualMusiqueInfosubscribable() : Musique {
         return this.actualMusiqueInfosubscribable;
+    }
+
+    getQueue(): Subject<Musique[]>{
+      return this.currentQueue;
+    }
+
+    getQueueMode(): Subject<number>{
+      return this.QueueMode;
+    }
+
+    setQueueMode(mode: number){
+      this.state = mode
+      this.updateQueueMode()
     }
 }
