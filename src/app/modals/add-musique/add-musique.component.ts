@@ -9,6 +9,7 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Musique } from 'src/app/models/Musique';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/storage';
+import { ArtistsService } from 'src/app/services/artists.service';
 
 
 export interface FILE {
@@ -29,8 +30,9 @@ export class AddMusiqueComponent implements OnInit {
     private toastController: ToastController,
     private domSanitizer : DomSanitizer,
     private modaleCtrl : ModalController,
-    private musiqueServ : MusiqueService
-    ) { 
+    private musiqueServ : MusiqueService,
+    private artistServ : ArtistsService) {
+     
       this.isImgUploading = false;
       this.isImgUploaded = true;
       this.cover = null;
@@ -107,9 +109,9 @@ export class AddMusiqueComponent implements OnInit {
           var metadata = {
             contentType : "image/jpeg"
           }
-          imagePathStorage = `images/${new Date().getTime()}_${this.FileName.split('.')[0].concat(".jpeg")}`;
-          const imageRef = this.angularFireStorage.ref(imagePathStorage);
-          this.ngFireUploadTask = this.angularFireStorage.upload(imagePathStorage, cover.data, metadata);
+          imagePathStorage = `${new Date().getTime()}_${this.FileName.split('.')[0].concat(".jpeg")}`;
+          const imageRef = this.angularFireStorage.ref("images/"+imagePathStorage);
+          this.ngFireUploadTask = this.angularFireStorage.upload("images/"+imagePathStorage, cover.data, metadata);
         }
       })
     })
@@ -122,10 +124,11 @@ export class AddMusiqueComponent implements OnInit {
           this.isImgUploading = false;
           this.isImgUploaded = true;
           const storageImageRef = firebase.storage().ref('images');
-          var starsRef = storageImageRef.child("images/"+imagePathStorage);
+          var starsRef = storageImageRef.child(imagePathStorage);
           starsRef.getDownloadURL().then(imageUrl => {
             var musique = new Musique("",artiste,imageUrl,title,dateAjout,musiquePathStorage.split('/')[1], album)
             this.musiqueServ.addMusiqueToFirestore(musique);
+            this.artistServ.tryToAddArtistToFirestore(artiste);
             this.notifySuccesUpload()
           })
         },error => {
