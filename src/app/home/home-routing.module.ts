@@ -1,3 +1,4 @@
+import { ArtistsModule } from './artists/artists.module';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AlbumsComponent } from './albums/albums.component';
@@ -15,6 +16,10 @@ const routes: Routes = [
   {
     path: 'albums',
     component: AlbumsComponent, 
+  },
+  {
+    path: 'artists',
+    loadChildren: () => import('./artists/artists.module').then(m => m.ArtistsModule)
   },
   {
     path: 'tracks',
