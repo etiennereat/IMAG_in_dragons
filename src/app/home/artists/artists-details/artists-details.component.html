@@ -1,0 +1,35 @@
+<ng-container *ngIf="musics$ | async as musics;">
+    <ion-header [translucent]="true">
+        <ion-toolbar>
+            <ion-buttons slot="start">
+                <ion-back-button></ion-back-button>
+            </ion-buttons>
+            <ion-buttons slot="end">
+                <ion-button (click)="disconnect()">
+                    <ion-icon size="large" name="log-out-outline"></ion-icon>
+                </ion-button>
+            </ion-buttons>
+            <ion-title>Musics</ion-title>
+        </ion-toolbar>
+    </ion-header>
+    <ion-content [fullscreen]="true">
+        <ion-header collapse="condense">
+            <ion-toolbar>
+                <ion-title size="large">Musics</ion-title>
+            </ion-toolbar>
+        </ion-header>
+        <ion-list>
+            <ion-item detail="false" *ngFor="let music of musics">
+                <ion-item class="music" detail="false" [routerLink]="['music/'+music.id]" (click)="playMusique(music)">
+                    <ion-avatar slot="start">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRspsZ1EU8IH4m29uCG9eQ6UrrdtfwF8uFtN_nzxOPoj-YHbvv9X80_GApgrWKupB0UdL0&usqp=CAU">
+                    </ion-avatar>
+                    <ion-label>
+                        <h2>{{ music.nom }}</h2>
+                        <p>{{ music.idAuteur }}</p>
+                    </ion-label>
+                </ion-item>
+            </ion-item>
+        </ion-list>
+    </ion-content>
+</ng-container>
