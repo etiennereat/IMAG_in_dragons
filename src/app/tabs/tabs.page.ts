@@ -17,7 +17,7 @@ export class TabsPage {
   isOnMusicPage: boolean;
   playIcon:string;
   musique: Musique;
-
+  queueSize:number
 
   constructor(private musiqueServ: MusiqueService,
     private router:Router) {
@@ -34,6 +34,9 @@ export class TabsPage {
     })
     this.musiqueServ.getCurrentmusicProgress().subscribe((progress)=>{
       this.progress = progress
+    })
+    this.musiqueServ.getQueue().subscribe((data)=>{
+      this.queueSize = data.length
     })
     setInterval(() => {
       this.isOnMusicPage = this.router.routerState.snapshot.url.includes("music")
