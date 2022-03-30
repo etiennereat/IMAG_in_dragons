@@ -18,8 +18,8 @@
             <ion-toolbar>
                 <ion-title size="large">Tracks</ion-title>
             </ion-toolbar>
-            <ion-searchbar #search debounce="500" (ionChange)="_ionChange($event)"></ion-searchbar>
         </ion-header>
+        <ion-searchbar #search showClearButton animated (ionChange)="_ionChange($event)"></ion-searchbar>
         <ion-list>
             <ion-item detail="false" *ngFor="let music of searchedItem">
                 <ion-item class="music" detail="false" [routerLink]="['music/'+music.id]" (click)="playMusique(music)">
