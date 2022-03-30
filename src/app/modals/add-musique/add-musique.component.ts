@@ -107,9 +107,9 @@ export class AddMusiqueComponent implements OnInit {
           var metadata = {
             contentType : "image/jpeg"
           }
-          imagePathStorage = `images/${new Date().getTime()}_${this.FileName.split('.')[0].concat(".jpeg")}`;
-          const imageRef = this.angularFireStorage.ref(imagePathStorage);
-          this.ngFireUploadTask = this.angularFireStorage.upload(imagePathStorage, cover.data, metadata);
+          imagePathStorage = `${new Date().getTime()}_${this.FileName.split('.')[0].concat(".jpeg")}`;
+          const imageRef = this.angularFireStorage.ref("images/"+imagePathStorage);
+          this.ngFireUploadTask = this.angularFireStorage.upload("images/"+imagePathStorage, cover.data, metadata);
         }
       })
     })
@@ -122,7 +122,7 @@ export class AddMusiqueComponent implements OnInit {
           this.isImgUploading = false;
           this.isImgUploaded = true;
           const storageImageRef = firebase.storage().ref('images');
-          var starsRef = storageImageRef.child("images/"+imagePathStorage);
+          var starsRef = storageImageRef.child(imagePathStorage);
           starsRef.getDownloadURL().then(imageUrl => {
             var musique = new Musique("",artiste,imageUrl,title,dateAjout,musiquePathStorage.split('/')[1], album)
             this.musiqueServ.addMusiqueToFirestore(musique);
