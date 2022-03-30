@@ -2,7 +2,7 @@ import { AuthService } from './auth.service';
 import firebase from "firebase/compat/app";
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { Playlist } from '../models/playlist';
 import { Musique } from '../models/Musique';
 import { map, switchMap } from 'rxjs/operators'
@@ -34,20 +34,17 @@ export class PlaylistService {
   }
 
   getOne(id: string) : Observable<Playlist>{
-    let playlistTmp = this.fs.doc<Playlist>('playlist/'+id).valueChanges({idField:'id'}).pipe(
+    return this.fs.doc<Playlist>('playlist/'+id).valueChanges({idField:'id'}).pipe(
       switchMap((playlist: Playlist) => {
-        return this.fs
-          .collection<Musique>(`playlist/${id}/musiques`).valueChanges({idField:'id'}).pipe(
-            map( musiques  => {
-                return Object.assign(playlist, {musiques: musiques})
-              }
-            )
-          )
+        playlist.musiques = this.getPlaylistMusiques(playlist.id)
+          return of (playlist) 
         }
-      ),
+      )
     );
+  }
 
-    return playlistTmp;
+  getPlaylistMusiques(id: string) : Observable<Musique[]>{
+    return this.fs.collection<Musique>(`playlist/${id}/musiques`).valueChanges({idField:'id'});
   }
 
   addPlaylist(name:string,image?:string) {

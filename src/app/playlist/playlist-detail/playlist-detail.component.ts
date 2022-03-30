@@ -29,11 +29,6 @@ export class PlaylistDetailComponent implements OnInit {
 
   ngOnInit(): void {
     this.playlist$ = this.playlistService.getOne(this.route.snapshot.params.id);
-    // this.playlist$.subscribe(res => {
-    //   for (var element of res.musiques) {
-    //       this.musiqueService.getMusiqueUrl(element);
-    //     }
-    // })
     this.checkRight();
   }
 
@@ -92,7 +87,9 @@ export class PlaylistDetailComponent implements OnInit {
 
   playThisPlaylist(){
     this.playlist$.subscribe((playlist)=>{
-      this.musiqueService.playPlaylist(playlist.musiques)
+      playlist.musiques.subscribe(musiques=>{
+        this.musiqueService.playPlaylist(musiques)
+      })
     })
   }
 

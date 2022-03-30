@@ -1,22 +1,12 @@
+import { Observable } from "rxjs";
 import { Musique } from "./Musique";
 
-export class Playlist {
+export interface Playlist {
     id: string;
     nom: string;
-    musiques: Musique[];
+    musiques: Observable<Musique[]>;
     canWrite: string[];
     canRead: string[];
     idUserCreateur: string;
     idImageStorage: string;
-
-
-    constructor(name: string, id: string, musiques: Musique[], canWrite: string[], canRead: string[], owner: string, image: string){
-        this.id = id;;
-        this.nom = name;
-        this.musiques = musiques;
-        this.canRead = canRead;
-        this.canWrite = canWrite;
-        this.idUserCreateur = owner;
-        this.idImageStorage = image;
-    }
 }

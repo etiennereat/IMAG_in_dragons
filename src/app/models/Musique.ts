@@ -6,7 +6,6 @@ export class Musique {
     idMusiqueStorage: string;
     nom: string;
     nomAlbum: string;
-    urlImage: string;
     urlMusique: string;
 
 

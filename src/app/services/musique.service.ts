@@ -38,8 +38,8 @@ export class MusiqueService {
     this.storageMusiqueRef = firebase.storage().ref('musiques');
     this.storageImageRef = firebase.storage().ref('images');
     this.state = 1;
+    this.actualMusiqueInfosubscribable = new Musique("Loading","Loading","https://firebasestorage.googleapis.com/v0/b/imagindragons-e576d.appspot.com/o/images%2FimagePlaylistDemo.jpg?alt=media&token=be33d621-be06-488a-9636-d65b4bdcabca","Loading")
     this.updateQueueMode()
-    this.actualMusiqueInfosubscribable = new Musique("Loading","Loading","Loading","Loading")
     this.updatePlayIcon("play");
     this.intervalID = null;
   }
@@ -384,14 +384,6 @@ export class MusiqueService {
 
     getActualStateOfPlayIcon(): string{
       return this.actualStateOfPlayIcon;
-    }
-
-
-    getMusiqueUrl(musique: Musique){
-        var starsRef = this.storageImageRef.child(musique.idImageStorage);
-        starsRef.getDownloadURL().then(res => {
-            musique.urlImage = res;
-        });
     }
 
     getCurrentPlayMusique(): Subject<Musique>{

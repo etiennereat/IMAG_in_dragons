@@ -7,6 +7,8 @@ import { finalize } from 'rxjs/operators';
 import * as mm from 'music-metadata/lib/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Musique } from 'src/app/models/Musique';
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/storage';
 
 
 export interface FILE {
@@ -119,9 +121,13 @@ export class AddMusiqueComponent implements OnInit {
         this.fileUploadedPath.subscribe(()=>{
           this.isImgUploading = false;
           this.isImgUploaded = true;
-          var musique = new Musique("",artiste,imagePathStorage.split('/')[1],title,dateAjout,musiquePathStorage.split('/')[1], album)
-          this.musiqueServ.addMusiqueToFirestore(musique);
-          this.notifySuccesUpload()
+          const storageImageRef = firebase.storage().ref('images');
+          var starsRef = storageImageRef.child("images/"+imagePathStorage);
+          starsRef.getDownloadURL().then(imageUrl => {
+            var musique = new Musique("",artiste,imageUrl,title,dateAjout,musiquePathStorage.split('/')[1], album)
+            this.musiqueServ.addMusiqueToFirestore(musique);
+            this.notifySuccesUpload()
+          })
         },error => {
           console.log(error);
         })
