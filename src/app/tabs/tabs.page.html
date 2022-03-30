@@ -14,10 +14,18 @@
                 <b>{{musique.nom}}</b><br>
                 <span>{{musique.idAuteur}}</span>
             </ion-col>
-            <ion-col size="3" class="ion-text-center ion-no-padding ion-align-self-center">
+            <ion-col size="1" class="ion-text-center ion-no-padding ion-align-self-center">
                 <ion-buttons>
                     <ion-icon (click)="playPause()" name="play-back" size="large"></ion-icon>
+                </ion-buttons>
+            </ion-col>
+            <ion-col size="1" class="ion-text-center ion-no-padding ion-align-self-center">
+                <ion-buttons>
                     <ion-icon (click)="playPause()" [name]="playIcon" size="large"></ion-icon>
+                </ion-buttons>
+            </ion-col>
+            <ion-col size="1" class="ion-text-center ion-no-padding ion-align-self-center">
+                <ion-buttons>
                     <ion-icon (click)="playPause()" name="play-forward" size="large"></ion-icon>
                 </ion-buttons>
             </ion-col>
@@ -39,6 +47,11 @@
         <ion-tab-button tab="tracks">
             <ion-icon [name]="selected == 'tracks' ? 'tracks' : 'musical-note'"></ion-icon>
             <ion-label>Tracks</ion-label>
+        </ion-tab-button>
+
+        <ion-tab-button *ngIf="queueSize > 0" tab="queue">
+            <ion-icon [name]="selected == 'queue' ? 'queue' : 'layers'"></ion-icon>
+            <ion-label>Queue</ion-label>
         </ion-tab-button>
     </ion-tab-bar>
 </ion-tabs>

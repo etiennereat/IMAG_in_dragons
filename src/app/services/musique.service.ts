@@ -19,22 +19,26 @@ export class MusiqueService {
   private playIcon = new Subject<string>();
   private actualStateOfPlayIcon : string;
 
+  private currentMusiqueQueue = new Array<Musique>();
+  private currentQueue = new Subject<Array<Musique>>();
+
   private musiqueInfosubscribable = new Subject<Musique>();
   private actualMusiqueInfosubscribable : Musique;
+
+  private state : number; //0 play classique / 1 repet queue / 2 repet track
+  private QueueMode = new Subject<number>();
 
   private musicTimeDuration = new Subject<number>();
   private musicProgress = new Subject<number>();
   private musicCurrrentTime = new Subject<number>();
-  private currentMusiqueQueue: Musique[];
-  private state : number; //0 play classique / 1 repet queue / 2 repet track
   private progress:number;
   private intervalID :  NodeJS.Timeout;
 
   constructor(private afs: AngularFirestore, private media: Media) {
     this.storageMusiqueRef = firebase.storage().ref('musiques');
     this.storageImageRef = firebase.storage().ref('images');
-    this.currentMusiqueQueue = new Array<Musique>();
     this.state = 1;
+    this.updateQueueMode()
     this.actualMusiqueInfosubscribable = new Musique("Loading","Loading","Loading","Loading")
     this.updatePlayIcon("play");
     this.intervalID = null;
@@ -60,7 +64,8 @@ export class MusiqueService {
 
 
   public purgeService(){
-    this.currentMusiqueQueue = new Array<Musique>();
+    this.currentMusiqueQueue.splice(0)
+    this.updateQueue()
     this.indiceCurrentMusiquePlay = null;
     this.actualMusiqueInfosubscribable = new Musique("Loading","Loading","Loading","Loading");
     this.updatePlayIcon("play");
@@ -70,6 +75,7 @@ export class MusiqueService {
     clearInterval(this.intervalID);
     this.intervalID = null;
     this.state = 1;
+    this.updateQueueMode();
   }
 
   //Reset queue by the only musique 
@@ -77,7 +83,9 @@ export class MusiqueService {
     //if same musique do nothing exept resume musique     
       if(this.indiceCurrentMusiquePlay != null && this.currentMusiqueQueue[this.indiceCurrentMusiquePlay].id == musique.id){
         //resume current musique
-        this.resumeMusique();
+        if(this.actualStateOfPlayIcon == "play"){
+          this.resumeMusique();
+        }
         this.updateMusiqueInfosubscribable(musique)
       }
       //else reset queue by this only one music
@@ -86,8 +94,9 @@ export class MusiqueService {
           this.stopMusique();
         }
         this.indiceCurrentMusiquePlay = 0;
-        this.currentMusiqueQueue = new Array<Musique>();
+        this.currentMusiqueQueue.splice(0)
         this.currentMusiqueQueue.push(musique)
+        this.updateQueue()
         this.startMusique(musique);
       }      
     }
@@ -147,6 +156,7 @@ export class MusiqueService {
     //ajoute a la queue la musique en parametre la demare si la liste etait vide ou términé 
     public addToQueue(musique:Musique){
       this.currentMusiqueQueue.push(musique);
+      this.updateQueue()
       if(this.currentMusique == null && this.getActualStateOfPlayIcon() != "cloud-download-outline"){
         if(this.currentMusiqueQueue.length == 1){
           this.playMusique(musique);
@@ -174,7 +184,6 @@ export class MusiqueService {
     }
 
     public addMusiqueToFirestore(musique :Musique){  
-      console.log(musique)
       this.afs.collection("musique").doc().set({
         idUserContributor : firebase.auth().currentUser.email,
         dateAjout : firebase.firestore.Timestamp.fromDate(new Date()),
@@ -235,6 +244,9 @@ export class MusiqueService {
     private startMusique(musique:Musique){
       //si on a deja download l'url on le recup direct 
       if(musique.urlMusique != null){
+        if(this.intervalID == null){
+          this.intervalID = this.createPolling();
+        }
         this.currentMusique = this.media.create(musique.urlMusique);
         this.currentMusique.play();
         this.updatePlayIcon("pause")
@@ -265,19 +277,52 @@ export class MusiqueService {
       this.musiqueInfosubscribable.next(musique)
       this.actualMusiqueInfosubscribable = musique;
     }
+
+    private updateQueue(){
+      this.currentQueue.next(this.currentMusiqueQueue)
+    }
+
+    public removeFromQueue(index:number){
+      this.currentMusiqueQueue.splice(index,1)
+      this.updateQueue()
+    }
+
+    public clearQueue(){
+      this.currentMusiqueQueue.splice(0)
+      this.updateQueue()
+    }
+
+    public shuffleQueue(){
+      this.currentMusiqueQueue = this.shuffle(this.currentMusiqueQueue)
+      this.updateQueue()
+    }
+
+    private shuffle(list) {
+      let currentIndex = list.length,randomIndex;
+      while (currentIndex != 0) {
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+        [list[currentIndex], list[randomIndex]] = [list[randomIndex], list[currentIndex]];
+      }
+      return list;
+    }
+
+    private updateQueueMode(){
+      this.QueueMode.next(this.state)
+    }
     
 /*-------------------------------------------------Methode-manipulation-Media-Musique-------------------------------------------------------*/
     public restartCurrentMusique(){
-      this.currentMusique.pause()
-      this.currentMusique.getCurrentPosition().then(res=>{
-        this.currentMusique.seekTo(res);
-        this.currentMusique.play();
-      });
+      this.seekTo(0)
+      this.musicProgress.next(0)
+      this.musicCurrrentTime.next(0)
     }
 
     public pauseMusique(){
       this.currentMusique.pause();
       this.updatePlayIcon("play")
+      clearInterval(this.intervalID);
+      this.intervalID = null;
     }
     
     public stopMusique(){
@@ -285,11 +330,14 @@ export class MusiqueService {
       this.currentMusique.release();
       this.updatePlayIcon("play")
       this.currentMusique = null;
+      clearInterval(this.intervalID);
+      this.intervalID = null;
     }
 
     public resumeMusique(){
       this.currentMusique.play();
       this.updatePlayIcon("pause")
+      this.intervalID = this.createPolling();
     }
 
 /*------------------------------------------------------------Getter-Setter------------------------------------------------------------------*/
@@ -352,5 +400,22 @@ export class MusiqueService {
 
     getActualMusiqueInfosubscribable() : Musique {
         return this.actualMusiqueInfosubscribable;
+    }
+
+    getQueue(): Subject<Musique[]>{
+      return this.currentQueue;
+    }
+
+    getQueueMusique(): Musique[]{
+      return this.currentMusiqueQueue;
+    }  
+
+    getQueueMode(): Subject<number>{
+      return this.QueueMode;
+    }
+
+    setQueueMode(mode: number){
+      this.state = mode
+      this.updateQueueMode()
     }
 }
