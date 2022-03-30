@@ -83,7 +83,9 @@ export class MusiqueService {
     //if same musique do nothing exept resume musique     
       if(this.indiceCurrentMusiquePlay != null && this.currentMusiqueQueue[this.indiceCurrentMusiquePlay].id == musique.id){
         //resume current musique
-        this.resumeMusique();
+        if(this.actualStateOfPlayIcon == "play"){
+          this.resumeMusique();
+        }
         this.updateMusiqueInfosubscribable(musique)
       }
       //else reset queue by this only one music
@@ -154,6 +156,7 @@ export class MusiqueService {
     //ajoute a la queue la musique en parametre la demare si la liste etait vide ou términé 
     public addToQueue(musique:Musique){
       this.currentMusiqueQueue.push(musique);
+      this.updateQueue()
       if(this.currentMusique == null && this.getActualStateOfPlayIcon() != "cloud-download-outline"){
         if(this.currentMusiqueQueue.length == 1){
           this.playMusique(musique);
@@ -163,7 +166,6 @@ export class MusiqueService {
           this.startMusique(this.currentMusiqueQueue[this.indiceCurrentMusiquePlay])
         }
       }
-      this.updateQueue()
     }
 
     //ajoute une liste a la queue de lecture 
@@ -182,7 +184,6 @@ export class MusiqueService {
     }
 
     public addMusiqueToFirestore(musique :Musique){  
-      console.log(musique)
       this.afs.collection("musique").doc().set({
         idUserContributor : firebase.auth().currentUser.email,
         dateAjout : firebase.firestore.Timestamp.fromDate(new Date()),
@@ -243,6 +244,9 @@ export class MusiqueService {
     private startMusique(musique:Musique){
       //si on a deja download l'url on le recup direct 
       if(musique.urlMusique != null){
+        if(this.intervalID == null){
+          this.intervalID = this.createPolling();
+        }
         this.currentMusique = this.media.create(musique.urlMusique);
         this.currentMusique.play();
         this.updatePlayIcon("pause")
@@ -309,16 +313,16 @@ export class MusiqueService {
     
 /*-------------------------------------------------Methode-manipulation-Media-Musique-------------------------------------------------------*/
     public restartCurrentMusique(){
-      this.currentMusique.pause()
-      this.currentMusique.getCurrentPosition().then(res=>{
-        this.currentMusique.seekTo(res);
-        this.currentMusique.play();
-      });
+      this.seekTo(0)
+      this.musicProgress.next(0)
+      this.musicCurrrentTime.next(0)
     }
 
     public pauseMusique(){
       this.currentMusique.pause();
       this.updatePlayIcon("play")
+      clearInterval(this.intervalID);
+      this.intervalID = null;
     }
     
     public stopMusique(){
@@ -326,11 +330,14 @@ export class MusiqueService {
       this.currentMusique.release();
       this.updatePlayIcon("play")
       this.currentMusique = null;
+      clearInterval(this.intervalID);
+      this.intervalID = null;
     }
 
     public resumeMusique(){
       this.currentMusique.play();
       this.updatePlayIcon("pause")
+      this.intervalID = this.createPolling();
     }
 
 /*------------------------------------------------------------Getter-Setter------------------------------------------------------------------*/
@@ -398,6 +405,10 @@ export class MusiqueService {
     getQueue(): Subject<Musique[]>{
       return this.currentQueue;
     }
+
+    getQueueMusique(): Musique[]{
+      return this.currentMusiqueQueue;
+    }  
 
     getQueueMode(): Subject<number>{
       return this.QueueMode;

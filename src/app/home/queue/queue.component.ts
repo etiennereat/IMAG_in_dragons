@@ -19,6 +19,7 @@ export class QueueComponent implements OnInit {
     private alertController:AlertController) { }
 
   ngOnInit() {
+    this.Queue = this.musicService.getQueueMusique()
     this.musicService.getQueueMode().subscribe(mode => {
       switch(mode){
         case 1:
