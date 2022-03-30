@@ -9,6 +9,7 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Musique } from 'src/app/models/Musique';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/storage';
+import { ArtistsService } from 'src/app/services/artists.service';
 
 
 export interface FILE {
@@ -29,8 +30,9 @@ export class AddMusiqueComponent implements OnInit {
     private toastController: ToastController,
     private domSanitizer : DomSanitizer,
     private modaleCtrl : ModalController,
-    private musiqueServ : MusiqueService
-    ) { 
+    private musiqueServ : MusiqueService,
+    private artistServ : ArtistsService) {
+     
       this.isImgUploading = false;
       this.isImgUploaded = true;
       this.cover = null;
@@ -126,6 +128,7 @@ export class AddMusiqueComponent implements OnInit {
           starsRef.getDownloadURL().then(imageUrl => {
             var musique = new Musique("",artiste,imageUrl,title,dateAjout,musiquePathStorage.split('/')[1], album)
             this.musiqueServ.addMusiqueToFirestore(musique);
+            this.artistServ.tryToAddArtistToFirestore(artiste);
             this.notifySuccesUpload()
           })
         },error => {
