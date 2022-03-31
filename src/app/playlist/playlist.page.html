@@ -29,6 +29,9 @@
             <ion-card-content>
                 <ion-item-sliding detail="false" *ngFor="let playlist of playlistsOwner$ | async;">
                     <ion-item detail="false" [routerLink]="[playlist?.id]" routerLinkActive="true">
+                        <ion-avatar slot="start">
+                            <img [src]="playlist.idImageStorage">
+                        </ion-avatar>
                         <ion-label>{{ playlist.nom }}</ion-label>
                     </ion-item>
                     <ion-item-options side="start">
@@ -56,6 +59,9 @@
             <ion-card-content>
                 <ion-item-sliding detail="false" *ngFor="let playlistRaW of playlistsReadAndWrite$ | async;">
                     <ion-item detail="false" [routerLink]="[playlistRaW?.id]" routerLinkActive="true">
+                        <ion-avatar slot="start">
+                            <img [src]="playlistRaW.idImageStorage">
+                        </ion-avatar>
                         <ion-label>{{ playlistRaW.nom }}</ion-label>
                     </ion-item>
                     <ion-item-options side="start">
@@ -83,6 +89,9 @@
             <ion-card-content>
                 <ion-item-sliding detail="false" *ngFor="let playlistRO of playlistsReadOnly$ | async;">
                     <ion-item detail="false" [routerLink]="[playlistRO?.id]" routerLinkActive="true">
+                        <ion-avatar slot="start">
+                            <img [src]="playlistRO.idImageStorage">
+                        </ion-avatar>
                         <ion-label>{{ playlistRO.nom }}</ion-label>
                     </ion-item>
                     <ion-item-options side="end">
