@@ -202,11 +202,15 @@ export class MusiqueService {
       this.intervalID = this.createPolling();
       var starsRef = this.storageMusiqueRef.child(musique.idMusiqueStorage);
       // Get the download URL
+      console.log("ERROR : wil be get the URL")
       starsRef.getDownloadURL()
       .then((url) => {
+        console.log("ERROR : "+url)
         musique.urlMusique = url;
         this.currentMusique = this.media.create(url);
+        console.log("ERROR : create done")
         this.currentMusique.play();
+        console.log("ERROR : play done ")
         this.updatePlayIcon("pause")
         this.updateMusiqueInfosubscribable(musique)
 

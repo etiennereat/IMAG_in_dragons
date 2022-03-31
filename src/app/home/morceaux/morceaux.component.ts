@@ -6,6 +6,8 @@ import { AddMusiqueComponent } from 'src/app/modals/add-musique/add-musique.comp
 import { Musique } from 'src/app/models/Musique';
 import { MusicPopoverComponent } from 'src/app/popovers/music-popover/music-popover.component';
 import { MusiqueService } from 'src/app/services/musique.service';
+import { first } from 'rxjs/operators';
+import firebase from 'firebase/compat/app';
 
 @Component({
   selector: 'app-morceaux',
@@ -17,7 +19,8 @@ export class MorceauxComponent implements OnInit {
   
   musics$: Observable<Musique[]> = EMPTY;
   searchedItem:any;
-  
+  user$ : Promise<firebase.User>;
+
   constructor(private musiqueService:MusiqueService,
     private popoverController:PopoverController,
     private modalController: ModalController,
@@ -28,6 +31,7 @@ export class MorceauxComponent implements OnInit {
     this.musics$.subscribe((musics) =>{
       this.searchedItem = musics
     })
+    this.user$ = this.authService.getCurrentUser();
   }
 
   ionViewDidEnter() {
@@ -50,12 +54,8 @@ export class MorceauxComponent implements OnInit {
   }
 
   playMusique(musiqueLite: Musique){
-    var nb = 0
-    this.musiqueService.getMusique(musiqueLite.id).subscribe(res => {
-      if(nb == 0){
-        this.musiqueService.playMusique(res);
-        nb=1
-      }
+    this.musiqueService.getMusique(musiqueLite.id).pipe(first()).subscribe(res => {
+      this.musiqueService.playMusique(res);
     })
   }
 
