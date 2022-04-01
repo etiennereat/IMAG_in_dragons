@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Musique } from '../models/Musique';
-import { Observable, Subject } from 'rxjs';
+import { from, Observable, Subject } from 'rxjs';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/storage';
 import { Media, MediaObject } from '@ionic-native/media/ngx';
 import { Platform } from '@ionic/angular';
+import { first } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,6 @@ import { Platform } from '@ionic/angular';
 export class MusiqueService {
   
   storageMusiqueRef : firebase.storage.Reference;
-  storageImageRef : firebase.storage.Reference;
   private currentMusique : MediaObject;
   public indiceCurrentMusiquePlay: number;
   
@@ -35,9 +35,8 @@ export class MusiqueService {
   private progress:number;
   private intervalID :  NodeJS.Timeout;
 
-  constructor(private afs: AngularFirestore, private media: Media, private platform: Platform) {
+  constructor(private afs: AngularFirestore, private media: Media) {
     this.storageMusiqueRef = firebase.storage().ref('musiques');
-    this.storageImageRef = firebase.storage().ref('images');
     this.state = 1;
     this.actualMusiqueInfosubscribable = new Musique("Loading","Loading","https://firebasestorage.googleapis.com/v0/b/imagindragons-e576d.appspot.com/o/images%2FimagePlaylistDemo.jpg?alt=media&token=be33d621-be06-488a-9636-d65b4bdcabca","Loading")
     this.updateQueueMode()
@@ -199,30 +198,31 @@ export class MusiqueService {
     private launchMusique(musique : Musique){
       var starsRef = this.storageMusiqueRef.child(musique.idMusiqueStorage);
       // Get the download URL
-      starsRef.getDownloadURL()
-      .then((url) => {
-        musique.urlMusique = url;
-        this.currentMusique = this.media.create(url);
-        this.currentMusique.onStatusUpdate.subscribe(status => {
-          switch(status){
-            case 2 :
-              this.intervalID = this.createPolling();
-              break
-            case 4 :
-              clearInterval(this.intervalID);
-              this.playNextMusique();
-              break
-            case 3 :
-              clearInterval(this.intervalID);
-              break
-          }
-        });
-        this.currentMusique.play();
-        this.updatePlayIcon("pause")
-        this.updateMusiqueInfosubscribable(musique)
+      try{
+        from(starsRef.getDownloadURL()).pipe(first()).subscribe(url => {
+          musique.urlMusique = url;
+          this.currentMusique = this.media.create(url);
+          this.currentMusique.onStatusUpdate.subscribe(status => {
+            switch(status){
+              case 2 :
+                this.intervalID = this.createPolling();
+                break
+              case 4 :
+                clearInterval(this.intervalID);
+                this.playNextMusique();
+                break
+              case 3 :
+                clearInterval(this.intervalID);
+                break
+            }
+          });
+          this.currentMusique.play();
+          this.updatePlayIcon("pause")
+          this.updateMusiqueInfosubscribable(musique)
 
-      })
-      .catch((error) => {
+        })
+      }
+      catch(error){
         switch (error.code) {
           case 'storage/object-not-found':
               console.error("File doesn't exist")
@@ -246,7 +246,7 @@ export class MusiqueService {
         if(this.state != 2 && error.code != 'storage/quota-exceeded'){
           //this.playNextMusique();
         }
-      })
+      }
     }
 
     // Joue une musique en fonction de son etat

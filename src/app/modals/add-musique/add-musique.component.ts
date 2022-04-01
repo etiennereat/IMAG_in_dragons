@@ -10,6 +10,7 @@ import { Musique } from 'src/app/models/Musique';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/storage';
 import { ArtistsService } from 'src/app/services/artists.service';
+import { ImageService } from 'src/app/services/image.service';
 
 
 export interface FILE {
@@ -31,7 +32,8 @@ export class AddMusiqueComponent implements OnInit {
     private domSanitizer : DomSanitizer,
     private modaleCtrl : ModalController,
     private musiqueServ : MusiqueService,
-    private artistServ : ArtistsService) {
+    private artistServ : ArtistsService,
+    private imageServ : ImageService) {
      
       this.isImgUploading = false;
       this.isImgUploaded = true;
@@ -105,13 +107,7 @@ export class AddMusiqueComponent implements OnInit {
           const STRING_CHAR = TYPED_ARRAY.reduce((data, byte)=> {return data + String.fromCharCode(byte);}, '');
           let base64String = btoa(STRING_CHAR);
           this.cover = this.domSanitizer.bypassSecurityTrustUrl('data:image/jpg;base64,' + base64String);
-          
-          var metadata = {
-            contentType : "image/jpeg"
-          }
-          imagePathStorage = `${new Date().getTime()}_${this.FileName.split('.')[0].concat(".jpeg")}`;
-          const imageRef = this.angularFireStorage.ref("images/"+imagePathStorage);
-          this.ngFireUploadTask = this.angularFireStorage.upload("images/"+imagePathStorage, cover.data, metadata);
+          this.ngFireUploadTask = this.imageServ.uploadImageToFirebase(file.name, cover);
         }
       })
     })
@@ -121,11 +117,7 @@ export class AddMusiqueComponent implements OnInit {
         this.fileUploadedPath = musicRef.getDownloadURL();
           
         this.fileUploadedPath.subscribe(()=>{
-          this.isImgUploading = false;
-          this.isImgUploaded = true;
-          const storageImageRef = firebase.storage().ref('images');
-          var starsRef = storageImageRef.child(imagePathStorage);
-          starsRef.getDownloadURL().then(imageUrl => {
+          this.imageServ.getImageUrl(imagePathStorage).then(imageUrl => {
             var musique = new Musique("",artiste,imageUrl,title,dateAjout,musiquePathStorage.split('/')[1], album)
             this.musiqueServ.addMusiqueToFirestore(musique);
             this.artistServ.tryToAddArtistToFirestore(artiste);
@@ -145,5 +137,7 @@ export class AddMusiqueComponent implements OnInit {
     });
     this.modaleCtrl.dismiss();
     toast.present();
+    this.isImgUploading = false;
+    this.isImgUploaded = true;
   }
 }
