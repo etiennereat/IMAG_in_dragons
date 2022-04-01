@@ -5,6 +5,7 @@ import { Observable, Subject } from 'rxjs';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/storage';
 import { Media, MediaObject } from '@ionic-native/media/ngx';
+import { Platform } from '@ionic/angular';
 
 @Injectable({
   providedIn: 'root'
@@ -34,7 +35,7 @@ export class MusiqueService {
   private progress:number;
   private intervalID :  NodeJS.Timeout;
 
-  constructor(private afs: AngularFirestore, private media: Media) {
+  constructor(private afs: AngularFirestore, private media: Media, private platform: Platform) {
     this.storageMusiqueRef = firebase.storage().ref('musiques');
     this.storageImageRef = firebase.storage().ref('images');
     this.state = 1;
@@ -46,7 +47,7 @@ export class MusiqueService {
 
   private createPolling() : NodeJS.Timeout{
     return setInterval(() => {
-      if(!this.isNull()){
+      if(!this.isNull() && this.currentMusique != null){
         this.getPosition().then((position) => {
           var audioDuration = Math.floor(this.getDuration());
           this.musicTimeDuration.next(audioDuration)
@@ -54,9 +55,6 @@ export class MusiqueService {
           this.musicCurrrentTime.next(currentPosition)
           this.progress = (currentPosition / audioDuration) * 100
           this.musicProgress.next(this.progress)
-          if(this.progress == 100){
-            this.playNextMusique();
-          }
         });
       }
     }, 1000 );
@@ -199,24 +197,32 @@ export class MusiqueService {
 
     //recupère l'URL de telechargement et lance la musique 
     private launchMusique(musique : Musique){
-      this.intervalID = this.createPolling();
       var starsRef = this.storageMusiqueRef.child(musique.idMusiqueStorage);
       // Get the download URL
-      console.log("ERROR : wil be get the URL")
       starsRef.getDownloadURL()
       .then((url) => {
-        console.log("ERROR : "+url)
         musique.urlMusique = url;
         this.currentMusique = this.media.create(url);
-        console.log("ERROR : create done")
+        this.currentMusique.onStatusUpdate.subscribe(status => {
+          switch(status){
+            case 2 :
+              this.intervalID = this.createPolling();
+              break
+            case 4 :
+              clearInterval(this.intervalID);
+              this.playNextMusique();
+              break
+            case 3 :
+              clearInterval(this.intervalID);
+              break
+          }
+        });
         this.currentMusique.play();
-        console.log("ERROR : play done ")
         this.updatePlayIcon("pause")
         this.updateMusiqueInfosubscribable(musique)
 
       })
       .catch((error) => {
-        console.error(error.code)
         switch (error.code) {
           case 'storage/object-not-found':
               console.error("File doesn't exist")
@@ -238,20 +244,30 @@ export class MusiqueService {
             break;
         }
         if(this.state != 2 && error.code != 'storage/quota-exceeded'){
-          this.playNextMusique();
+          //this.playNextMusique();
         }
       })
     }
 
     // Joue une musique en fonction de son etat
-
     private startMusique(musique:Musique){
       //si on a deja download l'url on le recup direct 
       if(musique.urlMusique != null){
-        if(this.intervalID == null){
-          this.intervalID = this.createPolling();
-        }
         this.currentMusique = this.media.create(musique.urlMusique);
+        this.currentMusique.onStatusUpdate.subscribe(status => {
+          switch(status){
+            case 2 :
+              this.intervalID = this.createPolling();
+              break
+            case 4 :
+              clearInterval(this.intervalID);
+              this.playNextMusique();
+              break
+            case 3 :
+              clearInterval(this.intervalID);
+              break
+          }
+        });
         this.currentMusique.play();
         this.updatePlayIcon("pause")
         this.updateMusiqueInfosubscribable(musique)
@@ -325,7 +341,7 @@ export class MusiqueService {
     public pauseMusique(){
       this.currentMusique.pause();
       this.updatePlayIcon("play")
-      clearInterval(this.intervalID);
+      //clearInterval(this.intervalID);
       this.intervalID = null;
     }
     
@@ -334,14 +350,14 @@ export class MusiqueService {
       this.currentMusique.release();
       this.updatePlayIcon("play")
       this.currentMusique = null;
-      clearInterval(this.intervalID);
+      //clearInterval(this.intervalID);
       this.intervalID = null;
     }
 
     public resumeMusique(){
       this.currentMusique.play();
       this.updatePlayIcon("pause")
-      this.intervalID = this.createPolling();
+      //this.intervalID = this.createPolling();
     }
 
 /*------------------------------------------------------------Getter-Setter------------------------------------------------------------------*/

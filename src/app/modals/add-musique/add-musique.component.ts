@@ -96,7 +96,7 @@ export class AddMusiqueComponent implements OnInit {
         if(common.common.album != undefined)
           album = common.common.album;
         if(common.common.artist != undefined)
-          artiste = common.common.artist;
+          artiste = common.common.artist.split(';')[0].split(',')[0];
         if(common.common.title != undefined)
           title = common.common.title;
         const cover = mm.selectCover(common.common.picture);
