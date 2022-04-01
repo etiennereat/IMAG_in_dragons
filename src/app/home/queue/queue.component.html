@@ -26,7 +26,17 @@
     </ion-button>
     <ion-list>
         <ion-item-sliding detail="false" *ngFor="let music of Queue; let i = index">
-            <ion-item class="music" detail="false" [routerLink]="['music/'+music.id]" (click)="playMusique(music)">
+            <ion-item *ngIf="i == indiceCurrentMusique " color="light" class="music" detail="false" [routerLink]="['music/'+music.id]" (click)="playMusique(music)">
+                <ion-avatar slot="start">
+                    <img src="music.idImageStorage">
+                </ion-avatar>
+                <ion-label>
+                    <h2>{{ music.nom }}</h2>
+                    <p>{{ music.idAuteur }}</p>
+                </ion-label>
+                <ion-spinner name="dots" slot="end"></ion-spinner>
+            </ion-item>
+            <ion-item *ngIf="i != indiceCurrentMusique " class="music" detail="false" [routerLink]="['music/'+music.id]" (click)="playMusique(music)">
                 <ion-avatar slot="start">
                     <img src="music.idImageStorage">
                 </ion-avatar>
