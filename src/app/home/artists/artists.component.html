@@ -22,9 +22,9 @@
         <ion-list>
             <ion-item detail="false" *ngFor="let artist of artists">
                 <ion-item class="music" detail="false" [routerLink]="[artist.id]">
-                    <ion-fab-button slot="start" color="light" size="small">
+                    <ion-chip slot="start" outline="true" color="dark">
                         <ion-label>{{ artist.NbMusique }}</ion-label>
-                    </ion-fab-button>
+                    </ion-chip>
                     <ion-label>
                         <h2>{{ artist.nom }}</h2>
                     </ion-label>
