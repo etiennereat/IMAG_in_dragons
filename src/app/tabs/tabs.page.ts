@@ -56,7 +56,17 @@ export class TabsPage {
       this.musiqueServ.resumeMusique();
     }
   }
-  // setSelectedTab() {
-  //   this.selected = this.tabs.getSelected();
-  // }
+  previous() {
+    const position = this.musiqueServ.getPosition()
+    //si la musique tourne depuis moins de 5 sec on passe a celle d'avant sinon on la recommence 
+    if(Math.floor(position) < 5){
+      this.musiqueServ.playPreviousMusique();
+    }
+    else{
+      this.musiqueServ.restartCurrentMusique();
+    }  }
+
+  next() {
+    this.musiqueServ.playNextMusique();
+  }
 }
