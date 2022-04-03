@@ -33,7 +33,8 @@ export class QueueComponent implements OnInit {
           this.QueueMode = false   
       }
     })
-    this.musicService.getIndiceCurrentMusiquePlay().subscribe(indice => {
+    this.indiceCurrentMusique = this.musicService.getIndiceCurrentMusiquePlay()
+    this.musicService.getIndiceCurrentMusiquePlaySubscribable().subscribe(indice => {
       this.indiceCurrentMusique = indice;
     })
       
