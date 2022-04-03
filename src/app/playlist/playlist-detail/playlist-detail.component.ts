@@ -40,8 +40,14 @@ export class PlaylistDetailComponent implements OnInit {
   }
 
   playMusique(musiqueLite: Musique){
-    this.musiqueService.getMusique(musiqueLite.id).subscribe(res => {
-      this.musiqueService.playMusique(res);
+    this.playlist$.subscribe((playlist)=>{
+      playlist.musiques.subscribe(musiques=>{
+        for(let i = 0; i < musiques.length; i++){
+          if(musiques[i].id == musiqueLite.id){
+            this.musiqueService.playPlaylist(musiques,i)
+          }
+        }
+      })
     })
   }   
 
@@ -71,7 +77,7 @@ export class PlaylistDetailComponent implements OnInit {
 
   playThisShuffuledPlaylist(){
     this.playlist$.subscribe((playlist)=>{
-      this.musiqueService.playPlaylist(this.shuffle(playlist.musiques))
+      this.musiqueService.playPlaylist(this.shuffle(playlist.musiques),0)
     })
   }
 
@@ -88,7 +94,7 @@ export class PlaylistDetailComponent implements OnInit {
   playThisPlaylist(){
     this.playlist$.subscribe((playlist)=>{
       playlist.musiques.subscribe(musiques=>{
-        this.musiqueService.playPlaylist(musiques)
+        this.musiqueService.playPlaylist(musiques,0)
       })
     })
   }
