@@ -186,8 +186,6 @@ export class MusiqueService {
         this.currentMusiqueQueue = new Array<Musique>();
         this.updateQueue();
         this.addPlaylistToQueue(musiqueList);
-        console.log(this.currentMusiqueQueue);
-        console.log(indiceMusiqueStart);
         this.updateindiceCurrentMusiquePlay(indiceMusiqueStart)
         this.startMusique(musiqueList[indiceMusiqueStart]);
       }
@@ -331,7 +329,6 @@ export class MusiqueService {
     }
 
     private updateindiceCurrentMusiquePlay(newIndice:number){
-      console.log(newIndice);
       this.indiceCurrentMusiquePlay = newIndice;
       this.NotifieIndiceCurrentMusiquePlay.next(this.indiceCurrentMusiquePlay);
     }
@@ -427,8 +424,12 @@ export class MusiqueService {
       return this.QueueMode;
     }
 
-    getIndiceCurrentMusiquePlay(): Subject<number>{
+    getIndiceCurrentMusiquePlaySubscribable(): Subject<number>{
       return this.NotifieIndiceCurrentMusiquePlay;
+    }
+
+    getIndiceCurrentMusiquePlay(): number{
+      return this.indiceCurrentMusiquePlay;
     }
   
     setQueueMode(mode: number){

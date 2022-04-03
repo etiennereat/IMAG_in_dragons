@@ -33,12 +33,10 @@ export class ArtistsService {
   public tryToAddArtistToFirestore(nom : string){
     var artist$ = this.getOneArtist(nom)
     if(artist$ == null){
-      console.log("ptdr balek")
       this.addArtistToFirestore(new Artists(nom,nom,0))
     }
     else{ 
       artist$.pipe(first()).subscribe(artist => {   
-        console.log(artist)
         this.addArtistToFirestore(artist)
       })
     }
