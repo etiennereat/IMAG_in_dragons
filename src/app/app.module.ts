@@ -14,7 +14,6 @@ import { SigninOrRegisterPageComponent } from './login/signin-or-register-page/s
 import { RegisterPageComponent } from './login/register-page/register-page.component';
 import { SigninPageComponent } from './login/signin-page/signin-page.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Media } from '@ionic-native/media/ngx';
 import { MusiqueService } from './services/musique.service';
 
 @NgModule({
@@ -29,7 +28,6 @@ import { MusiqueService } from './services/musique.service';
     ReactiveFormsModule,
   ],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-     Media,
      MusiqueService,
      { provide: PERSISTENCE, useValue: 'local' }
   ],

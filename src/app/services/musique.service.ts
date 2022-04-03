@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Musique } from '../models/Musique';
-import { from, Observable, Subject } from 'rxjs';
+import {  Observable, Subject } from 'rxjs';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/storage';
-import { Media, MediaObject } from '@ionic-native/media/ngx';
 import { Platform } from '@ionic/angular';
 import { first } from 'rxjs/operators';
 
@@ -37,7 +36,7 @@ export class MusiqueService {
   private progress:number;
   private intervalID :  NodeJS.Timeout;
 
-  constructor(private afs: AngularFirestore, private media: Media, private platform: Platform) {
+  constructor(private afs: AngularFirestore, private platform: Platform) {
     this.storageMusiqueRef = firebase.storage().ref('musiques');
     this.storageImageRef = firebase.storage().ref('images');
     this.state = 1;
@@ -337,7 +336,7 @@ export class MusiqueService {
       this.NotifieIndiceCurrentMusiquePlay.next(this.indiceCurrentMusiquePlay);
     }
     
-/*-------------------------------------------------Methode-manipulation-Media-Musique-------------------------------------------------------*/
+/*-------------------------------------------------Methode-manipulation-Musique-------------------------------------------------------*/
     public restartCurrentMusique(){
       this.seekTo(0)
       this.musicProgress.next(0)
