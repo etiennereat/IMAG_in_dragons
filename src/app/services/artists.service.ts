@@ -31,13 +31,17 @@ export class ArtistsService {
   } 
 
   public tryToAddArtistToFirestore(nom : string){
+    var passage = 0;
     var artist$ = this.getOneArtist(nom)
-    artist$.pipe(first()).subscribe(artist => {
-      if(artist.nom != null){
-        this.addArtistToFirestore(artist)
-      }
-      else{
-        this.addArtistToFirestore(new Artists(nom,nom,0))
+    artist$.subscribe(artist => {
+      if(passage == 0){
+        if(artist.nom != null){
+          this.addArtistToFirestore(artist)
+        }
+        else{
+          this.addArtistToFirestore(new Artists(nom,nom,0))
+        }
+        passage = 1;
       }
     })
   }

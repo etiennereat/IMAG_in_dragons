@@ -9,6 +9,7 @@ import { Musique } from 'src/app/models/Musique';
 import { PlaylistService } from 'src/app/services/playlist.service';
 import { MusiqueService } from 'src/app/services/musique.service';
 import { MusicPopoverComponent } from 'src/app/popovers/music-popover/music-popover.component';
+import { first } from 'rxjs/operators';
 
 @Component({
   selector: 'app-playlist-detail',
@@ -40,12 +41,16 @@ export class PlaylistDetailComponent implements OnInit {
   }
 
   playMusique(musiqueLite: Musique){
+    var passage = 0;
     this.playlist$.subscribe((playlist)=>{
       playlist.musiques.subscribe(musiques=>{
-        for(let i = 0; i < musiques.length; i++){
-          if(musiques[i].id == musiqueLite.id){
-            this.musiqueService.playPlaylist(musiques,i)
+        if(passage == 0){
+          for(let i = 0; i < musiques.length; i++){
+            if(musiques[i].id == musiqueLite.id){
+              this.musiqueService.playPlaylist(musiques,i)
+            }
           }
+          passage = 1
         }
       })
     })
@@ -76,9 +81,13 @@ export class PlaylistDetailComponent implements OnInit {
   }
 
   playThisShuffuledPlaylist(){
+    var passage = 0;
     this.playlist$.subscribe((playlist)=>{
       playlist.musiques.subscribe(musiques=>{
-        this.musiqueService.playPlaylist(this.shuffle(musiques),0)
+        if(passage == 0){
+          this.musiqueService.playPlaylist(this.shuffle(musiques),0)
+          passage = 1
+        }
       })
     })
   }
@@ -95,14 +104,19 @@ export class PlaylistDetailComponent implements OnInit {
   }
 
   playThisPlaylist(){
+    var passage = 0;
     this.playlist$.subscribe((playlist)=>{
       playlist.musiques.subscribe(musiques=>{
-        this.musiqueService.playPlaylist(musiques,0)
+        if(passage == 0){
+          this.musiqueService.playPlaylist(musiques,0)
+          passage = 1
+        }
       })
     })
   }
 
   disconnect(){
+    this.playlist$ = null;
     this.authService.disconnect()
   }
 

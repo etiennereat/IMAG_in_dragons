@@ -65,14 +65,14 @@ export class MusiqueService {
 
 
   public purgeService(){
-    this.currentMusiqueQueue.splice(0)
-    this.updateQueue()
+    this.clearQueue();
     this.indiceCurrentMusiquePlay = null;
     this.actualMusiqueInfosubscribable = new Musique("Loading","Loading","https://firebasestorage.googleapis.com/v0/b/imagindragons-e576d.appspot.com/o/images%2FimagePlaylistDemo.jpg?alt=media&token=be33d621-be06-488a-9636-d65b4bdcabca","Loading")
     this.updatePlayIcon("play");
     if(this.currentMusique != null){
       this.stopMusique();
     }
+    this.currentMusique = null;
     clearInterval(this.intervalID);
     this.intervalID = null;
     this.state = 1;
@@ -111,14 +111,16 @@ export class MusiqueService {
             this.stopMusique();
           }
           else{
+            const indice = this.indiceCurrentMusiquePlay;;
             this.stopMusique();
-            this.updateindiceCurrentMusiquePlay(this.indiceCurrentMusiquePlay + 1);
+            this.updateindiceCurrentMusiquePlay(indice + 1);
             this.startMusique(this.currentMusiqueQueue[this.indiceCurrentMusiquePlay])
           }
           break;
         case 1 :
+            const indice = this.indiceCurrentMusiquePlay;;
             this.stopMusique();
-            this.updateindiceCurrentMusiquePlay((this.indiceCurrentMusiquePlay + 1) % this.currentMusiqueQueue.length);
+            this.updateindiceCurrentMusiquePlay((indice + 1) % this.currentMusiqueQueue.length);
             this.startMusique(this.currentMusiqueQueue[this.indiceCurrentMusiquePlay])
             break;
         case 2 :
@@ -132,8 +134,9 @@ export class MusiqueService {
       switch(this.state){
         case 0 :
             if(this.indiceCurrentMusiquePlay != 0){
+              const indice = this.indiceCurrentMusiquePlay;;
               this.stopMusique();
-              this.updateindiceCurrentMusiquePlay(this.indiceCurrentMusiquePlay - 1);
+              this.updateindiceCurrentMusiquePlay(indice - 1);
               this.startMusique(this.currentMusiqueQueue[this.indiceCurrentMusiquePlay])
             }
             else{
@@ -146,9 +149,10 @@ export class MusiqueService {
             this.updateindiceCurrentMusiquePlay(this.currentMusiqueQueue.length - 1);
           } 
           else{
-            this.updateindiceCurrentMusiquePlay(this.indiceCurrentMusiquePlay - 1);
+            const indice = this.indiceCurrentMusiquePlay;;
+            this.stopMusique();
+            this.updateindiceCurrentMusiquePlay(indice - 1);
           }
-          this.stopMusique();
           this.startMusique(this.currentMusiqueQueue[this.indiceCurrentMusiquePlay])
           break;
         }
@@ -183,11 +187,9 @@ export class MusiqueService {
         if(this.currentMusique !=null){
           this.stopMusique();
         }
-        this.currentMusiqueQueue = new Array<Musique>();
-        this.updateQueue();
+        this.clearQueue()
         this.addPlaylistToQueue(musiqueList);
-        this.updateindiceCurrentMusiquePlay(indiceMusiqueStart)
-        this.startMusique(musiqueList[indiceMusiqueStart]);
+        this.playMusiqueInQueue(indiceMusiqueStart);
       }
     }
 
@@ -221,7 +223,6 @@ export class MusiqueService {
               this.updatePlayIcon("pause")
               this.intervalID = this.createPolling();
             }
-
             this.currentMusique.play()
 
             this.updateMusiqueInfosubscribable(musique)
@@ -274,9 +275,13 @@ export class MusiqueService {
         //si les info de la musique sont seulement light
         this.updatePlayIcon("cloud-download-outline");
         if(musique.idMusiqueStorage == null){
-          this.getMusique(musique.id).pipe(first()).subscribe(res => {
-            this.currentMusiqueQueue[this.indiceCurrentMusiquePlay] = res;
-            this.launchMusique(this.currentMusiqueQueue[this.indiceCurrentMusiquePlay])
+          var passage = 0
+          this.getMusique(musique.id).subscribe(res => {
+            if(passage == 0){
+              this.currentMusiqueQueue[this.indiceCurrentMusiquePlay] = res;
+              this.launchMusique(this.currentMusiqueQueue[this.indiceCurrentMusiquePlay])
+              passage = 1
+            }
           })
         }
         else{
@@ -305,6 +310,9 @@ export class MusiqueService {
     }
 
     public clearQueue(){
+      if(this.currentMusique != null){
+        this.stopMusique();
+      }
       this.currentMusiqueQueue.splice(0)
       this.updateQueue()
     }
@@ -364,6 +372,7 @@ export class MusiqueService {
       this.currentMusique.pause();
       this.updatePlayIcon("play")
       this.currentMusique = null;
+      this.updateindiceCurrentMusiquePlay(null);
     }
 
     public resumeMusique(){
