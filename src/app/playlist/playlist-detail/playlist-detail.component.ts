@@ -77,12 +77,15 @@ export class PlaylistDetailComponent implements OnInit {
 
   playThisShuffuledPlaylist(){
     this.playlist$.subscribe((playlist)=>{
-      this.musiqueService.playPlaylist(this.shuffle(playlist.musiques),0)
+      playlist.musiques.subscribe(musiques=>{
+        this.musiqueService.playPlaylist(this.shuffle(musiques),0)
+      })
     })
   }
 
   shuffle(list) {
-    let currentIndex = list.length,randomIndex;
+    let currentIndex: number = list.length;
+    let randomIndex: number;
     while (currentIndex != 0) {
       randomIndex = Math.floor(Math.random() * currentIndex);
       currentIndex--;
