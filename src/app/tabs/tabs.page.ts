@@ -50,10 +50,16 @@ export class TabsPage {
 
   playPause() {
     if(this.musiqueServ.isNull()){return}
-    if(this.playIcon == 'pause') {
-      this.musiqueServ.pauseMusique();
-    } else {
-      this.musiqueServ.resumeMusique();
+    switch(this.playIcon){
+      case 'pause':
+        this.musiqueServ.pauseMusique();
+        break;
+      case 'play' :
+        this.musiqueServ.resumeMusique();
+        break;
+      default:
+        //do nothing
+        break;
     }
   }
   previous() {
