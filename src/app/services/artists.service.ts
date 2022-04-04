@@ -32,17 +32,17 @@ export class ArtistsService {
 
   public tryToAddArtistToFirestore(nom : string){
     var artist$ = this.getOneArtist(nom)
-    if(artist$ == null){
-      this.addArtistToFirestore(new Artists(nom,nom,0))
-    }
-    else{ 
-      artist$.pipe(first()).subscribe(artist => {   
+    artist$.pipe(first()).subscribe(artist => {
+      if(artist.nom != null){
         this.addArtistToFirestore(artist)
-      })
-    }
+      }
+      else{
+        this.addArtistToFirestore(new Artists(nom,nom,0))
+      }
+    })
   }
 
-  private addArtistToFirestore(artist :Artists){  
+  private addArtistToFirestore(artist :Artists){
     this.fs.collection("artist").doc(artist.id).set({
       nom : artist.nom,
       NbMusique : (artist.NbMusique + 1)
