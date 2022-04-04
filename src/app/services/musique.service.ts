@@ -314,6 +314,21 @@ export class MusiqueService {
       this.updateQueue()
     }
 
+    public playMusiqueInQueue(indiceQueue: number){
+      if(indiceQueue < this.currentMusiqueQueue.length && indiceQueue >= 0){
+        if(indiceQueue == this.indiceCurrentMusiquePlay){
+            this.resumeMusique();
+        }
+        else{
+          if(this.currentMusique !=null){
+            this.stopMusique();
+          }
+          this.updateindiceCurrentMusiquePlay(indiceQueue)
+          this.startMusique(this.currentMusiqueQueue[this.indiceCurrentMusiquePlay])
+        }
+      }
+    }
+
     private shuffle(list) {
       let currentIndex = list.length,randomIndex;
       while (currentIndex != 0) {
@@ -343,14 +358,12 @@ export class MusiqueService {
     public pauseMusique(){
       this.currentMusique.pause();
       this.updatePlayIcon("play")
-      this.intervalID = null;
     }
     
     public stopMusique(){
       this.currentMusique.pause();
       this.updatePlayIcon("play")
       this.currentMusique = null;
-      this.intervalID = null;
     }
 
     public resumeMusique(){

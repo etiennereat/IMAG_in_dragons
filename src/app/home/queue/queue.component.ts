@@ -87,14 +87,8 @@ export class QueueComponent implements OnInit {
     await alert.present();
   }
 
-  playMusique(musiqueLite: Musique){
-    var nb = 0
-    this.musicService.getMusique(musiqueLite.id).subscribe(res => {
-      if(nb == 0){
-        this.musicService.playMusique(res);
-        nb=1
-      }
-    })
+  playMusique(indiceInQueue: number){
+    this.musicService.playMusiqueInQueue(indiceInQueue)
   }
 
   disconnect(){
