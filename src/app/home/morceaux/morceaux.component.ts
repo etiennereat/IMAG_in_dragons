@@ -34,12 +34,6 @@ export class MorceauxComponent implements OnInit {
     this.user$ = this.authService.getCurrentUser();
   }
 
-  ionViewDidEnter() {
-    setTimeout(() => {
-      this.search?.setFocus();
-    });
-  }
-
   _ionChange(ev:any){
     const val = ev.target.value;
     this.musics$.subscribe((musics) =>{

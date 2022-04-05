@@ -306,6 +306,13 @@ export class MusiqueService {
 
     public removeFromQueue(index:number){
       this.currentMusiqueQueue.splice(index,1)
+      if(this.currentMusiqueQueue.length != 0 && this.indiceCurrentMusiquePlay == index){
+          this.stopMusique();
+          this.playMusiqueInQueue(index % this.currentMusiqueQueue.length)
+      }
+      else{
+        this.updateindiceCurrentMusiquePlay(this.indiceCurrentMusiquePlay - 1);
+      }
       this.updateQueue()
     }
 
@@ -343,6 +350,12 @@ export class MusiqueService {
         randomIndex = Math.floor(Math.random() * currentIndex);
         currentIndex--;
         [list[currentIndex], list[randomIndex]] = [list[randomIndex], list[currentIndex]];
+        if(currentIndex == this.indiceCurrentMusiquePlay){
+          this.updateindiceCurrentMusiquePlay(randomIndex)
+        }
+        else if(randomIndex == this.indiceCurrentMusiquePlay){
+          this.updateindiceCurrentMusiquePlay(currentIndex)
+        }
       }
       return list;
     }

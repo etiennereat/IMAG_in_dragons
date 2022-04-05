@@ -6,6 +6,7 @@ import { MusiqueService } from 'src/app/services/musique.service';
 
 import { PluginListenerHandle } from '@capacitor/core';
 import { Motion } from '@capacitor/motion';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-queue',
@@ -27,7 +28,8 @@ export class QueueComponent implements OnInit {
 
   constructor(private musicService:MusiqueService,
     private authService:AuthService,
-    private alertController:AlertController) { }
+    private alertController:AlertController,
+    private router:Router) { }
 
   ngOnInit() {
     this.Queue = this.musicService.getQueueMusique()
@@ -106,47 +108,44 @@ export class QueueComponent implements OnInit {
   }
 
   async ionViewWillEnter() {
-    console.log('view will enter');
     this.accelHandler = await Motion.addListener('accel', event => {
-      console.log('Device motion event:', event);
+      if(this.router.routerState.snapshot.url.includes("queue")){
+        if(!this.lastX) {
+          this.lastX = event.acceleration.x;
+          this.lastY = event.acceleration.y;
+          this.lastZ = event.acceleration.z;
+          return;
+        }
 
-      if(!this.lastX) {
+        let deltaX:number, deltaY:number, deltaZ:number;
+        deltaX = Math.abs(event.acceleration.x-this.lastX);
+        deltaY = Math.abs(event.acceleration.y-this.lastY);
+        deltaZ = Math.abs(event.acceleration.z-this.lastZ);
+        if(deltaX + deltaY + deltaZ > 20) {
+          this.moveCounter++;
+        } else {
+          this.moveCounter = Math.max(0, --this.moveCounter);
+        }
+
+        if(this.moveCounter > 1) { 
+          this.moveCounter=0;
+          this.shuffleQueue();
+        }
+
         this.lastX = event.acceleration.x;
         this.lastY = event.acceleration.y;
         this.lastZ = event.acceleration.z;
-        return;
       }
-
-      let deltaX:number, deltaY:number, deltaZ:number;
-      deltaX = Math.abs(event.acceleration.x-this.lastX);
-      deltaY = Math.abs(event.acceleration.y-this.lastY);
-      deltaZ = Math.abs(event.acceleration.z-this.lastZ);
-
-      if(deltaX + deltaY + deltaZ > 3) {
-        this.moveCounter++;
-      } else {
-        this.moveCounter = Math.max(0, --this.moveCounter);
-      }
-
-      if(this.moveCounter > 2) { 
-        console.log('SHAKE');
-        alert('Shake')
-        this.moveCounter=0; 
-      }
-
-      this.lastX = event.acceleration.x;
-      this.lastY = event.acceleration.y;
-      this.lastZ = event.acceleration.z;
     });
 
   }
 
   ionViewWillLeave() {
-    console.log('view will leave');
     // Stop the acceleration listener
     const stopAcceleration = () => {
       if (this.accelHandler) {
         this.accelHandler.remove();
+        Motion.removeAllListeners();
       }
     };
   }
