@@ -31,20 +31,22 @@ export class ArtistsService {
   } 
 
   public tryToAddArtistToFirestore(nom : string){
+    var passage = 0;
     var artist$ = this.getOneArtist(nom)
-    if(artist$ == null){
-      console.log("ptdr balek")
-      this.addArtistToFirestore(new Artists(nom,nom,0))
-    }
-    else{ 
-      artist$.pipe(first()).subscribe(artist => {   
-        console.log(artist)
-        this.addArtistToFirestore(artist)
-      })
-    }
+    artist$.subscribe(artist => {
+      if(passage == 0){
+        if(artist.nom != null){
+          this.addArtistToFirestore(artist)
+        }
+        else{
+          this.addArtistToFirestore(new Artists(nom,nom,0))
+        }
+        passage = 1;
+      }
+    })
   }
 
-  private addArtistToFirestore(artist :Artists){  
+  private addArtistToFirestore(artist :Artists){
     this.fs.collection("artist").doc(artist.id).set({
       nom : artist.nom,
       NbMusique : (artist.NbMusique + 1)

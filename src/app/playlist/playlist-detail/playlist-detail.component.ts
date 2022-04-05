@@ -9,6 +9,7 @@ import { Musique } from 'src/app/models/Musique';
 import { PlaylistService } from 'src/app/services/playlist.service';
 import { MusiqueService } from 'src/app/services/musique.service';
 import { MusicPopoverComponent } from 'src/app/popovers/music-popover/music-popover.component';
+import { first } from 'rxjs/operators';
 
 @Component({
   selector: 'app-playlist-detail',
@@ -40,8 +41,18 @@ export class PlaylistDetailComponent implements OnInit {
   }
 
   playMusique(musiqueLite: Musique){
-    this.musiqueService.getMusique(musiqueLite.id).subscribe(res => {
-      this.musiqueService.playMusique(res);
+    var passage = 0;
+    this.playlist$.subscribe((playlist)=>{
+      playlist.musiques.subscribe(musiques=>{
+        if(passage == 0){
+          for(let i = 0; i < musiques.length; i++){
+            if(musiques[i].id == musiqueLite.id){
+              this.musiqueService.playPlaylist(musiques,i)
+            }
+          }
+          passage = 1
+        }
+      })
     })
   }   
 
@@ -70,13 +81,20 @@ export class PlaylistDetailComponent implements OnInit {
   }
 
   playThisShuffuledPlaylist(){
+    var passage = 0;
     this.playlist$.subscribe((playlist)=>{
-      this.musiqueService.playPlaylist(this.shuffle(playlist.musiques))
+      playlist.musiques.subscribe(musiques=>{
+        if(passage == 0){
+          this.musiqueService.playPlaylist(this.shuffle(musiques),0)
+          passage = 1
+        }
+      })
     })
   }
 
   shuffle(list) {
-    let currentIndex = list.length,randomIndex;
+    let currentIndex: number = list.length;
+    let randomIndex: number;
     while (currentIndex != 0) {
       randomIndex = Math.floor(Math.random() * currentIndex);
       currentIndex--;
@@ -86,14 +104,19 @@ export class PlaylistDetailComponent implements OnInit {
   }
 
   playThisPlaylist(){
+    var passage = 0;
     this.playlist$.subscribe((playlist)=>{
       playlist.musiques.subscribe(musiques=>{
-        this.musiqueService.playPlaylist(musiques)
+        if(passage == 0){
+          this.musiqueService.playPlaylist(musiques,0)
+          passage = 1
+        }
       })
     })
   }
 
   disconnect(){
+    this.playlist$ = null;
     this.authService.disconnect()
   }
 

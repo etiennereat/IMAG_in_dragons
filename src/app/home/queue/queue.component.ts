@@ -13,6 +13,7 @@ export class QueueComponent implements OnInit {
 
   Queue:Array<Musique>
   QueueMode:boolean = true
+  indiceCurrentMusique : number = -1;
 
   constructor(private musicService:MusiqueService,
     private authService:AuthService,
@@ -32,6 +33,11 @@ export class QueueComponent implements OnInit {
           this.QueueMode = false   
       }
     })
+    this.indiceCurrentMusique = this.musicService.getIndiceCurrentMusiquePlay()
+    this.musicService.getIndiceCurrentMusiquePlaySubscribable().subscribe(indice => {
+      this.indiceCurrentMusique = indice;
+    })
+      
     this.musicService.getQueue().subscribe((data)=>{
       this.Queue=data
     })
@@ -63,7 +69,7 @@ export class QueueComponent implements OnInit {
   
   async presentAlertConfirm() {
     const alert = await this.alertController.create({
-      header: 'Log out?',
+      header: 'Clear Queue',
       message: "Are you sure you want to delete the queue ?",
       buttons: [
         {
@@ -81,14 +87,8 @@ export class QueueComponent implements OnInit {
     await alert.present();
   }
 
-  playMusique(musiqueLite: Musique){
-    var nb = 0
-    this.musicService.getMusique(musiqueLite.id).subscribe(res => {
-      if(nb == 0){
-        this.musicService.playMusique(res);
-        nb=1
-      }
-    })
+  playMusique(indiceInQueue: number){
+    this.musicService.playMusiqueInQueue(indiceInQueue)
   }
 
   disconnect(){

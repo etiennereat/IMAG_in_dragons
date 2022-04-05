@@ -50,13 +50,29 @@ export class TabsPage {
 
   playPause() {
     if(this.musiqueServ.isNull()){return}
-    if(this.playIcon == 'pause') {
-      this.musiqueServ.pauseMusique();
-    } else {
-      this.musiqueServ.resumeMusique();
+    switch(this.playIcon){
+      case 'pause':
+        this.musiqueServ.pauseMusique();
+        break;
+      case 'play' :
+        this.musiqueServ.resumeMusique();
+        break;
+      default:
+        //do nothing
+        break;
     }
   }
-  // setSelectedTab() {
-  //   this.selected = this.tabs.getSelected();
-  // }
+  previous() {
+    const position = this.musiqueServ.getPosition()
+    //si la musique tourne depuis moins de 5 sec on passe a celle d'avant sinon on la recommence 
+    if(Math.floor(position) < 5){
+      this.musiqueServ.playPreviousMusique();
+    }
+    else{
+      this.musiqueServ.restartCurrentMusique();
+    }  }
+
+  next() {
+    this.musiqueServ.playNextMusique();
+  }
 }
