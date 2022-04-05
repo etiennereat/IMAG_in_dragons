@@ -46,7 +46,7 @@ export class PlayMusicPageComponent implements OnInit {
 
   seekTo(value:number){
     var currentPosition = value*(this.audioDurationInS/100)
-    this.musiqueServ.seekTo(currentPosition*1000)
+    this.musiqueServ.seekTo(currentPosition)
   }
 
   sToTime(duration:number){
@@ -61,10 +61,16 @@ export class PlayMusicPageComponent implements OnInit {
 
   playPause() {
     if(this.musiqueServ.isNull()){return}
-    if(this.playIcon == 'pause') {
-      this.musiqueServ.pauseMusique();
-    } else {
-      this.musiqueServ.resumeMusique();
+    switch(this.playIcon){
+      case 'pause':
+        this.musiqueServ.pauseMusique();
+        break;
+      case 'play' :
+        this.musiqueServ.resumeMusique();
+        break;
+      default:
+        //do nothing
+        break;
     }
   }
   nextMusique(){
@@ -72,15 +78,14 @@ export class PlayMusicPageComponent implements OnInit {
   }
 
   previousMusique(){
-    this.musiqueServ.getPosition().then((position) => {
-      //si la musique tourne depuis moins de 5 sec on passe a celle d'avant sinon on la recommence 
-      if(Math.floor(((position/60/60)*60)*60) < 5){
-        this.musiqueServ.playPreviousMusique();
-      }
-      else{
-        this.musiqueServ.restartCurrentMusique();
-      }
-    });
+    const position = this.musiqueServ.getPosition()
+    //si la musique tourne depuis moins de 5 sec on passe a celle d'avant sinon on la recommence 
+    if(Math.floor(position) < 5){
+      this.musiqueServ.playPreviousMusique();
+    }
+    else{
+      this.musiqueServ.restartCurrentMusique();
+    }
   }
 
   disconnect(){

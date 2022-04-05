@@ -54,8 +54,12 @@ export class MorceauxComponent implements OnInit {
   }
 
   playMusique(musiqueLite: Musique){
-    this.musiqueService.getMusique(musiqueLite.id).pipe(first()).subscribe(res => {
-      this.musiqueService.playMusique(res);
+    var passage = 0;
+    this.musiqueService.getMusique(musiqueLite.id).subscribe(res => {
+      if(passage == 0){
+        this.musiqueService.playMusique(res);
+        passage = 1;
+      }
     })
   }
 

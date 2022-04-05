@@ -63,7 +63,7 @@ export class AuthService {
   }
 
   connectwithgithub(){
-    this.auth.signInWithPopup(new firebase.auth.GoogleAuthProvider())
+    this.auth.signInWithPopup(new firebase.auth.GithubAuthProvider())
       .then(_ => {
         // Signed in
         this.router.navigate([""]);
