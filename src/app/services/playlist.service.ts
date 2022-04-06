@@ -59,7 +59,7 @@ export class PlaylistService {
           idUserCreateur:user.email,
           canWrite:[],
           canRead:[],
-          idImageStorage: image == undefined ? "imagePlaylistDemo.jpeg" : image
+          idImageStorage: image == undefined ? "https://firebasestorage.googleapis.com/v0/b/imagindragons-e576d.appspot.com/o/images%2FimagePlaylistDemo.jpg?alt=media&token=be33d621-be06-488a-9636-d65b4bdcabca.jpeg" : image
         })
         .catch((error) => {
           console.error("Error writing document: ", error);
