@@ -60,9 +60,21 @@ export class MusiqueService {
             this.playNextMusique();
           }
       }
+      console.log("running")
     }, 1000 );
   }
 
+
+  public createPollingExtern(){
+    if(this.intervalID == null){
+      this.intervalID = this.createPolling();
+    }
+  }
+
+  public stopPollingExtern(){
+    clearInterval(this.intervalID)
+    this.intervalID = null;
+  }
 
   public purgeService(){
     this.clearQueue();

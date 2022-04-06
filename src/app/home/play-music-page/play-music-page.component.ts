@@ -47,6 +47,12 @@ export class PlayMusicPageComponent implements OnInit {
   seekTo(value:number){
     var currentPosition = value*(this.audioDurationInS/100)
     this.musiqueServ.seekTo(currentPosition)
+    this.musiqueServ.createPollingExtern();
+  }
+
+  stopPooling(){
+    console.log("stop")
+    this.musiqueServ.stopPollingExtern();
   }
 
   sToTime(duration:number){

@@ -27,7 +27,7 @@
             <ion-card-subtitle>{{musique.idAuteur}}</ion-card-subtitle>
         </ion-card-header>
         <ion-card-content class="content">
-            <ion-range step="0.1" class="range" min="0" max="100" [(ngModel)]="progress" (touchend)="seekTo(progress)" (mouseup)="seekTo(progress)">
+            <ion-range step="0.1" class="range" min="0" max="100" [(ngModel)]="progress" (touchstart)="stopPooling()" (touchend)="seekTo(progress)" (mousedown)="stopPooling()" (mouseup)="seekTo(progress)">
                 <ion-label slot="start">{{currentTime}}</ion-label>
                 <ion-label slot="end">{{audioDuration}}</ion-label>
             </ion-range>
