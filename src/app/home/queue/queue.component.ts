@@ -121,7 +121,7 @@ export class QueueComponent implements OnInit {
         deltaX = Math.abs(event.acceleration.x-this.lastX);
         deltaY = Math.abs(event.acceleration.y-this.lastY);
         deltaZ = Math.abs(event.acceleration.z-this.lastZ);
-        if(deltaX + deltaY + deltaZ > 20) {
+        if(deltaX + deltaY + deltaZ > 10) {
           this.moveCounter++;
         } else {
           this.moveCounter = Math.max(0, --this.moveCounter);
