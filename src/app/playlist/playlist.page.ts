@@ -38,7 +38,7 @@ export class PlaylistPage implements OnInit {
   }
 
   unfollowPlaylistRaW(id:string){
-    this.playlistService.unfollowPlaylistRO(id);
+    this.playlistService.unfollowPlaylistRaW(id);
   }
 
   disconnect(){
