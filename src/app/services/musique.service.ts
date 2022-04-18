@@ -60,7 +60,6 @@ export class MusiqueService {
             this.playNextMusique();
           }
       }
-      console.log("running")
     }, 1000 );
   }
 

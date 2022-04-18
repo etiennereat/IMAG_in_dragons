@@ -64,8 +64,8 @@ export class AddMusiqueComponent implements OnInit {
 
 
 
-  fileUpload(event: FileList) {
-    const file = event.item(0)
+  fileUpload(event: Event) {
+    const file = (event.target as HTMLInputElement).files[0];
     if (file.type.split('/')[0] !== 'audio') { 
       console.log('File type is not supported!')
       return;

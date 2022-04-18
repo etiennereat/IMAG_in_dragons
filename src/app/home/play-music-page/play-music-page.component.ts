@@ -51,7 +51,6 @@ export class PlayMusicPageComponent implements OnInit {
   }
 
   stopPooling(){
-    console.log("stop")
     this.musiqueServ.stopPollingExtern();
   }
 
